@@ -15,6 +15,16 @@ async def run() -> None:
     system_prompt = os.getenv("LLM_SYSTEM_PROMPT")
     if system_prompt:
         messages.append({"role": "system", "content": system_prompt})
+    else:
+        messages.append(
+            {
+                "role": "system",
+                "content": (
+                    "You are a helpful local assistant. "
+                    "Use tools when they help answer accurately."
+                ),
+            }
+        )
 
     print("Chat started. Type 'exit' or 'quit' to stop.")
 
