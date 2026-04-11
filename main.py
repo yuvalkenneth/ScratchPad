@@ -1,9 +1,9 @@
 import asyncio
-import os
 from typing import Any
 
 from app.llm.config import LLMConfig
 from app.llm.client import LLMClient
+from app.llm.prompting import build_system_prompt
 from app.llm.runtime import ensure_provider_ready
 
 
@@ -12,19 +12,7 @@ async def run() -> None:
     client = LLMClient.from_config(config)
     messages: list[dict[str, Any]] = []
 
-    system_prompt = os.getenv("LLM_SYSTEM_PROMPT")
-    if system_prompt:
-        messages.append({"role": "system", "content": system_prompt})
-    else:
-        messages.append(
-            {
-                "role": "system",
-                "content": (
-                    "You are a helpful local assistant. "
-                    "Use tools when they help answer accurately."
-                ),
-            }
-        )
+    messages.append({"role": "system", "content": build_system_prompt()})
 
     print("Chat started. Type 'exit' or 'quit' to stop.")
 
