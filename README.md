@@ -63,6 +63,8 @@ Early development.
 Current focus:
 
 * minimal LLM client
+* tool-driven local chat loop with guarded tool execution
+* model switching and local server observability
 * basic classification (depth + estimated time)
 * simple save + retrieve flow
 
@@ -79,20 +81,37 @@ Current focus:
 
 ## Running locally
 
-1. Start a model server (e.g. llama.cpp with an OpenAI-compatible API)
-
-2. Set environment variables:
+1. Set environment variables in `.env` or your shell:
 
 ```bash
+LLM_PROVIDER=llama_cpp
 LLM_BASE_URL=http://localhost:8080/v1
-LLM_MODEL=qwen
+LLM_MODEL=Qwen3.5-0.8B-BF16
 LLM_API_KEY=
+LLM_START_SCRIPT=/path/to/run-model-server.sh
 ```
 
-3. Run the dev script:
+2. Run the chat app:
 
 ```bash
-python scripts/dev_chat.py
+uv run python main.py
+```
+
+3. The app will start the local server automatically for `llama_cpp` if needed.
+
+### Chat commands
+
+The REPL in [main.py](main.py) supports a few built-in commands:
+
+* `/reset` resets the conversation but keeps the current client and model
+* `/reload` reloads `.env`, rebuilds the client, and resets the conversation
+* `/model <model_name> <start_script>` stops the current local server, starts the requested model server, rebuilds the client, and resets the conversation
+* `/server-status` shows server health plus the latest parsed timing block from `llama-server.log`
+
+Example model switch:
+
+```bash
+/model Qwen3.5-0.8B-BF16 /Users/yuvalkenneth/Desktop/local-llms/scripts/run-qwen-0.8b-server.sh
 ```
 
 ---
@@ -129,3 +148,35 @@ tests/        # basic tests
 ## Status
 
 Work in progress. Expect breaking changes.
+
+The local chat runtime currently supports:
+
+* OpenAI-compatible chat completions
+* tool execution with a small local registry
+* loop protection for repeated or excessive tool rounds
+* local `llama.cpp` server startup and shutdown
+* log-based server timing inspection for prompt/output token counts and speed
+
+---
+
+## Command executor
+
+The repo includes a simple local executor in [app/tools/executor.py](app/tools/executor.py).
+
+It currently supports:
+
+* `Executor.run_shell(cmd, cwd=None)` via `bash -lc`
+* `Executor.run_python(code, cwd=None)` via `uv run python -c`
+* fixed workspace scoping rooted at this repository
+* permission checks before execution
+* timeout support
+* stdout/stderr truncation
+* a stripped environment allowlist to avoid leaking secrets
+
+Permission behavior is intentionally simple:
+
+* deny `sudo`, privilege escalation, destructive commands, and sensitive paths
+* ask for approval on networked commands, background processes, and paths outside the workspace
+* otherwise allow
+
+There is no sandbox backend yet. Commands run directly on the host process with the checks above.

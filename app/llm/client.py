@@ -22,6 +22,8 @@ PROVIDERS_TO_BASE_URL: dict[str, str] = {
     "gemini": "https://api.gemini.com/v1",
 }
 
+DEFAULT_MAX_TOOL_ROUNDS = 8
+
 
 class LLMClient(BaseModel):
     api_url: Optional[str] = None
@@ -30,6 +32,7 @@ class LLMClient(BaseModel):
     model_name: str
     provider: str = "openai"
     use_tools: bool = True
+    max_tool_rounds: int = DEFAULT_MAX_TOOL_ROUNDS
 
     @classmethod
     def from_config(cls, config: LLMConfig) -> "LLMClient":
@@ -65,13 +68,37 @@ class LLMClient(BaseModel):
             request_kwargs["tools"] = get_tool_definitions()
             request_kwargs["tool_choice"] = "auto"
 
+        tool_rounds = 0
+        repeated_tool_signature: Optional[str] = None
+        repeated_tool_count = 0
+
         while True:
             response = await client.chat.completions.create(**request_kwargs)
             message = response.choices[0].message
             tool_calls = getattr(message, "tool_calls", None) or []
 
             if not tool_calls:
-                return self._extract_content(message.content)
+                content = self._extract_content(message.content).strip()
+                if content:
+                    return content
+                return "The model stopped after using tools without producing a final answer."
+
+            tool_rounds += 1
+            if tool_rounds > self.max_tool_rounds:
+                return (
+                    "The model got stuck in a tool loop and hit the tool-round limit "
+                    f"({self.max_tool_rounds})."
+                )
+
+            current_signature = self._tool_call_signature(tool_calls)
+            if current_signature == repeated_tool_signature:
+                repeated_tool_count += 1
+            else:
+                repeated_tool_signature = current_signature
+                repeated_tool_count = 1
+
+            if repeated_tool_count >= 3:
+                return "The model repeated the same tool call several times and appears stuck."
 
             messages.append(self._assistant_message_to_dict(message))
 
@@ -88,6 +115,17 @@ class LLMClient(BaseModel):
                     }
                 )
             request_kwargs["messages"] = messages
+
+    def _tool_call_signature(self, tool_calls: List[Any]) -> str:
+        signature_payload = []
+        for tool_call in tool_calls:
+            signature_payload.append(
+                {
+                    "name": tool_call.function.name,
+                    "arguments": tool_call.function.arguments or "{}",
+                }
+            )
+        return json.dumps(signature_payload, sort_keys=True, ensure_ascii=True)
 
     def _assistant_message_to_dict(self, message: Any) -> Dict[str, Any]:
         payload: Dict[str, Any] = {
