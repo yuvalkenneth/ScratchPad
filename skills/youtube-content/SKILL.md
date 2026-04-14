@@ -14,25 +14,25 @@ Extract transcripts from YouTube videos and convert them into useful formats.
 ## Setup
 
 ```bash
-pip install youtube-transcript-api
+uv sync
 ```
 
 ## Helper Script
 
-`SKILL_DIR` is the directory containing this SKILL.md file. The script accepts any standard YouTube URL format, short links (youtu.be), shorts, embeds, live links, or a raw 11-character video ID.
+Run the helper script with a workspace-relative path. Do not assume helper environment variables such as `SKILL_DIR` exist. The script accepts any standard YouTube URL format, short links (youtu.be), shorts, embeds, live links, or a raw 11-character video ID.
 
 ```bash
 # JSON output with metadata
-python3 SKILL_DIR/scripts/fetch_transcript.py "https://youtube.com/watch?v=VIDEO_ID"
+uv run python skills/youtube-content/scripts/fetch_transcript.py "https://youtube.com/watch?v=VIDEO_ID"
 
 # Plain text (good for piping into further processing)
-python3 SKILL_DIR/scripts/fetch_transcript.py "URL" --text-only
+uv run python skills/youtube-content/scripts/fetch_transcript.py "URL" --text-only
 
 # With timestamps
-python3 SKILL_DIR/scripts/fetch_transcript.py "URL" --timestamps
+uv run python skills/youtube-content/scripts/fetch_transcript.py "URL" --timestamps
 
 # Specific language with fallback chain
-python3 SKILL_DIR/scripts/fetch_transcript.py "URL" --language tr,en
+uv run python skills/youtube-content/scripts/fetch_transcript.py "URL" --language tr,en
 ```
 
 ## Output Formats
@@ -69,4 +69,4 @@ After fetching the transcript, format it based on what the user asks for:
 - **Transcript disabled**: tell the user; suggest they check if subtitles are available on the video page.
 - **Private/unavailable video**: relay the error and ask the user to verify the URL.
 - **No matching language**: retry without `--language` to fetch any available transcript, then note the actual language to the user.
-- **Dependency missing**: run `pip install youtube-transcript-api` and retry.
+- **Dependency missing**: run `uv sync` and retry with `uv run python ...`.

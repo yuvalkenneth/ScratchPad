@@ -3,16 +3,16 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
+from app.tools.executor import Executor
 from app.tools.skills_tool import (
-    SKILLS_LIST_SCHEMA,
     SKILL_VIEW_SCHEMA,
     get_skills_prompt_text,
     skill_view_json,
-    skills_list_json,
 )
 
 
 ToolHandler = Callable[[dict[str, Any]], str]
+EXECUTOR = Executor()
 
 
 def get_time(_: dict[str, Any]) -> str:
@@ -30,6 +30,22 @@ def list_files(arguments: dict[str, Any]) -> str:
 
     entries = sorted(item.name for item in target.iterdir())
     return json.dumps({"path": str(target), "entries": entries}, ensure_ascii=True)
+
+
+def run_shell(arguments: dict[str, Any]) -> str:
+    result = EXECUTOR.run_shell(
+        arguments["cmd"],
+        cwd=arguments.get("cwd"),
+    )
+    return json.dumps(result, ensure_ascii=True)
+
+
+def run_python(arguments: dict[str, Any]) -> str:
+    result = EXECUTOR.run_python(
+        arguments["code"],
+        cwd=arguments.get("cwd"),
+    )
+    return json.dumps(result, ensure_ascii=True)
 
 
 TOOLS: dict[str, dict[str, Any]] = {
@@ -69,12 +85,68 @@ TOOLS: dict[str, dict[str, Any]] = {
         },
         "handler": list_files,
     },
-    "skills_list": {
+    "run_shell": {
         "definition": {
             "type": "function",
-            "function": SKILLS_LIST_SCHEMA,
+            "function": {
+                "name": "run_shell",
+                "description": (
+                    "Run a shell command inside the local workspace. "
+                    "Commands may be denied or require approval based on policy."
+                ),
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "cmd": {
+                            "type": "string",
+                            "description": "Shell command to execute with bash -lc.",
+                        },
+                        "cwd": {
+                            "type": "string",
+                            "description": (
+                                "Optional working directory. Defaults to the workspace root "
+                                "and is restricted by workspace policy."
+                            ),
+                        },
+                    },
+                    "required": ["cmd"],
+                    "additionalProperties": False,
+                },
+            },
         },
-        "handler": skills_list_json,
+        "handler": run_shell,
+    },
+    "run_python": {
+        "definition": {
+            "type": "function",
+            "function": {
+                "name": "run_python",
+                "description": (
+                    "Run a Python snippet inside the local workspace with uv run python -c "
+                    "so the project's managed environment is used. "
+                    "Commands may be denied or require approval based on policy."
+                ),
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "type": "string",
+                            "description": "Python source code to execute with uv run python -c.",
+                        },
+                        "cwd": {
+                            "type": "string",
+                            "description": (
+                                "Optional working directory. Defaults to the workspace root "
+                                "and is restricted by workspace policy."
+                            ),
+                        },
+                    },
+                    "required": ["code"],
+                    "additionalProperties": False,
+                },
+            },
+        },
+        "handler": run_python,
     },
     "skill_view": {
         "definition": {
@@ -95,9 +167,12 @@ def get_tools_prompt_text() -> str:
         "Available tools:",
         "- get_time: Get the current UTC time.",
         "- list_files: List files in a local directory.",
-        "- skills_list: List available skills with names and descriptions.",
+        "- run_shell: Run a shell command in the workspace; may return denied or needs_approval.",
+        "- run_python: Run Python code in the workspace; may return denied or needs_approval.",
         "- skill_view: Load the full content of a skill or one of its linked files.",
-        "Use skills_list before skill_view when you need to inspect available skills or confirm naming.",
+        "Use run_shell and run_python for local execution when needed, and inspect the returned status field before assuming the command ran.",
+        "For Python commands, prefer `uv run python` over raw `python` or `python3` so the project venv is used.",
+        "Prefer workspace-relative paths for local scripts and files, and run them from the workspace root. Do not assume helper environment variables such as SKILL_DIR exist unless a tool explicitly provides them.",
         get_skills_prompt_text(),
     ]
     return "\n".join(lines)
