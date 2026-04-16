@@ -1,43 +1,27 @@
 ---
 name: youtube-content
 description: >
-  Fetch YouTube video transcripts and transform them into structured content
-  (chapters, summaries, threads, blog posts). Use when the user shares a YouTube
-  URL or video link, asks to summarize a video, requests a transcript, or wants
-  to extract and reformat content from any YouTube video.
+  Analyze and transform already-fetched YouTube transcript data into structured
+  content such as chapters, summaries, threads, blog posts, quotes, and
+  project-ready notes.
 ---
 
-# YouTube Content Tool
+# YouTube Transcript Analysis
 
-Extract transcripts from YouTube videos and convert them into useful formats.
+Use this skill after transcript data has already been fetched through a tool.
+This skill is for analysis and transformation, not retrieval.
 
-## Setup
+## Inputs
 
-```bash
-uv sync
-```
+Expected transcript inputs:
 
-## Helper Script
-
-Run the helper script with a workspace-relative path. Do not assume helper environment variables such as `SKILL_DIR` exist. The script accepts any standard YouTube URL format, short links (youtu.be), shorts, embeds, live links, or a raw 11-character video ID.
-
-```bash
-# JSON output with metadata
-uv run python skills/youtube-content/scripts/fetch_transcript.py "https://youtube.com/watch?v=VIDEO_ID"
-
-# Plain text (good for piping into further processing)
-uv run python skills/youtube-content/scripts/fetch_transcript.py "URL" --text-only
-
-# With timestamps
-uv run python skills/youtube-content/scripts/fetch_transcript.py "URL" --timestamps
-
-# Specific language with fallback chain
-uv run python skills/youtube-content/scripts/fetch_transcript.py "URL" --language tr,en
-```
+- `preview_text` or `full_text`
+- `preview_segments` or timestamped transcript text
+- metadata such as `video_id`, `duration`, `segment_count`, and language if available
 
 ## Output Formats
 
-After fetching the transcript, format it based on what the user asks for:
+After transcript data is available, format it based on what the user asks for:
 
 - **Chapters**: Group by topic shifts, output timestamped chapter list
 - **Summary**: Concise 5-10 sentence overview of the entire video
@@ -58,15 +42,15 @@ After fetching the transcript, format it based on what the user asks for:
 
 ## Workflow
 
-1. **Fetch** the transcript using the helper script with `--text-only --timestamps`.
-2. **Validate**: confirm the output is non-empty and in the expected language. If empty, retry without `--language` to get any available transcript. If still empty, tell the user the video likely has transcripts disabled.
-3. **Chunk if needed**: if the transcript exceeds ~50K characters, split into overlapping chunks (~40K with 2K overlap) and summarize each chunk before merging.
-4. **Transform** into the requested output format. If the user did not specify a format, default to a summary.
-5. **Verify**: re-read the transformed output to check for coherence, correct timestamps, and completeness before presenting.
+1. **Validate inputs**: confirm transcript data is non-empty and note whether you only have a preview or the full transcript.
+2. **Choose output**: if the user did not specify a format, default to a summary.
+3. **Chunk if needed**: if full transcript text exceeds ~50K characters, split into overlapping chunks (~40K with 2K overlap) and summarize each chunk before merging.
+4. **Transform** the transcript into the requested output format.
+5. **Project-normalize when useful**: infer depth, likely time-to-consume, save-worthy takeaways, and whether the video should become a scratchpad entry.
+6. **Verify**: re-read the transformed output to check for coherence, correct timestamps, and completeness before presenting.
 
 ## Error Handling
 
-- **Transcript disabled**: tell the user; suggest they check if subtitles are available on the video page.
-- **Private/unavailable video**: relay the error and ask the user to verify the URL.
-- **No matching language**: retry without `--language` to fetch any available transcript, then note the actual language to the user.
-- **Dependency missing**: run `uv sync` and retry with `uv run python ...`.
+- **Preview only**: note when the output is based on a partial transcript and avoid overclaiming completeness.
+- **No timestamps**: provide untimestamped summaries or thematic sections instead of fabricated chapter times.
+- **Incomplete transcript**: say so explicitly and limit claims to the available content.

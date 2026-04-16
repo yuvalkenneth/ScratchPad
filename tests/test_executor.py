@@ -1,8 +1,11 @@
+import json
 import unittest
 from types import SimpleNamespace
 
 from app.llm.client import LLMClient
 from app.tools.executor import Executor, WORKSPACE, should_ask_permission
+from app.tools.registry import get_tool_definitions, get_tools_prompt_text
+from app.tools.youtube_analyze_tool import _chunk_text, youtube_analyze
 
 
 class PermissionPolicyTests(unittest.TestCase):
@@ -101,6 +104,126 @@ class LLMClientToolLoopTests(unittest.IsolatedAsyncioTestCase):
         result = await client.get_response([{"role": "user", "content": "summarize this video"}])
 
         self.assertIn("appears stuck", result)
+
+
+class YouTubeAnalyzeToolTests(unittest.TestCase):
+    def test_chunk_text_splits_long_input(self) -> None:
+        text = ("a" * 7000) + "\n" + ("b" * 7000)
+        chunks = _chunk_text(text, chunk_chars=8000)
+
+        self.assertGreater(len(chunks), 1)
+        self.assertTrue(all(chunk for chunk in chunks))
+
+    def test_analyze_returns_structured_result(self) -> None:
+        import app.tools.youtube_analyze_tool as analyze_tool
+
+        original_fetch = analyze_tool.fetch_transcript_segments
+        original_complete = analyze_tool._complete_text
+        analyze_tool.fetch_transcript_segments = lambda *_args, **_kwargs: [
+            {"text": "Intro to linear models", "start": 0.0, "duration": 2.0},
+            {"text": "Then the lecture moves to neural nets", "start": 2.0, "duration": 2.0},
+        ]
+        analyze_tool._complete_text = lambda *_args, **_kwargs: "Merged analysis output"
+        try:
+            result = json.loads(
+                youtube_analyze(
+                    {
+                        "url": "https://youtube.com/watch?v=abcdefghijk",
+                        "task": "detailed_summary",
+                    }
+                )
+            )
+        finally:
+            analyze_tool.fetch_transcript_segments = original_fetch
+            analyze_tool._complete_text = original_complete
+
+        self.assertEqual(result["status"], "completed")
+        self.assertEqual(result["video_id"], "abcdefghijk")
+        self.assertEqual(result["task"], "detailed_summary")
+        self.assertEqual(result["analysis"], "Merged analysis output")
+        self.assertEqual(result["summary_strategy"], "single_pass")
+
+    def test_content_profile_returns_db_ready_fields(self) -> None:
+        import app.tools.youtube_analyze_tool as analyze_tool
+
+        original_fetch = analyze_tool.fetch_transcript_segments
+        original_complete = analyze_tool._complete_text
+        analyze_tool.fetch_transcript_segments = lambda *_args, **_kwargs: [
+            {"text": "Intro to linear models", "start": 0.0, "duration": 2.0},
+            {"text": "Then the lecture moves to neural nets", "start": 118.0, "duration": 2.0},
+        ]
+        analyze_tool._complete_text = lambda *_args, **_kwargs: json.dumps(
+            {
+                "summary": "A technical lecture introducing model families.",
+                "subject": "machine learning",
+                "depth_level": "deep",
+                "categories": ["ml", "lecture", "neural-networks"],
+                "estimated_time_minutes": 99,
+                "confidence": 0.83,
+            }
+        )
+        try:
+            result = json.loads(
+                youtube_analyze(
+                    {
+                        "url": "https://youtube.com/watch?v=abcdefghijk",
+                        "task": "content_profile",
+                    }
+                )
+            )
+        finally:
+            analyze_tool.fetch_transcript_segments = original_fetch
+            analyze_tool._complete_text = original_complete
+
+        self.assertEqual(result["status"], "completed")
+        self.assertEqual(result["task"], "content_profile")
+        self.assertIn("profile", result)
+        self.assertEqual(result["profile"]["subject"], "machine learning")
+        self.assertEqual(result["profile"]["depth_level"], "deep")
+        self.assertEqual(result["profile"]["estimated_time_minutes"], 2)
+        self.assertEqual(result["profile"]["categories"], ["ml", "lecture", "neural-networks"])
+
+    def test_content_profile_falls_back_when_json_is_invalid(self) -> None:
+        import app.tools.youtube_analyze_tool as analyze_tool
+
+        original_fetch = analyze_tool.fetch_transcript_segments
+        original_complete = analyze_tool._complete_text
+        analyze_tool.fetch_transcript_segments = lambda *_args, **_kwargs: [
+            {"text": "Short transcript", "start": 0.0, "duration": 30.0},
+        ]
+        analyze_tool._complete_text = lambda *_args, **_kwargs: "not valid json"
+        try:
+            result = json.loads(
+                youtube_analyze(
+                    {
+                        "url": "https://youtube.com/watch?v=abcdefghijk",
+                        "task": "content_profile",
+                    }
+                )
+            )
+        finally:
+            analyze_tool.fetch_transcript_segments = original_fetch
+            analyze_tool._complete_text = original_complete
+
+        self.assertEqual(result["status"], "completed")
+        self.assertEqual(result["profile"]["depth_level"], "medium")
+        self.assertEqual(result["profile"]["estimated_time_minutes"], 1)
+        self.assertEqual(result["profile"]["confidence"], 0.0)
+        self.assertIn("raw_analysis", result)
+
+    def test_tools_prompt_mentions_youtube_analyze_routing(self) -> None:
+        prompt_text = get_tools_prompt_text()
+
+        self.assertIn("youtube_analyze", prompt_text)
+        self.assertIn("content_profile", prompt_text)
+        self.assertNotIn("youtube_transcript_fetch", prompt_text)
+
+    def test_tool_definitions_hide_internal_transcript_fetch(self) -> None:
+        definitions = get_tool_definitions()
+        tool_names = [item["function"]["name"] for item in definitions]
+
+        self.assertIn("youtube_analyze", tool_names)
+        self.assertNotIn("youtube_transcript_fetch", tool_names)
 
 
 if __name__ == "__main__":
