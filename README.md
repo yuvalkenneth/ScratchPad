@@ -79,6 +79,44 @@ Current focus:
 
 ---
 
+## Planned content schema
+
+The first persistence pass is planned around a single `content_items` table.
+
+Proposed v1 fields:
+
+* `id`
+* `source_type`
+* `source_id`
+* `url`
+* `title`
+* `summary`
+* `subject`
+* `depth_level`
+* `estimated_time_minutes`
+* `created_at`
+* `updated_at`
+
+Notes:
+
+* `source_id` is intended to hold a stable external identifier such as a YouTube video ID
+* `source_type + source_id` should be unique for deduplication
+* `url` should also be unique when present
+* `subject` is intentionally singular for v1 to keep the schema simple, though multi-topic support may replace it later
+
+For YouTube ingestion, the product goal is not just transcript retrieval. The target output is a DB-ready content profile with fields such as:
+
+* `source_type = "youtube"`
+* `source_id = <video_id>`
+* `url`
+* `title`
+* `summary`
+* `subject`
+* `depth_level`
+* `estimated_time_minutes`
+
+---
+
 ## Running locally
 
 1. Set environment variables in `.env` or your shell:

@@ -4,6 +4,10 @@ from pathlib import Path
 from typing import Any, Callable
 
 from app.tools.executor import Executor
+from app.tools.youtube_analyze_tool import (
+    YOUTUBE_ANALYZE_SCHEMA,
+    youtube_analyze,
+)
 from app.tools.skills_tool import (
     SKILL_VIEW_SCHEMA,
     get_skills_prompt_text,
@@ -148,6 +152,13 @@ TOOLS: dict[str, dict[str, Any]] = {
         },
         "handler": run_python,
     },
+    "youtube_analyze": {
+        "definition": {
+            "type": "function",
+            "function": YOUTUBE_ANALYZE_SCHEMA,
+        },
+        "handler": youtube_analyze,
+    },
     "skill_view": {
         "definition": {
             "type": "function",
@@ -169,7 +180,12 @@ def get_tools_prompt_text() -> str:
         "- list_files: List files in a local directory.",
         "- run_shell: Run a shell command in the workspace; may return denied or needs_approval.",
         "- run_python: Run Python code in the workspace; may return denied or needs_approval.",
+        "- youtube_analyze: Analyze a YouTube video internally using transcript fetch, chunking, and dedicated LLM passes. It uses the same active provider/server/model as the main chat. Optional arguments: task, question, language, include_timestamps.",
         "- skill_view: Load the full content of a skill or one of its linked files.",
+        "For YouTube URLs, do not load a skill first unless you already have transcript data and need a specific transcript-transformation workflow.",
+        "Use youtube_analyze with task='content_profile' for product-facing classification such as summary, subject, depth_level, categories, and estimated_time_minutes.",
+        "Use youtube_analyze for YouTube summaries, explanations, chapters, study notes, key points, quotes, and other whole-video analysis tasks.",
+        "youtube_analyze handles transcript retrieval internally so the raw transcript stays out of the main chat context.",
         "Use run_shell and run_python for local execution when needed, and inspect the returned status field before assuming the command ran.",
         "For Python commands, prefer `uv run python` over raw `python` or `python3` so the project venv is used.",
         "Prefer workspace-relative paths for local scripts and files, and run them from the workspace root. Do not assume helper environment variables such as SKILL_DIR exist unless a tool explicitly provides them.",
