@@ -5,6 +5,7 @@ from types import SimpleNamespace
 from app.llm.client import LLMClient
 from app.tools.executor import Executor, WORKSPACE, should_ask_permission
 from app.tools.registry import get_tool_definitions, get_tools_prompt_text
+import app.tools.youtube_analyze_tool as analyze_tool
 from app.tools.youtube_analyze_tool import _chunk_text, youtube_analyze
 
 
@@ -115,8 +116,6 @@ class YouTubeAnalyzeToolTests(unittest.TestCase):
         self.assertTrue(all(chunk for chunk in chunks))
 
     def test_analyze_returns_structured_result(self) -> None:
-        import app.tools.youtube_analyze_tool as analyze_tool
-
         original_fetch = analyze_tool.fetch_transcript_segments
         original_complete = analyze_tool._complete_text
         analyze_tool.fetch_transcript_segments = lambda *_args, **_kwargs: [
@@ -144,8 +143,6 @@ class YouTubeAnalyzeToolTests(unittest.TestCase):
         self.assertEqual(result["summary_strategy"], "single_pass")
 
     def test_content_profile_returns_db_ready_fields(self) -> None:
-        import app.tools.youtube_analyze_tool as analyze_tool
-
         original_fetch = analyze_tool.fetch_transcript_segments
         original_complete = analyze_tool._complete_text
         analyze_tool.fetch_transcript_segments = lambda *_args, **_kwargs: [
@@ -184,8 +181,6 @@ class YouTubeAnalyzeToolTests(unittest.TestCase):
         self.assertEqual(result["profile"]["categories"], ["ml", "lecture", "neural-networks"])
 
     def test_content_profile_falls_back_when_json_is_invalid(self) -> None:
-        import app.tools.youtube_analyze_tool as analyze_tool
-
         original_fetch = analyze_tool.fetch_transcript_segments
         original_complete = analyze_tool._complete_text
         analyze_tool.fetch_transcript_segments = lambda *_args, **_kwargs: [
