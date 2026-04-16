@@ -3,6 +3,11 @@ from __future__ import annotations
 import re
 from typing import Any, Optional
 
+try:
+    from youtube_transcript_api import YouTubeTranscriptApi
+except ImportError:
+    YouTubeTranscriptApi = None
+
 
 def extract_video_id(url_or_id: str) -> str:
     value = url_or_id.strip()
@@ -27,7 +32,6 @@ def format_timestamp(seconds: float) -> str:
 
 
 def fetch_transcript_segments(video_id: str, languages: Optional[list[str]] = None) -> list[dict[str, Any]]:
-    from youtube_transcript_api import YouTubeTranscriptApi
 
     api = YouTubeTranscriptApi()
     if languages:

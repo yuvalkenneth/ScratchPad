@@ -22,6 +22,11 @@ import json
 import re
 import sys
 
+try:
+    from youtube_transcript_api import YouTubeTranscriptApi
+except ImportError:
+    YouTubeTranscriptApi = None
+
 
 def extract_video_id(url_or_id: str) -> str:
     """Extract the 11-character video ID from various YouTube URL formats."""
@@ -53,12 +58,6 @@ def fetch_transcript(video_id: str, languages: list = None):
     Returns a list of dicts with 'text', 'start', and 'duration' keys.
     Compatible with youtube-transcript-api v1.x.
     """
-    try:
-        from youtube_transcript_api import YouTubeTranscriptApi
-    except ImportError:
-        print("Error: youtube-transcript-api not installed. Run: uv sync",
-              file=sys.stderr)
-        sys.exit(1)
 
     api = YouTubeTranscriptApi()
     if languages:
