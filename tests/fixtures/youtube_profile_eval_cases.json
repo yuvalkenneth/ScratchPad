@@ -1,0 +1,106 @@
+[
+  {
+    "name": "practical_git_tutorial",
+    "url": "https://youtube.com/watch?v=gitdemo1234",
+    "segments": [
+      {
+        "text": "In this lesson I will show a simple git workflow for a solo developer. We will cover clone, branch, commit, and push with one small example repository.",
+        "start": 0.0,
+        "duration": 75.0
+      },
+      {
+        "text": "Now I create a feature branch, make a small change, inspect git status, and explain when to commit versus when to amend a local change before pushing.",
+        "start": 75.0,
+        "duration": 80.0
+      },
+      {
+        "text": "Finally I open a pull request, explain why frequent small commits are easier to review, and recap the everyday commands a beginner should remember.",
+        "start": 155.0,
+        "duration": 80.0
+      }
+    ],
+    "expected": {
+      "subject_options": ["git", "version control", "software development"],
+      "depth_level": "light",
+      "estimated_time_minutes": 4
+    }
+  },
+  {
+    "name": "dense_ml_lecture",
+    "url": "https://youtube.com/watch?v=mllectur999",
+    "segments": [
+      {
+        "text": "Today we derive gradient descent for linear models, then connect that optimization view to representation learning and generalization in deep neural networks.",
+        "start": 0.0,
+        "duration": 240.0
+      },
+      {
+        "text": "The lecture assumes comfort with calculus, matrix multiplication, vector spaces, bias variance tradeoffs, and supervised learning objectives.",
+        "start": 240.0,
+        "duration": 260.0
+      },
+      {
+        "text": "We compare logistic regression with multilayer networks, discuss loss landscapes, regularization, and why optimization difficulty changes with model capacity.",
+        "start": 500.0,
+        "duration": 260.0
+      },
+      {
+        "text": "The closing section reviews practical training failure modes such as vanishing gradients, unstable learning rates, and overfitting under small data conditions.",
+        "start": 760.0,
+        "duration": 250.0
+      }
+    ],
+    "expected": {
+      "subject_options": ["machine learning", "deep learning", "neural networks"],
+      "depth_level": "deep",
+      "estimated_time_minutes": 17
+    }
+  },
+  {
+    "name": "conceptual_note_taking_talk",
+    "url": "https://youtube.com/watch?v=knowledg888",
+    "segments": [
+      {
+        "text": "This talk explains how to keep reading notes useful over time by writing small summaries, linking related ideas, and revisiting notes before they decay.",
+        "start": 0.0,
+        "duration": 120.0
+      },
+      {
+        "text": "The speaker compares passive bookmarking with active note making, then gives examples of lightweight capture, weekly review, and tagging around themes.",
+        "start": 120.0,
+        "duration": 130.0
+      },
+      {
+        "text": "The final section argues that a note system should support retrieval, reflection, and future project work rather than storing raw highlights with no context.",
+        "start": 250.0,
+        "duration": 130.0
+      }
+    ],
+    "expected": {
+      "subject_options": ["note-taking", "knowledge management", "personal knowledge management"],
+      "depth_level": "medium",
+      "estimated_time_minutes": 6
+    }
+  },
+  {
+    "name": "short_sqlite_overview",
+    "url": "https://youtube.com/watch?v=sqliteov77a",
+    "segments": [
+      {
+        "text": "SQLite is a small embedded database. In this quick overview I explain when it fits a local app, what a table is, and why a single file database is convenient.",
+        "start": 0.0,
+        "duration": 70.0
+      },
+      {
+        "text": "We briefly touch schemas, indexes, and a simple content items table, but this is an introductory overview rather than a deep performance tuning guide.",
+        "start": 70.0,
+        "duration": 80.0
+      }
+    ],
+    "expected": {
+      "subject_options": ["sqlite", "databases", "software development"],
+      "depth_level": "light",
+      "estimated_time_minutes": 3
+    }
+  }
+]
