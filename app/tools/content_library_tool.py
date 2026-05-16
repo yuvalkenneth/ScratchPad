@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 import json
+import re
+from pathlib import Path
 from typing import Any
 
 from app.library.markdown_store import content_list, content_save
+from app.tools.url_analyze_tool import url_analyze
+from app.tools.youtube_analyze_tool import youtube_analyze
 
 
 CONTENT_SAVE_SCHEMA = {
@@ -45,6 +49,33 @@ CONTENT_SAVE_SCHEMA = {
     },
 }
 
+CONTENT_ADD_SCHEMA = {
+    "name": "content_add",
+    "description": (
+        "Analyze a URL into a normalized content_profile and save it to the "
+        "local Markdown library in one step."
+    ),
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "A YouTube URL or non-YouTube URL to analyze and save.",
+            },
+            "status": {
+                "type": "string",
+                "description": "Initial reading state. Defaults to unread.",
+            },
+            "notes": {
+                "type": "string",
+                "description": "Optional notes to include in the Markdown body.",
+            },
+        },
+        "required": ["url"],
+        "additionalProperties": False,
+    },
+}
+
 CONTENT_LIST_SCHEMA = {
     "name": "content_list",
     "description": (
@@ -65,6 +96,53 @@ CONTENT_LIST_SCHEMA = {
         "additionalProperties": False,
     },
 }
+
+
+def content_add(arguments: dict[str, Any], *, library_root: Path | None = None) -> dict[str, Any]:
+    url = str(arguments.get("url") or "").strip()
+    if not url:
+        return {"status": "error", "error": "Missing required argument: url"}
+
+    analyzer_arguments = {"url": url, "task": "content_profile"}
+    raw_result = youtube_analyze(analyzer_arguments) if is_youtube_url(url) else url_analyze(analyzer_arguments)
+    profile = json.loads(raw_result)
+    if profile.get("status") != "completed":
+        return profile
+
+    save_input = dict(profile)
+    save_input.pop("status", None)
+    save_input["status"] = str(arguments.get("status") or "unread").strip()
+    if arguments.get("notes"):
+        save_input["notes"] = str(arguments["notes"])
+
+    if library_root is None:
+        saved = content_save(save_input)
+    else:
+        saved = content_save(save_input, library_root=library_root)
+
+    return {
+        "status": "saved",
+        "id": saved["id"],
+        "path": saved["path"],
+        "created": saved["created"],
+        "item": saved["item"],
+    }
+
+
+def is_youtube_url(url: str) -> bool:
+    return bool(
+        re.search(
+            r"(^[a-zA-Z0-9_-]{11}$|youtu\.be/|youtube\.com/(watch|shorts|embed|live))",
+            url,
+        )
+    )
+
+
+def content_add_json(arguments: dict[str, Any]) -> str:
+    try:
+        return json.dumps(content_add(arguments), ensure_ascii=True)
+    except Exception as exc:
+        return json.dumps({"status": "error", "error": str(exc)}, ensure_ascii=True)
 
 
 def content_save_json(arguments: dict[str, Any]) -> str:

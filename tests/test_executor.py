@@ -6,6 +6,8 @@ from types import SimpleNamespace
 
 from app.library.markdown_store import content_list, content_save
 from app.llm.client import LLMClient
+import app.tools.content_library_tool as content_library_tool
+from app.tools.content_library_tool import content_add
 from app.tools.executor import Executor, WORKSPACE, should_ask_permission
 from app.tools.registry import get_tool_definitions, get_tools_prompt_text
 import app.tools.youtube_analyze_tool as analyze_tool
@@ -183,6 +185,90 @@ class MarkdownLibraryTests(unittest.TestCase):
             self.assertEqual(result["status"], "completed")
             self.assertEqual(result["count"], 1)
             self.assertEqual(result["items"][0]["title"], "SQLite Guide")
+
+    def test_content_add_saves_url_analyzer_output_as_markdown(self) -> None:
+        original_url_analyze = content_library_tool.url_analyze
+        content_library_tool.url_analyze = lambda *_args, **_kwargs: json.dumps(
+            {
+                "status": "completed",
+                "source_type": "web",
+                "source_id": None,
+                "url": "https://example.com/sqlite-guide",
+                "title": "SQLite for Local Apps",
+                "summary": "A quick introduction to SQLite for local application development.",
+                "subject": "sqlite",
+                "depth_level": "light",
+                "categories": ["databases"],
+                "estimated_time_minutes": 4,
+                "confidence": 0.76,
+                "metadata": {"word_count": 800},
+            }
+        )
+        try:
+            with tempfile.TemporaryDirectory() as directory:
+                result = content_add(
+                    {
+                        "url": "https://example.com/sqlite-guide",
+                        "notes": "Check whether this is worth adding to the local-first set.",
+                    },
+                    library_root=Path(directory),
+                )
+
+                saved_path = Path(result["path"])
+                text = saved_path.read_text()
+        finally:
+            content_library_tool.url_analyze = original_url_analyze
+
+        self.assertEqual(result["status"], "saved")
+        self.assertTrue(saved_path.name.startswith("web-sqlite-"))
+        self.assertIn('source_type: "web"', text)
+        self.assertIn('url: "https://example.com/sqlite-guide"', text)
+        self.assertIn('subject: "sqlite"', text)
+        self.assertIn('depth_level: "light"', text)
+        self.assertIn('categories: ["databases"]', text)
+        self.assertIn("# SQLite for Local Apps", text)
+        self.assertIn("A quick introduction to SQLite", text)
+        self.assertIn("## Notes", text)
+
+    def test_content_add_saves_youtube_analyzer_output_as_markdown(self) -> None:
+        original_youtube_analyze = content_library_tool.youtube_analyze
+        content_library_tool.youtube_analyze = lambda *_args, **_kwargs: json.dumps(
+            {
+                "status": "completed",
+                "source_type": "youtube",
+                "source_id": "abcdefghijk",
+                "url": "https://www.youtube.com/watch?v=abcdefghijk",
+                "title": "abcdefghijk",
+                "summary": "A technical lecture introducing model families.",
+                "subject": "machine learning",
+                "depth_level": "deep",
+                "categories": ["ml", "lecture"],
+                "estimated_time_minutes": 12,
+                "confidence": 0.83,
+                "metadata": {},
+            }
+        )
+        try:
+            with tempfile.TemporaryDirectory() as directory:
+                result = content_add(
+                    {
+                        "url": "https://www.youtube.com/watch?v=abcdefghijk",
+                        "status": "started",
+                    },
+                    library_root=Path(directory),
+                )
+
+                saved_path = Path(result["path"])
+                text = saved_path.read_text()
+        finally:
+            content_library_tool.youtube_analyze = original_youtube_analyze
+
+        self.assertEqual(result["status"], "saved")
+        self.assertTrue(saved_path.name.startswith("youtube-machine-learning-"))
+        self.assertIn('source_type: "youtube"', text)
+        self.assertIn('source_id: "abcdefghijk"', text)
+        self.assertIn('status: "started"', text)
+        self.assertIn('subject: "machine learning"', text)
 
 
 class FakeCompletions:
@@ -576,6 +662,7 @@ class URLAnalyzeToolTests(unittest.TestCase):
         definitions = get_tool_definitions()
         tool_names = [item["function"]["name"] for item in definitions]
 
+        self.assertIn("content_add", tool_names)
         self.assertIn("content_save", tool_names)
         self.assertIn("content_list", tool_names)
 
