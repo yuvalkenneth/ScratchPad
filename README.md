@@ -1,12 +1,12 @@
 # Scratchpad
 
-A local-first reading assistant for deciding what to read, when, and how.
+A local-first learning inbox and testbed for small/local LLM agents.
 
 ---
 
 ## What it does
 
-Scratchpad helps you manage what to learn when you have limited time.
+Scratchpad helps you manage what to learn when you have limited time, while providing a realistic environment for testing whether local and small LLMs can handle useful personal-knowledge workflows.
 
 You can save anything:
 
@@ -35,24 +35,43 @@ It is a system that:
 * estimates how much attention something requires
 * helps you choose what to consume next
 * resurfaces things at the right time
+* creates repeatable tasks for evaluating local LLM behavior
 
-The goal is to make reading and learning more intentional.
+The product goal is to make reading and learning more intentional. The engineering goal is to use that bounded product loop to test agentic LLM systems under realistic constraints.
 
 ---
 
-## Secondary goal (learning & experimentation)
+## Local LLM testbed
 
-Scratchpad also serves as a compact environment for experimenting with LLM-based systems.
+Scratchpad is also a compact environment for experimenting with LLM-based systems.
 
 It is used to explore:
 
 * tool-driven agent loops
 * structured vs unstructured memory
 * retrieval and reasoning over personal data
-* small local model capabilities (e.g. Qwen 9b)
+* small local model capabilities
 * local vs cloud tradeoffs
+* model switching, latency, output quality, and failure modes
+* whether small models can reliably classify, save, retrieve, and recommend useful learning material
 
-The reading-focused product provides a realistic and bounded setting for these experiments.
+The learning-inbox product provides a realistic and bounded setting for these experiments. Instead of testing models on isolated prompts, Scratchpad tests whether they can complete a real workflow: ingest a source, produce a useful profile, store it, and later retrieve or recommend it in context.
+
+---
+
+## Evaluation goal
+
+Over time, Scratchpad should include a small eval set built from valuable, recent links that are less likely to be memorized by model training data.
+
+The intended eval loop:
+
+* collect fresh URLs across articles, repos, Reddit threads, videos, and papers
+* freeze fetched source text/transcripts/metadata into fixtures
+* run different local models against the same content-profile tasks
+* judge outputs for usefulness, faithfulness, topic accuracy, depth, and time estimates
+* optionally use a larger/better local model as an LLM judge for qualitative scoring
+
+The unit tests should stay deterministic. Model-quality evals should live in explicit scripts so they can be run manually when comparing prompts or models.
 
 ---
 
@@ -66,26 +85,26 @@ Current focus:
 * tool-driven local chat loop with guarded tool execution
 * model switching and local server observability
 * basic classification (depth + estimated time)
-* simple save + retrieve flow
+* normalized content profiles before the first save + retrieve flow
 
 ---
 
 ## Tech stack (initial)
 
 * Python
-* SQLite (planned)
+* Markdown files as the likely first persistence layer
+* SQLite later if querying and ranking outgrow file-based storage
 * HTTP-based LLM calls (OpenAI-compatible)
 * Local models via llama.cpp
 
 ---
 
-## Planned content schema
+## Content profile contract
 
-The first persistence pass is planned around a single `content_items` table.
+Analyzer tools return a normalized `content_profile` shape so different sources can be stored and ranked through one contract.
 
-Proposed v1 fields:
+Current v1 fields:
 
-* `id`
 * `source_type`
 * `source_id`
 * `url`
@@ -93,18 +112,20 @@ Proposed v1 fields:
 * `summary`
 * `subject`
 * `depth_level`
+* `categories`
 * `estimated_time_minutes`
-* `created_at`
-* `updated_at`
+* `confidence`
+* `metadata`
 
 Notes:
 
 * `source_id` is intended to hold a stable external identifier such as a YouTube video ID
-* `source_type + source_id` should be unique for deduplication
-* `url` should also be unique when present
+* `source_type + source_id` should be unique for deduplication once persistence exists
+* `url` should also be unique when present once persistence exists
 * `subject` is intentionally singular for v1 to keep the schema simple, though multi-topic support may replace it later
+* `estimated_time_minutes` means consumption time in v1, not broader learning time
 
-For YouTube ingestion, the product goal is not just transcript retrieval. The target output is a DB-ready content profile with fields such as:
+For YouTube ingestion, the product goal is not just transcript retrieval. The target output is a save-ready content profile with fields such as:
 
 * `source_type = "youtube"`
 * `source_id = <video_id>`
@@ -114,6 +135,18 @@ For YouTube ingestion, the product goal is not just transcript retrieval. The ta
 * `subject`
 * `depth_level`
 * `estimated_time_minutes`
+
+The likely first storage format is one Markdown file per content item with YAML frontmatter for the normalized fields and a Markdown body for notes, excerpts, and richer analysis.
+
+The Markdown library is intentionally not separated by source. Files live under:
+
+```text
+library/
+  items/
+    <source-type>-<topic-slug>-<stable-hash>.md
+```
+
+Retrieval should be by metadata and text, such as subject, category, depth, available time, status, and free-text query. `source_type` stays in frontmatter for deduplication and source-specific rendering.
 
 ---
 
@@ -158,17 +191,16 @@ Example model switch:
 
 ```text
 app/
-  llm/        # model client + classifier
-  agent/      # loop + parsing (later)
-  tools/      # tool implementations (later)
-  db/         # persistence (later)
-  memory/     # user memory (later)
+  fetchers/   # source-specific fetching and extraction
+  library/    # Markdown-backed content storage
+  llm/        # model client, runtime, and prompting
+  tools/      # tool implementations and registry
 
 skills/       # markdown skill definitions
-memory/       # memory.md
+library/      # local Markdown content items, created as needed
 
 scripts/      # dev scripts
-tests/        # basic tests
+tests/        # unit tests and fixtures
 ```
 
 ---
@@ -194,6 +226,7 @@ The local chat runtime currently supports:
 * loop protection for repeated or excessive tool rounds
 * local `llama.cpp` server startup and shutdown
 * log-based server timing inspection for prompt/output token counts and speed
+* Markdown-backed content saving and listing through `content_save` and `content_list`
 
 ---
 

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import json
 import os
-import re
 from typing import Any, Optional
 
 from app.llm.config import LLMConfig
 from openai import OpenAI
+from app.tools.content_profile import build_content_profile_payload
 from app.tools.youtube_tool import extract_video_id, fetch_transcript_segments, format_timestamp
 
 
@@ -162,65 +162,6 @@ def _analysis_prompt(task: str, question: Optional[str], include_timestamps: boo
     else:
         lines.append("Be concrete. Avoid generic filler.")
     return "\n".join(lines)
-
-
-def _extract_json_object(text: str) -> dict[str, Any]:
-    text = text.strip()
-    if text.startswith("```"):
-        text = re.sub(r"^```(?:json)?\s*", "", text)
-        text = re.sub(r"\s*```$", "", text)
-
-    try:
-        parsed = json.loads(text)
-        if isinstance(parsed, dict):
-            return parsed
-    except json.JSONDecodeError:
-        pass
-
-    match = re.search(r"\{.*\}", text, re.DOTALL)
-    if not match:
-        raise ValueError("No JSON object found in model output.")
-    parsed = json.loads(match.group(0))
-    if not isinstance(parsed, dict):
-        raise ValueError("Model output JSON was not an object.")
-    return parsed
-
-
-def _coerce_content_profile(
-    profile: dict[str, Any],
-    *,
-    estimated_time_minutes: int,
-) -> dict[str, Any]:
-    summary = str(profile.get("summary") or "").strip()
-    subject = str(profile.get("subject") or "").strip()
-    depth_level = str(profile.get("depth_level") or "").strip().lower()
-    if depth_level not in {"light", "medium", "deep"}:
-        depth_level = "medium"
-
-    raw_categories = profile.get("categories") or []
-    if isinstance(raw_categories, str):
-        categories = [item.strip() for item in raw_categories.split(",") if item.strip()]
-    elif isinstance(raw_categories, list):
-        categories = [str(item).strip() for item in raw_categories if str(item).strip()]
-    else:
-        categories = []
-    categories = categories[:4]
-
-    confidence = profile.get("confidence")
-    try:
-        confidence_value = float(confidence)
-    except (TypeError, ValueError):
-        confidence_value = 0.5
-    confidence_value = max(0.0, min(1.0, confidence_value))
-
-    return {
-        "summary": summary,
-        "subject": subject,
-        "depth_level": depth_level,
-        "categories": categories,
-        "estimated_time_minutes": estimated_time_minutes,
-        "confidence": confidence_value,
-    }
 
 
 def _complete_text(
@@ -380,21 +321,22 @@ def youtube_analyze(arguments: dict[str, Any]) -> str:
     }
 
     if task == "content_profile":
-        try:
-            payload["profile"] = _coerce_content_profile(
-                _extract_json_object(analysis_result["analysis"]),
-                estimated_time_minutes=duration_minutes,
-            )
-        except (ValueError, json.JSONDecodeError):
-            payload["profile"] = {
-                "summary": "",
-                "subject": "",
-                "depth_level": "medium",
-                "categories": [],
-                "estimated_time_minutes": duration_minutes,
-                "confidence": 0.0,
-            }
-            payload["raw_analysis"] = analysis_result["analysis"]
+        payload = build_content_profile_payload(
+            source_type="youtube",
+            source_id=video_id,
+            url=f"https://www.youtube.com/watch?v={video_id}",
+            title=video_id,
+            estimated_time_minutes=duration_minutes,
+            raw_analysis=analysis_result["analysis"],
+            trust_model_time=False,
+            extra_fields={
+                "requested_language": languages,
+                "segment_count": len(segments),
+                "duration": payload["duration"],
+                "chunk_count": analysis_result["chunk_count"],
+                "summary_strategy": analysis_result["summary_strategy"],
+            },
+        )
     else:
         payload["analysis"] = analysis_result["analysis"]
 

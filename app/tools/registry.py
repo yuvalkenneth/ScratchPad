@@ -17,6 +17,12 @@ from app.tools.skills_tool import (
     get_skills_prompt_text,
     skill_view_json,
 )
+from app.tools.content_library_tool import (
+    CONTENT_LIST_SCHEMA,
+    CONTENT_SAVE_SCHEMA,
+    content_list_json,
+    content_save_json,
+)
 
 
 ToolHandler = Callable[[dict[str, Any]], str]
@@ -170,6 +176,20 @@ TOOLS: dict[str, dict[str, Any]] = {
         },
         "handler": url_analyze,
     },
+    "content_save": {
+        "definition": {
+            "type": "function",
+            "function": CONTENT_SAVE_SCHEMA,
+        },
+        "handler": content_save_json,
+    },
+    "content_list": {
+        "definition": {
+            "type": "function",
+            "function": CONTENT_LIST_SCHEMA,
+        },
+        "handler": content_list_json,
+    },
     "skill_view": {
         "definition": {
             "type": "function",
@@ -193,12 +213,16 @@ def get_tools_prompt_text() -> str:
         "- run_python: Run Python code in the workspace; may return denied or needs_approval.",
         "- youtube_analyze: Analyze a YouTube video internally using transcript fetch, chunking, and dedicated LLM passes. It uses the same active provider/server/model as the main chat. Optional arguments: task, question, language, include_timestamps.",
         "- url_analyze: Fetch a web page internally, extract readable text, and classify it into a compact content profile.",
+        "- content_save: Save a normalized content_profile into the local Markdown library.",
+        "- content_list: List saved Markdown library items by subject, category, depth, status, time, or free-text query.",
         "- skill_view: Load the full content of a skill or one of its linked files.",
         "For YouTube URLs, do not load a skill first unless you already have transcript data and need a specific transcript-transformation workflow.",
         "Use youtube_analyze with task='content_profile' for product-facing classification such as summary, subject, depth_level, categories, and estimated_time_minutes.",
         "Use youtube_analyze for YouTube summaries, explanations, chapters, study notes, key points, quotes, and other whole-video analysis tasks.",
         "youtube_analyze handles transcript retrieval internally so the raw transcript stays out of the main chat context.",
         "Use url_analyze with task='content_profile' for non-YouTube URLs when the user wants a compact summary plus subject, depth_level, and estimated_time_minutes.",
+        "After a user asks to save a profile, pass the top-level content_profile fields to content_save.",
+        "When the user asks what to read or wants saved material, use content_list before answering.",
         "Use run_shell and run_python for local execution when needed, and inspect the returned status field before assuming the command ran.",
         "For Python commands, prefer `uv run python` over raw `python` or `python3` so the project venv is used.",
         "Prefer workspace-relative paths for local scripts and files, and run them from the workspace root. Do not assume helper environment variables such as SKILL_DIR exist unless a tool explicitly provides them.",

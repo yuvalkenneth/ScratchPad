@@ -1,18 +1,34 @@
 import json
+import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
 
+from app.library.markdown_store import content_list, content_save
 from app.llm.client import LLMClient
 from app.tools.executor import Executor, WORKSPACE, should_ask_permission
 from app.tools.registry import get_tool_definitions, get_tools_prompt_text
 import app.tools.youtube_analyze_tool as analyze_tool
 from app.tools.youtube_analyze_tool import _chunk_text, youtube_analyze
 import app.tools.url_analyze_tool as url_tool
-from app.tools.url_analyze_tool import _extract_page_content, url_analyze
+from app.fetchers.web import extract_page_content
+from app.tools.url_analyze_tool import url_analyze
 
 
 FIXTURE_PATH = Path(__file__).resolve().parent / "fixtures" / "youtube_profile_eval_cases.json"
+CONTENT_PROFILE_KEYS = {
+    "status",
+    "source_type",
+    "source_id",
+    "url",
+    "title",
+    "summary",
+    "subject",
+    "depth_level",
+    "categories",
+    "estimated_time_minutes",
+    "confidence",
+}
 
 
 class PermissionPolicyTests(unittest.TestCase):
@@ -50,6 +66,123 @@ class ExecutorTests(unittest.TestCase):
         executor = Executor()
         result = executor.run_shell("pwd", cwd="/tmp")
         self.assertEqual(result["status"], "denied")
+
+
+class MarkdownLibraryTests(unittest.TestCase):
+    def test_content_save_writes_flat_markdown_item(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            result = content_save(
+                {
+                    "source_type": "web",
+                    "source_id": None,
+                    "url": "https://example.com/local-first-notes",
+                    "title": "Local-first Notes",
+                    "summary": "A practical overview of local-first note taking.",
+                    "subject": "local-first software",
+                    "depth_level": "medium",
+                    "categories": ["software", "notes"],
+                    "estimated_time_minutes": 8,
+                    "confidence": 0.81,
+                    "metadata": {"author": "Example"},
+                    "notes": "Worth revisiting.",
+                },
+                library_root=Path(directory),
+            )
+
+            saved_path = Path(result["path"])
+            self.assertEqual(result["status"], "saved")
+            self.assertTrue(saved_path.exists())
+            self.assertEqual(saved_path.parent.name, "items")
+            self.assertTrue(saved_path.name.startswith("web-local-first-software-"))
+
+            text = saved_path.read_text()
+            self.assertIn('source_type: "web"', text)
+            self.assertIn('categories: ["software", "notes"]', text)
+            self.assertIn("## Notes", text)
+
+    def test_content_save_updates_existing_item_by_stable_id(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = content_save(
+                {
+                    "source_type": "github",
+                    "source_id": "owner/repo",
+                    "url": "https://github.com/owner/repo",
+                    "title": "owner/repo",
+                    "summary": "First summary.",
+                    "subject": "local-first software",
+                    "depth_level": "medium",
+                    "categories": ["software"],
+                    "estimated_time_minutes": 5,
+                    "confidence": 0.7,
+                },
+                library_root=root,
+            )
+            second = content_save(
+                {
+                    "source_type": "github",
+                    "source_id": "owner/repo",
+                    "url": "https://github.com/owner/repo",
+                    "title": "owner/repo",
+                    "summary": "Updated summary.",
+                    "subject": "local-first software",
+                    "depth_level": "medium",
+                    "categories": ["software"],
+                    "estimated_time_minutes": 6,
+                    "confidence": 0.8,
+                },
+                library_root=root,
+            )
+
+            self.assertEqual(first["id"], second["id"])
+            self.assertFalse(second["created"])
+            self.assertEqual(len(list((root / "items").glob("*.md"))), 1)
+
+    def test_content_list_filters_by_topic_time_and_query(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            content_save(
+                {
+                    "source_type": "web",
+                    "url": "https://example.com/sqlite",
+                    "title": "SQLite Guide",
+                    "summary": "A short guide to embedded databases.",
+                    "subject": "sqlite",
+                    "depth_level": "light",
+                    "categories": ["databases"],
+                    "estimated_time_minutes": 6,
+                    "confidence": 0.9,
+                },
+                library_root=root,
+            )
+            content_save(
+                {
+                    "source_type": "youtube",
+                    "source_id": "abcdefghijk",
+                    "url": "https://www.youtube.com/watch?v=abcdefghijk",
+                    "title": "RL Lecture",
+                    "summary": "A long lecture about reinforcement learning.",
+                    "subject": "reinforcement learning",
+                    "depth_level": "deep",
+                    "categories": ["ml"],
+                    "estimated_time_minutes": 45,
+                    "confidence": 0.86,
+                },
+                library_root=root,
+            )
+
+            result = content_list(
+                {
+                    "query": "embedded",
+                    "max_estimated_time_minutes": 10,
+                    "categories": ["databases"],
+                },
+                library_root=root,
+            )
+
+            self.assertEqual(result["status"], "completed")
+            self.assertEqual(result["count"], 1)
+            self.assertEqual(result["items"][0]["title"], "SQLite Guide")
 
 
 class FakeCompletions:
@@ -196,11 +329,15 @@ class YouTubeAnalyzeToolTests(unittest.TestCase):
 
         self.assertEqual(result["status"], "completed")
         self.assertEqual(result["task"], "content_profile")
-        self.assertIn("profile", result)
-        self.assertEqual(result["profile"]["subject"], "machine learning")
-        self.assertEqual(result["profile"]["depth_level"], "deep")
-        self.assertEqual(result["profile"]["estimated_time_minutes"], 2)
-        self.assertEqual(result["profile"]["categories"], ["ml", "lecture", "neural-networks"])
+        self.assertTrue(CONTENT_PROFILE_KEYS.issubset(result.keys()))
+        self.assertEqual(result["source_type"], "youtube")
+        self.assertEqual(result["source_id"], "abcdefghijk")
+        self.assertEqual(result["url"], "https://www.youtube.com/watch?v=abcdefghijk")
+        self.assertEqual(result["title"], "abcdefghijk")
+        self.assertEqual(result["subject"], "machine learning")
+        self.assertEqual(result["depth_level"], "deep")
+        self.assertEqual(result["estimated_time_minutes"], 2)
+        self.assertEqual(result["categories"], ["ml", "lecture", "neural-networks"])
 
     def test_content_profile_falls_back_when_json_is_invalid(self) -> None:
         original_fetch = analyze_tool.fetch_transcript_segments
@@ -223,9 +360,10 @@ class YouTubeAnalyzeToolTests(unittest.TestCase):
             analyze_tool._complete_text = original_complete
 
         self.assertEqual(result["status"], "completed")
-        self.assertEqual(result["profile"]["depth_level"], "medium")
-        self.assertEqual(result["profile"]["estimated_time_minutes"], 1)
-        self.assertEqual(result["profile"]["confidence"], 0.0)
+        self.assertTrue(CONTENT_PROFILE_KEYS.issubset(result.keys()))
+        self.assertEqual(result["depth_level"], "medium")
+        self.assertEqual(result["estimated_time_minutes"], 1)
+        self.assertEqual(result["confidence"], 0.0)
         self.assertIn("raw_analysis", result)
 
     def test_tools_prompt_mentions_youtube_analyze_routing(self) -> None:
@@ -258,29 +396,30 @@ class URLAnalyzeToolTests(unittest.TestCase):
         </html>
         """
 
-        page = _extract_page_content(html)
+        page = extract_page_content("https://example.com/sqlite-guide", html)
 
         self.assertEqual(page["title"], "Example Article")
         self.assertIn("Working with SQLite", page["text"])
         self.assertNotIn("ignore me", page["text"])
 
     def test_url_analyze_returns_profile(self) -> None:
-        original_fetch = url_tool._fetch_url_html
+        original_fetch = url_tool.fetch_source
         original_complete = url_tool._complete_text
-        url_tool._fetch_url_html = lambda *_args, **_kwargs: """
-        <html>
-          <head><title>SQLite for Local Apps</title></head>
-          <body>
-            <p>SQLite is a compact embedded database for local applications.</p>
-            <p>This guide explains schemas, tables, and simple indexing.</p>
-          </body>
-        </html>
-        """
+        url_tool.fetch_source = lambda *_args, **_kwargs: {
+            "source_type": "web",
+            "source_id": None,
+            "url": "https://example.com/sqlite-guide",
+            "title": "SQLite for Local Apps",
+            "text": "SQLite is a compact embedded database for local applications.",
+            "word_count": 8,
+            "estimated_time_minutes": 1,
+        }
         url_tool._complete_text = lambda *_args, **_kwargs: json.dumps(
             {
                 "summary": "A quick introduction to SQLite for local application development.",
                 "subject": "sqlite",
                 "depth_level": "light",
+                "categories": ["databases"],
                 "confidence": 0.76,
             }
         )
@@ -294,24 +433,32 @@ class URLAnalyzeToolTests(unittest.TestCase):
                 )
             )
         finally:
-            url_tool._fetch_url_html = original_fetch
+            url_tool.fetch_source = original_fetch
             url_tool._complete_text = original_complete
 
         self.assertEqual(result["status"], "completed")
         self.assertEqual(result["task"], "content_profile")
-        self.assertEqual(result["profile"]["source_type"], "web")
-        self.assertEqual(result["profile"]["url"], "https://example.com/sqlite-guide")
-        self.assertEqual(result["profile"]["title"], "SQLite for Local Apps")
-        self.assertEqual(result["profile"]["subject"], "sqlite")
-        self.assertEqual(result["profile"]["depth_level"], "light")
-        self.assertGreaterEqual(result["profile"]["estimated_time_minutes"], 1)
+        self.assertTrue(CONTENT_PROFILE_KEYS.issubset(result.keys()))
+        self.assertEqual(result["source_type"], "web")
+        self.assertEqual(result["url"], "https://example.com/sqlite-guide")
+        self.assertEqual(result["title"], "SQLite for Local Apps")
+        self.assertEqual(result["subject"], "sqlite")
+        self.assertEqual(result["depth_level"], "light")
+        self.assertEqual(result["categories"], ["databases"])
+        self.assertGreaterEqual(result["estimated_time_minutes"], 1)
 
     def test_url_analyze_falls_back_when_json_is_invalid(self) -> None:
-        original_fetch = url_tool._fetch_url_html
+        original_fetch = url_tool.fetch_source
         original_complete = url_tool._complete_text
-        url_tool._fetch_url_html = lambda *_args, **_kwargs: """
-        <html><head><title>Test Page</title></head><body><p>Short readable article text.</p></body></html>
-        """
+        url_tool.fetch_source = lambda *_args, **_kwargs: {
+            "source_type": "web",
+            "source_id": None,
+            "url": "https://example.com/test-page",
+            "title": "Test Page",
+            "text": "Short readable article text.",
+            "word_count": 4,
+            "estimated_time_minutes": 1,
+        }
         url_tool._complete_text = lambda *_args, **_kwargs: "not valid json"
         try:
             result = json.loads(
@@ -323,14 +470,95 @@ class URLAnalyzeToolTests(unittest.TestCase):
                 )
             )
         finally:
-            url_tool._fetch_url_html = original_fetch
+            url_tool.fetch_source = original_fetch
             url_tool._complete_text = original_complete
 
         self.assertEqual(result["status"], "completed")
-        self.assertEqual(result["profile"]["source_type"], "web")
-        self.assertEqual(result["profile"]["depth_level"], "medium")
-        self.assertEqual(result["profile"]["confidence"], 0.0)
+        self.assertTrue(CONTENT_PROFILE_KEYS.issubset(result.keys()))
+        self.assertEqual(result["source_type"], "web")
+        self.assertEqual(result["depth_level"], "medium")
+        self.assertEqual(result["confidence"], 0.0)
         self.assertIn("raw_analysis", result)
+
+    def test_url_analyze_preserves_source_metadata_for_github(self) -> None:
+        original_fetch = url_tool.fetch_source
+        original_complete = url_tool._complete_text
+        url_tool.fetch_source = lambda *_args, **_kwargs: {
+            "source_type": "github",
+            "source_id": "owner/repo",
+            "url": "https://github.com/owner/repo",
+            "title": "owner/repo",
+            "text": "Repository: owner/repo Description: Local-first reading assistant.",
+            "word_count": 6,
+            "estimated_time_minutes": 1,
+            "metadata": {"owner": "owner", "repo": "repo"},
+        }
+        url_tool._complete_text = lambda *_args, **_kwargs: json.dumps(
+            {
+                "summary": "A repository for a local-first reading assistant.",
+                "subject": "local-first software",
+                "depth_level": "medium",
+                "categories": ["software"],
+                "confidence": 0.8,
+            }
+        )
+        try:
+            result = json.loads(
+                url_analyze(
+                    {
+                        "url": "https://github.com/owner/repo",
+                        "task": "content_profile",
+                    }
+                )
+            )
+        finally:
+            url_tool.fetch_source = original_fetch
+            url_tool._complete_text = original_complete
+
+        self.assertTrue(CONTENT_PROFILE_KEYS.issubset(result.keys()))
+        self.assertEqual(result["source_type"], "github")
+        self.assertEqual(result["source_id"], "owner/repo")
+        self.assertEqual(result["metadata"], {"owner": "owner", "repo": "repo"})
+
+    def test_url_analyze_preserves_source_metadata_for_reddit(self) -> None:
+        original_fetch = url_tool.fetch_source
+        original_complete = url_tool._complete_text
+        url_tool.fetch_source = lambda *_args, **_kwargs: {
+            "source_type": "reddit",
+            "source_id": "abc123",
+            "url": "https://www.reddit.com/r/LocalFirst/comments/abc123/example",
+            "title": "Local-first note taking",
+            "text": "Title: Local-first note taking Post: What are good patterns?",
+            "word_count": 8,
+            "estimated_time_minutes": 1,
+            "metadata": {"subreddit": "LocalFirst", "num_comments": 12},
+        }
+        url_tool._complete_text = lambda *_args, **_kwargs: json.dumps(
+            {
+                "summary": "A discussion about local-first note-taking patterns.",
+                "subject": "local-first note taking",
+                "depth_level": "light",
+                "categories": ["discussion"],
+                "confidence": 0.72,
+            }
+        )
+        try:
+            result = json.loads(
+                url_analyze(
+                    {
+                        "url": "https://www.reddit.com/r/LocalFirst/comments/abc123/example",
+                        "task": "content_profile",
+                    }
+                )
+            )
+        finally:
+            url_tool.fetch_source = original_fetch
+            url_tool._complete_text = original_complete
+
+        self.assertTrue(CONTENT_PROFILE_KEYS.issubset(result.keys()))
+        self.assertEqual(result["source_type"], "reddit")
+        self.assertEqual(result["source_id"], "abc123")
+        self.assertEqual(result["metadata"], {"subreddit": "LocalFirst", "num_comments": 12})
 
     def test_tools_prompt_mentions_url_analyze(self) -> None:
         prompt_text = get_tools_prompt_text()
@@ -343,6 +571,13 @@ class URLAnalyzeToolTests(unittest.TestCase):
         tool_names = [item["function"]["name"] for item in definitions]
 
         self.assertIn("url_analyze", tool_names)
+
+    def test_tool_definitions_include_content_library_tools(self) -> None:
+        definitions = get_tool_definitions()
+        tool_names = [item["function"]["name"] for item in definitions]
+
+        self.assertIn("content_save", tool_names)
+        self.assertIn("content_list", tool_names)
 
 
 if __name__ == "__main__":
