@@ -148,7 +148,7 @@ library/
 
 Retrieval should be by metadata and text, such as subject, category, depth, available time, status, and free-text query. `source_type` stays in frontmatter for deduplication and source-specific rendering.
 
-Use `content_add` for the normal ingestion path: it analyzes a URL, converts the analyzer result into the normalized profile contract, and writes the corresponding Markdown item.
+Use `content_add` for the normal ingestion path: it analyzes a URL, converts the analyzer result into the normalized profile contract, and writes the corresponding Markdown item. If the same source is added again, Scratchpad updates the existing Markdown file instead of creating a duplicate.
 
 ---
 
@@ -228,7 +228,7 @@ The local chat runtime currently supports:
 * loop protection for repeated or excessive tool rounds
 * local `llama.cpp` server startup and shutdown
 * log-based server timing inspection for prompt/output token counts and speed
-* Markdown-backed content ingestion, saving, and listing through `content_add`, `content_save`, and `content_list`
+* Markdown-backed content ingestion, saving, status updates, and listing through `content_add`, `content_save`, `content_status_update`, and `content_list`
 
 ---
 

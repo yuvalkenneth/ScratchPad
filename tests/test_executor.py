@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from types import SimpleNamespace
 
-from app.library.markdown_store import content_list, content_save
+from app.library.markdown_store import content_list, content_save, content_status_update
 from app.llm.client import LLMClient
 import app.tools.content_library_tool as content_library_tool
 from app.tools.content_library_tool import content_add
@@ -138,6 +138,51 @@ class MarkdownLibraryTests(unittest.TestCase):
 
             self.assertEqual(first["id"], second["id"])
             self.assertFalse(second["created"])
+            self.assertTrue(second["duplicate"])
+            self.assertEqual(len(list((root / "items").glob("*.md"))), 1)
+
+    def test_content_save_preserves_status_and_notes_on_duplicate_url(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = content_save(
+                {
+                    "source_type": "web",
+                    "url": "https://example.com/same-url",
+                    "title": "Original Title",
+                    "summary": "Original summary.",
+                    "subject": "sqlite",
+                    "depth_level": "light",
+                    "categories": ["databases"],
+                    "estimated_time_minutes": 4,
+                    "confidence": 0.7,
+                    "status": "started",
+                    "notes": "Already looked at this.",
+                },
+                library_root=root,
+            )
+            second = content_save(
+                {
+                    "source_type": "web",
+                    "url": "https://example.com/same-url",
+                    "title": "Updated Title",
+                    "summary": "Updated summary.",
+                    "subject": "sqlite",
+                    "depth_level": "light",
+                    "categories": ["databases"],
+                    "estimated_time_minutes": 5,
+                    "confidence": 0.8,
+                },
+                library_root=root,
+            )
+
+            saved_text = Path(second["path"]).read_text()
+
+            self.assertEqual(first["id"], second["id"])
+            self.assertFalse(second["created"])
+            self.assertTrue(second["duplicate"])
+            self.assertEqual(second["item"]["status"], "started")
+            self.assertIn("# Updated Title", saved_text)
+            self.assertIn("Already looked at this.", saved_text)
             self.assertEqual(len(list((root / "items").glob("*.md"))), 1)
 
     def test_content_list_filters_by_topic_time_and_query(self) -> None:
@@ -186,6 +231,63 @@ class MarkdownLibraryTests(unittest.TestCase):
             self.assertEqual(result["count"], 1)
             self.assertEqual(result["items"][0]["title"], "SQLite Guide")
 
+    def test_content_status_update_changes_status_by_url(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            saved = content_save(
+                {
+                    "source_type": "web",
+                    "url": "https://example.com/sqlite",
+                    "title": "SQLite Guide",
+                    "summary": "A short guide to embedded databases.",
+                    "subject": "sqlite",
+                    "depth_level": "light",
+                    "categories": ["databases"],
+                    "estimated_time_minutes": 6,
+                    "confidence": 0.9,
+                },
+                library_root=root,
+            )
+
+            result = content_status_update(
+                url="https://example.com/sqlite",
+                status="done",
+                library_root=root,
+            )
+
+            self.assertEqual(result["status"], "updated")
+            self.assertEqual(result["id"], saved["id"])
+            self.assertEqual(result["item"]["status"], "done")
+
+    def test_content_status_update_changes_notes_by_id(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            saved = content_save(
+                {
+                    "source_type": "web",
+                    "url": "https://example.com/sqlite",
+                    "title": "SQLite Guide",
+                    "summary": "A short guide to embedded databases.",
+                    "subject": "sqlite",
+                    "depth_level": "light",
+                    "categories": ["databases"],
+                    "estimated_time_minutes": 6,
+                    "confidence": 0.9,
+                },
+                library_root=root,
+            )
+
+            result = content_status_update(
+                item_id=saved["id"],
+                notes="This is useful for local apps.",
+                library_root=root,
+            )
+            saved_text = Path(result["path"]).read_text()
+
+            self.assertEqual(result["status"], "updated")
+            self.assertIn("## Notes", saved_text)
+            self.assertIn("This is useful for local apps.", saved_text)
+
     def test_content_add_saves_url_analyzer_output_as_markdown(self) -> None:
         original_url_analyze = content_library_tool.url_analyze
         content_library_tool.url_analyze = lambda *_args, **_kwargs: json.dumps(
@@ -220,6 +322,7 @@ class MarkdownLibraryTests(unittest.TestCase):
             content_library_tool.url_analyze = original_url_analyze
 
         self.assertEqual(result["status"], "saved")
+        self.assertFalse(result["duplicate"])
         self.assertTrue(saved_path.name.startswith("web-sqlite-"))
         self.assertIn('source_type: "web"', text)
         self.assertIn('url: "https://example.com/sqlite-guide"', text)
@@ -269,6 +372,48 @@ class MarkdownLibraryTests(unittest.TestCase):
         self.assertIn('source_id: "abcdefghijk"', text)
         self.assertIn('status: "started"', text)
         self.assertIn('subject: "machine learning"', text)
+
+    def test_content_add_duplicate_url_updates_existing_markdown_file(self) -> None:
+        original_url_analyze = content_library_tool.url_analyze
+        content_library_tool.url_analyze = lambda *_args, **_kwargs: json.dumps(
+            {
+                "status": "completed",
+                "source_type": "web",
+                "source_id": None,
+                "url": "https://example.com/sqlite-guide",
+                "title": "SQLite for Local Apps",
+                "summary": "A quick introduction to SQLite for local application development.",
+                "subject": "sqlite",
+                "depth_level": "light",
+                "categories": ["databases"],
+                "estimated_time_minutes": 4,
+                "confidence": 0.76,
+            }
+        )
+        try:
+            with tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                first = content_add(
+                    {
+                        "url": "https://example.com/sqlite-guide",
+                        "notes": "First pass.",
+                    },
+                    library_root=root,
+                )
+                second = content_add(
+                    {"url": "https://example.com/sqlite-guide"},
+                    library_root=root,
+                )
+                saved_text = Path(second["path"]).read_text()
+                file_count = len(list((root / "items").glob("*.md")))
+        finally:
+            content_library_tool.url_analyze = original_url_analyze
+
+        self.assertEqual(first["id"], second["id"])
+        self.assertFalse(second["created"])
+        self.assertTrue(second["duplicate"])
+        self.assertIn("First pass.", saved_text)
+        self.assertEqual(file_count, 1)
 
 
 class FakeCompletions:
@@ -665,6 +810,7 @@ class URLAnalyzeToolTests(unittest.TestCase):
         self.assertIn("content_add", tool_names)
         self.assertIn("content_save", tool_names)
         self.assertIn("content_list", tool_names)
+        self.assertIn("content_status_update", tool_names)
 
 
 if __name__ == "__main__":

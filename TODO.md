@@ -32,7 +32,6 @@
   * `updated_at`
 * Use the Markdown body for personal notes, excerpts, and richer analysis
 * Enforce stable deduplication by deriving deterministic filenames from `source_type + source_id`, falling back to URL slug/hash
-* Add `content_update` for marking items as unread, started, done, archived, or abandoned
 * Keep a future SQLite index optional if file scanning becomes too slow or ranking queries become painful
 * Decide when to replace singular `subject` with multi-topic support
 

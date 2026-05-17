@@ -3,9 +3,9 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
-from app.library.markdown_store import content_list, content_save
+from app.library.markdown_store import content_list, content_save, content_status_update
 from app.tools.url_analyze_tool import url_analyze
 from app.tools.youtube_analyze_tool import youtube_analyze
 
@@ -97,8 +97,31 @@ CONTENT_LIST_SCHEMA = {
     },
 }
 
+CONTENT_STATUS_UPDATE_SCHEMA = {
+    "name": "content_status_update",
+    "description": (
+        "Update a saved Markdown library item's reading status by id, URL, or source identity. "
+        "Use this to mark items unread, started, done, archived, or abandoned."
+    ),
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "id": {"type": "string"},
+            "url": {"type": "string"},
+            "source_type": {"type": "string"},
+            "source_id": {"type": "string"},
+            "status": {
+                "type": "string",
+                "enum": ["unread", "started", "done", "archived", "abandoned"],
+            },
+            "notes": {"type": "string"},
+        },
+        "additionalProperties": False,
+    },
+}
 
-def content_add(arguments: dict[str, Any], *, library_root: Path | None = None) -> dict[str, Any]:
+
+def content_add(arguments: dict[str, Any], *, library_root: Optional[Path] = None) -> dict[str, Any]:
     url = str(arguments.get("url") or "").strip()
     if not url:
         return {"status": "error", "error": "Missing required argument: url"}
@@ -125,6 +148,7 @@ def content_add(arguments: dict[str, Any], *, library_root: Path | None = None) 
         "id": saved["id"],
         "path": saved["path"],
         "created": saved["created"],
+        "duplicate": saved["duplicate"],
         "item": saved["item"],
     }
 
@@ -148,6 +172,23 @@ def content_add_json(arguments: dict[str, Any]) -> str:
 def content_save_json(arguments: dict[str, Any]) -> str:
     try:
         return json.dumps(content_save(arguments), ensure_ascii=True)
+    except Exception as exc:
+        return json.dumps({"status": "error", "error": str(exc)}, ensure_ascii=True)
+
+
+def content_status_update_json(arguments: dict[str, Any]) -> str:
+    try:
+        return json.dumps(
+            content_status_update(
+                item_id=arguments.get("id"),
+                url=arguments.get("url"),
+                source_type=arguments.get("source_type"),
+                source_id=arguments.get("source_id"),
+                status=arguments.get("status"),
+                notes=arguments.get("notes"),
+            ),
+            ensure_ascii=True,
+        )
     except Exception as exc:
         return json.dumps({"status": "error", "error": str(exc)}, ensure_ascii=True)
 

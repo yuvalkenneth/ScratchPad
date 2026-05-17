@@ -6,7 +6,7 @@ import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 
 DEFAULT_LIBRARY_ROOT = Path(os.getenv("SCRATCHPAD_LIBRARY_DIR", "library"))
@@ -20,6 +20,7 @@ REQUIRED_PROFILE_FIELDS = {
     "estimated_time_minutes",
 }
 DEPTH_LEVELS = {"light", "medium", "deep"}
+STATUS_VALUES = {"unread", "started", "done", "archived", "abandoned"}
 
 
 def content_save(item: dict[str, Any], *, library_root: Path = DEFAULT_LIBRARY_ROOT) -> dict[str, Any]:
@@ -37,8 +38,13 @@ def content_save(item: dict[str, Any], *, library_root: Path = DEFAULT_LIBRARY_R
         existing["frontmatter"].get("created_at") if existing else now
     )
     normalized["updated_at"] = now
+    if existing and "status" not in item:
+        normalized["status"] = str(existing["frontmatter"].get("status") or normalized["status"])
 
-    body = build_markdown_body(normalized, str(item.get("notes") or ""))
+    notes = str(item.get("notes") or "")
+    if existing and "notes" not in item:
+        notes = extract_notes_section(existing["body"])
+    body = build_markdown_body(normalized, notes)
     path.write_text(render_frontmatter(normalized) + "\n" + body, encoding="utf-8")
 
     return {
@@ -46,8 +52,53 @@ def content_save(item: dict[str, Any], *, library_root: Path = DEFAULT_LIBRARY_R
         "id": item_id,
         "path": str(path),
         "created": existing is None,
+        "duplicate": existing is not None,
         "item": normalized,
     }
+
+
+def content_status_update(
+    *,
+    item_id: Optional[str] = None,
+    url: Optional[str] = None,
+    source_type: Optional[str] = None,
+    source_id: Optional[str] = None,
+    status: Optional[str] = None,
+    notes: Optional[str] = None,
+    library_root: Path = DEFAULT_LIBRARY_ROOT,
+) -> dict[str, Any]:
+    if status is None and notes is None:
+        return {"status": "error", "error": "Provide at least one field to update."}
+    if status is not None and status not in STATUS_VALUES:
+        return {
+            "status": "error",
+            "error": f"status must be one of: {', '.join(sorted(STATUS_VALUES))}",
+        }
+
+    found = find_item_path(
+        item_id=item_id,
+        url=url,
+        source_type=source_type,
+        source_id=source_id,
+        library_root=library_root,
+    )
+    if found is None:
+        return {"status": "error", "error": "No matching content item found."}
+
+    parsed = read_item_file(found)
+    frontmatter = dict(parsed["frontmatter"])
+    if status is not None:
+        frontmatter["status"] = status
+    frontmatter["updated_at"] = utc_now()
+
+    body = parsed["body"]
+    if notes is not None:
+        body = replace_notes_section(body, notes)
+
+    found.write_text(render_frontmatter(frontmatter) + "\n" + body.strip() + "\n", encoding="utf-8")
+    updated = read_item_file(found)["frontmatter"]
+    updated["path"] = str(found)
+    return {"status": "updated", "id": updated.get("id"), "path": str(found), "item": updated}
 
 
 def content_list(
@@ -108,6 +159,10 @@ def normalize_item(item: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(metadata, dict):
         metadata = {"value": metadata}
 
+    status = str(item.get("status") or "unread").strip()
+    if status not in STATUS_VALUES:
+        raise ValueError(f"status must be one of: {', '.join(sorted(STATUS_VALUES))}")
+
     return {
         "id": str(item.get("id") or "").strip() or None,
         "source_type": str(item["source_type"]).strip(),
@@ -120,7 +175,7 @@ def normalize_item(item: dict[str, Any]) -> dict[str, Any]:
         "categories": categories,
         "estimated_time_minutes": estimated_time_minutes,
         "confidence": max(0.0, min(1.0, confidence)),
-        "status": str(item.get("status") or "unread").strip(),
+        "status": status,
         "metadata": metadata,
         "created_at": item.get("created_at"),
         "updated_at": item.get("updated_at"),
@@ -202,6 +257,55 @@ def read_item_file(path: Path) -> dict[str, Any]:
         return {"frontmatter": {}, "body": text}
     _, frontmatter, body = parts
     return {"frontmatter": parse_frontmatter(frontmatter), "body": body.strip()}
+
+
+def find_item_path(
+    *,
+    item_id: Optional[str] = None,
+    url: Optional[str] = None,
+    source_type: Optional[str] = None,
+    source_id: Optional[str] = None,
+    library_root: Path = DEFAULT_LIBRARY_ROOT,
+) -> Path | None:
+    items_dir = library_root / "items"
+    if not items_dir.exists():
+        return None
+
+    if item_id:
+        target = items_dir / f"{item_id}.md"
+        if target.exists():
+            return target
+
+    for path in sorted(items_dir.glob("*.md")):
+        frontmatter = read_item_file(path)["frontmatter"]
+        if url and frontmatter.get("url") == url:
+            return path
+        if (
+            source_type
+            and source_id
+            and frontmatter.get("source_type") == source_type
+            and frontmatter.get("source_id") == source_id
+        ):
+            return path
+    return None
+
+
+def replace_notes_section(body: str, notes: str) -> str:
+    body = body.strip()
+    if "## Notes" not in body:
+        return f"{body}\n\n## Notes\n\n{notes.strip()}\n" if notes.strip() else f"{body}\n"
+
+    before, _separator, _after = body.partition("## Notes")
+    if not notes.strip():
+        return before.strip() + "\n"
+    return f"{before.strip()}\n\n## Notes\n\n{notes.strip()}\n"
+
+
+def extract_notes_section(body: str) -> str:
+    if "## Notes" not in body:
+        return ""
+    _before, _separator, after = body.partition("## Notes")
+    return after.strip()
 
 
 def parse_frontmatter(text: str) -> dict[str, Any]:

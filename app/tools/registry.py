@@ -21,9 +21,11 @@ from app.tools.content_library_tool import (
     CONTENT_ADD_SCHEMA,
     CONTENT_LIST_SCHEMA,
     CONTENT_SAVE_SCHEMA,
+    CONTENT_STATUS_UPDATE_SCHEMA,
     content_add_json,
     content_list_json,
     content_save_json,
+    content_status_update_json,
 )
 
 
@@ -199,6 +201,13 @@ TOOLS: dict[str, dict[str, Any]] = {
         },
         "handler": content_list_json,
     },
+    "content_status_update": {
+        "definition": {
+            "type": "function",
+            "function": CONTENT_STATUS_UPDATE_SCHEMA,
+        },
+        "handler": content_status_update_json,
+    },
     "skill_view": {
         "definition": {
             "type": "function",
@@ -225,6 +234,7 @@ def get_tools_prompt_text() -> str:
         "- content_add: Analyze a URL and save the normalized content_profile into the local Markdown library in one step.",
         "- content_save: Save a normalized content_profile into the local Markdown library.",
         "- content_list: List saved Markdown library items by subject, category, depth, status, time, or free-text query.",
+        "- content_status_update: Update a saved Markdown library item's reading status or notes by id, URL, or source identity.",
         "- skill_view: Load the full content of a skill or one of its linked files.",
         "For YouTube URLs, do not load a skill first unless you already have transcript data and need a specific transcript-transformation workflow.",
         "Use youtube_analyze with task='content_profile' for product-facing classification such as summary, subject, depth_level, categories, and estimated_time_minutes.",
@@ -232,7 +242,9 @@ def get_tools_prompt_text() -> str:
         "youtube_analyze handles transcript retrieval internally so the raw transcript stays out of the main chat context.",
         "Use url_analyze with task='content_profile' for non-YouTube URLs when the user wants a compact summary plus subject, depth_level, and estimated_time_minutes.",
         "When the user asks to add or save a URL, prefer content_add so analysis and Markdown persistence happen together.",
+        "If content_add reports duplicate=true, tell the user the existing item was updated instead of creating a second copy.",
         "After a user asks to save an already-analyzed profile, pass the top-level content_profile fields to content_save.",
+        "When the user says they started, finished, archived, or abandoned an item, use content_status_update.",
         "When the user asks what to read or wants saved material, use content_list before answering.",
         "Use run_shell and run_python for local execution when needed, and inspect the returned status field before assuming the command ran.",
         "For Python commands, prefer `uv run python` over raw `python` or `python3` so the project venv is used.",
