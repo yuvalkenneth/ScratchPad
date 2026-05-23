@@ -1,23 +1,16 @@
 from __future__ import annotations
 
 import json
-import os
 from typing import Any
 
 import httpx
-from openai import OpenAI
 
 from app.fetchers.common import estimate_time_minutes, http_error_payload
 from app.fetchers.router import fetch_source
 from app.llm.config import LLMConfig
+from app.llm.openai_compatible import complete_text
 from app.tools.content_profile import build_content_profile_payload
 
-
-PROVIDER_TO_API_KEY_ENV_VAR = {
-    "openai": "OPENAI_API_KEY",
-    "azure": "AZURE_API_KEY",
-    "llama_cpp": "LLAMA_CPP_API_KEY",
-}
 
 CONTENT_PROFILE_CONTEXT = (
     "This profile will be saved in a local learning library and later used to help "
@@ -89,21 +82,7 @@ def _complete_text(
     messages: list[dict[str, str]],
     max_tokens: int = 400,
 ) -> str:
-    api_key_env_var = PROVIDER_TO_API_KEY_ENV_VAR.get(config.provider)
-    api_key = os.getenv(api_key_env_var) if api_key_env_var else None
-    if not api_key:
-        api_key = config.api_key or "local"
-    client = OpenAI(api_key=api_key, base_url=config.base_url)
-    response = client.chat.completions.create(
-        model=config.model_name,
-        messages=messages,
-        temperature=0.2,
-        max_tokens=max_tokens,
-    )
-    content = response.choices[0].message.content
-    if isinstance(content, str):
-        return content.strip()
-    return str(content).strip()
+    return complete_text(config, messages, max_tokens=max_tokens, temperature=0.2)
 
 
 def _http_error_payload(exc: Exception) -> str:

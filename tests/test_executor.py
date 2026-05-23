@@ -7,6 +7,8 @@ from types import SimpleNamespace
 
 from app.library.markdown_store import content_list, content_save, content_status_update
 from app.llm.client import LLMClient
+from app.llm.config import LLMConfig
+from app.llm.openai_compatible import resolve_api_key, resolve_base_url
 from app.llm.prompting import build_system_prompt
 import app.tools.content_library_tool as content_library_tool
 from app.tools.content_library_tool import content_add
@@ -453,7 +455,7 @@ def make_tool_call(name: str, arguments: str, call_id: str = "call_1") -> object
 
 class LLMClientToolLoopTests(unittest.IsolatedAsyncioTestCase):
     async def test_returns_message_when_model_stops_without_final_content(self) -> None:
-        client = LLMClient(model_name="test-model")
+        client = LLMClient(config=LLMConfig(model_name="test-model"))
         responses = [
             make_response(
                 SimpleNamespace(
@@ -470,7 +472,7 @@ class LLMClientToolLoopTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("without producing a final answer", result)
 
     async def test_detects_repeated_tool_calls(self) -> None:
-        client = LLMClient(model_name="test-model", max_tool_rounds=8)
+        client = LLMClient(config=LLMConfig(model_name="test-model"), max_tool_rounds=8)
         repeated_call = make_tool_call("skill_view", '{"name":"youtube-content"}')
         responses = [
             make_response(SimpleNamespace(content="", tool_calls=[repeated_call])),
@@ -491,6 +493,83 @@ class PromptSurfaceTests(unittest.TestCase):
         self.assertIn("You are Scratchpad", prompt)
         self.assertIn("local-first assistant", prompt)
         self.assertIn("inspect tool results", prompt)
+
+
+class OpenAICompatibleConfigTests(unittest.TestCase):
+    def test_resolve_api_key_prefers_provider_specific_env(self) -> None:
+        original_openai = os.environ.get("OPENAI_API_KEY")
+        original_llm = os.environ.get("LLM_API_KEY")
+        os.environ["OPENAI_API_KEY"] = "provider-key"
+        os.environ["LLM_API_KEY"] = "generic-key"
+        try:
+            api_key = resolve_api_key(
+                LLMConfig(provider="openai", model_name="test", api_key="config-key")
+            )
+        finally:
+            if original_openai is None:
+                os.environ.pop("OPENAI_API_KEY", None)
+            else:
+                os.environ["OPENAI_API_KEY"] = original_openai
+            if original_llm is None:
+                os.environ.pop("LLM_API_KEY", None)
+            else:
+                os.environ["LLM_API_KEY"] = original_llm
+
+        self.assertEqual(api_key, "provider-key")
+
+    def test_resolve_base_url_uses_config_then_env_then_provider_default(self) -> None:
+        original = os.environ.get("LLM_BASE_URL")
+        os.environ["LLM_BASE_URL"] = "https://env.example.test/v1"
+        try:
+            self.assertEqual(
+                resolve_base_url(
+                    LLMConfig(
+                        provider="openai",
+                        model_name="test",
+                        base_url="https://config.example.test/v1",
+                    )
+                ),
+                "https://config.example.test/v1",
+            )
+            self.assertEqual(
+                resolve_base_url(LLMConfig(provider="openai", model_name="test", base_url="")),
+                "https://env.example.test/v1",
+            )
+        finally:
+            if original is None:
+                os.environ.pop("LLM_BASE_URL", None)
+            else:
+                os.environ["LLM_BASE_URL"] = original
+
+        self.assertEqual(
+            resolve_base_url(LLMConfig(provider="openai", model_name="test", base_url="")),
+            "https://api.openai.com/v1",
+        )
+
+    def test_resolve_gemini_uses_gemini_env_vars(self) -> None:
+        original_base_url = os.environ.get("GEMINI_BASE_URL")
+        original_api_key = os.environ.get("GEMINI_API_KEY")
+        original_llm_base_url = os.environ.get("LLM_BASE_URL")
+        os.environ["GEMINI_BASE_URL"] = "https://gemini.example.test/v1"
+        os.environ["GEMINI_API_KEY"] = "gemini-key"
+        os.environ.pop("LLM_BASE_URL", None)
+        try:
+            config = LLMConfig(provider="gemini", model_name="gemini-3.5-flash", base_url="")
+            self.assertEqual(resolve_base_url(config), "https://gemini.example.test/v1")
+            self.assertEqual(resolve_api_key(config), "gemini-key")
+        finally:
+            if original_base_url is None:
+                os.environ.pop("GEMINI_BASE_URL", None)
+            else:
+                os.environ["GEMINI_BASE_URL"] = original_base_url
+            if original_api_key is None:
+                os.environ.pop("GEMINI_API_KEY", None)
+            else:
+                os.environ["GEMINI_API_KEY"] = original_api_key
+            if original_llm_base_url is None:
+                os.environ.pop("LLM_BASE_URL", None)
+            else:
+                os.environ["LLM_BASE_URL"] = original_llm_base_url
 
 
 class ContentProfileEvalTests(unittest.TestCase):

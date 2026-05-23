@@ -14,9 +14,9 @@ if str(REPO_ROOT) not in sys.path:
 
 from app.fetchers.common import estimate_time_minutes
 from app.llm.config import LLMConfig
+from app.llm.openai_compatible import complete_text
 from app.llm.runtime import ensure_provider_ready
 from app.tools.content_profile import build_content_profile_payload
-from openai import OpenAI
 import app.tools.url_analyze_tool as url_analyze_tool
 import app.tools.youtube_analyze_tool as youtube_analyze_tool
 
@@ -47,13 +47,6 @@ JUDGE_RESULT_KEYS = {
     "overall_useful",
     "notes",
 }
-PROVIDER_TO_API_KEY_ENV_VAR = {
-    "openai": "OPENAI_API_KEY",
-    "azure": "AZURE_API_KEY",
-    "llama_cpp": "LLAMA_CPP_API_KEY",
-}
-
-
 def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
     default = LLMConfig.from_env()
     return LLMConfig(
@@ -240,23 +233,13 @@ def judge_case(
 
 
 def _complete_judge_text(config: JudgeConfig | LLMConfig, messages: list[dict[str, str]], max_tokens: int) -> str:
-    provider = getattr(config, "provider", "llama_cpp")
-    api_key_env_var = PROVIDER_TO_API_KEY_ENV_VAR.get(provider)
-    api_key = os.getenv(api_key_env_var) if api_key_env_var else None
-    if not api_key:
-        api_key = getattr(config, "api_key", None) or "local"
-    client = OpenAI(api_key=api_key, base_url=config.base_url)
-    response = client.chat.completions.create(
-        model=config.model_name,
-        messages=messages,
+    return complete_text(
+        config,
+        messages,
+        max_tokens=max_tokens,
         temperature=getattr(config, "temperature", 0.7),
         top_p=getattr(config, "top_p", 1.0),
-        max_tokens=max_tokens,
     )
-    content = response.choices[0].message.content
-    if isinstance(content, str):
-        return content.strip()
-    return str(content).strip()
 
 
 def build_judge_messages(profile: dict[str, Any], case: dict[str, Any]) -> list[dict[str, str]]:

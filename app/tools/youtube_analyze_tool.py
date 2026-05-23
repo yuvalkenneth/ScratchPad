@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import json
-import os
 from typing import Any, Optional
 
 from app.llm.config import LLMConfig
-from openai import OpenAI
+from app.llm.openai_compatible import complete_text
 from app.tools.content_profile import build_content_profile_payload
 from app.tools.youtube_tool import extract_video_id, fetch_transcript_segments, format_timestamp
 
@@ -21,12 +20,6 @@ ANALYSIS_TASKS = {
     "study_notes",
     "explain",
     "quotes",
-}
-
-PROVIDER_TO_API_KEY_ENV_VAR = {
-    "openai": "OPENAI_API_KEY",
-    "azure": "AZURE_API_KEY",
-    "llama_cpp": "LLAMA_CPP_API_KEY",
 }
 
 CONTENT_PROFILE_CONTEXT = (
@@ -198,21 +191,7 @@ def _complete_text(
     messages: list[dict[str, str]],
     max_tokens: int = 1400,
 ) -> str:
-    api_key_env_var = PROVIDER_TO_API_KEY_ENV_VAR.get(config.provider)
-    api_key = os.getenv(api_key_env_var) if api_key_env_var else None
-    if not api_key:
-        api_key = config.api_key or "local"
-    client = OpenAI(api_key=api_key, base_url=config.base_url)
-    response = client.chat.completions.create(
-        model=config.model_name,
-        messages=messages,
-        temperature=0.2,
-        max_tokens=max_tokens,
-    )
-    content = response.choices[0].message.content
-    if isinstance(content, str):
-        return content.strip()
-    return str(content).strip()
+    return complete_text(config, messages, max_tokens=max_tokens, temperature=0.2)
 
 
 def _analyze_chunks(
