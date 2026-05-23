@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -33,6 +34,7 @@ from app.tools.content_library_tool import (
 
 ToolHandler = Callable[[dict[str, Any]], str]
 EXECUTOR = Executor()
+EXECUTOR_TOOL_NAMES = {"run_shell", "run_python"}
 
 
 def get_time(_: dict[str, Any]) -> str:
@@ -227,8 +229,23 @@ TOOLS: dict[str, dict[str, Any]] = {
 }
 
 
+def executor_tools_enabled() -> bool:
+    return os.getenv("SCRATCHPAD_ENABLE_EXECUTOR_TOOLS", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+
+
+def visible_tools() -> dict[str, dict[str, Any]]:
+    if executor_tools_enabled():
+        return TOOLS
+    return {name: tool for name, tool in TOOLS.items() if name not in EXECUTOR_TOOL_NAMES}
+
+
 def get_tool_definitions() -> list[dict[str, Any]]:
-    return [tool["definition"] for tool in TOOLS.values()]
+    return [tool["definition"] for tool in visible_tools().values()]
 
 
 def get_tools_prompt_text() -> str:
@@ -236,8 +253,6 @@ def get_tools_prompt_text() -> str:
         "Available tools:",
         "- get_time: Get the current UTC time.",
         "- list_files: List files in a local directory.",
-        "- run_shell: Run a shell command in the workspace; may return denied or needs_approval.",
-        "- run_python: Run Python code in the workspace; may return denied or needs_approval.",
         "- youtube_analyze: Analyze a YouTube video internally using transcript fetch, chunking, and dedicated LLM passes. It uses the same active provider/server/model as the main chat. Optional arguments: task, question, language, include_timestamps.",
         "- url_analyze: Fetch a web page internally, extract readable text, and classify it into a compact content profile.",
         "- content_add: Analyze a URL and save the normalized content_profile into the local Markdown library in one step.",
@@ -246,6 +261,15 @@ def get_tools_prompt_text() -> str:
         "- content_status_update: Update a saved Markdown library item's reading status or notes by id, URL, or source identity.",
         "- skills_list: List available skills with compact metadata.",
         "- skill_view: Load the full content of a skill or one of its linked files.",
+    ]
+    if executor_tools_enabled():
+        lines.extend(
+            [
+                "- run_shell: Run a shell command in the workspace; may return denied or needs_approval.",
+                "- run_python: Run Python code in the workspace; may return denied or needs_approval.",
+            ]
+        )
+    lines.extend([
         "For YouTube URLs, do not load a skill first unless you already have transcript data and need a specific transcript-transformation workflow.",
         "Use youtube_analyze with task='content_profile' for product-facing classification such as summary, subject, depth_level, categories, and estimated_time_minutes.",
         "Use youtube_analyze for YouTube summaries, explanations, chapters, study notes, key points, quotes, and other whole-video analysis tasks.",
@@ -256,16 +280,21 @@ def get_tools_prompt_text() -> str:
         "After a user asks to save an already-analyzed profile, pass the top-level content_profile fields to content_save.",
         "When the user says they started, finished, archived, or abandoned an item, use content_status_update.",
         "When the user asks what to read or wants saved material, use content_list before answering.",
-        "Use run_shell and run_python for local execution when needed, and inspect the returned status field before assuming the command ran.",
-        "For Python commands, prefer `uv run python` over raw `python` or `python3` so the project venv is used.",
-        "Prefer workspace-relative paths for local scripts and files, and run them from the workspace root. Do not assume helper environment variables such as SKILL_DIR exist unless a tool explicitly provides them.",
-        get_skills_prompt_text(),
-    ]
+    ])
+    if executor_tools_enabled():
+        lines.extend(
+            [
+                "Use run_shell and run_python for local execution when explicitly needed, and inspect the returned status field before assuming the command ran.",
+                "For Python commands, prefer `uv run python` over raw `python` or `python3` so the project venv is used.",
+                "Prefer workspace-relative paths for local scripts and files, and run them from the workspace root. Do not assume helper environment variables such as SKILL_DIR exist unless a tool explicitly provides them.",
+            ]
+        )
+    lines.append(get_skills_prompt_text())
     return "\n".join(lines)
 
 
 def run_tool(name: str, arguments: dict[str, Any]) -> str:
-    tool = TOOLS.get(name)
+    tool = visible_tools().get(name)
     if tool is None:
         raise ValueError(f"Unknown tool: {name}")
     return tool["handler"](arguments)

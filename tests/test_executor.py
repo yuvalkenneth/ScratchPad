@@ -1105,6 +1105,41 @@ class URLAnalyzeToolTests(unittest.TestCase):
         self.assertIn("content_status_update", tool_names)
         self.assertIn("skills_list", tool_names)
 
+    def test_executor_tools_are_hidden_by_default_but_skills_remain_available(self) -> None:
+        original = os.environ.pop("SCRATCHPAD_ENABLE_EXECUTOR_TOOLS", None)
+        try:
+            definitions = get_tool_definitions()
+            tool_names = [item["function"]["name"] for item in definitions]
+            prompt_text = get_tools_prompt_text()
+        finally:
+            if original is not None:
+                os.environ["SCRATCHPAD_ENABLE_EXECUTOR_TOOLS"] = original
+
+        self.assertNotIn("run_shell", tool_names)
+        self.assertNotIn("run_python", tool_names)
+        self.assertNotIn("run_shell", prompt_text)
+        self.assertNotIn("run_python", prompt_text)
+        self.assertIn("skills_list", tool_names)
+        self.assertIn("skill_view", tool_names)
+
+    def test_executor_tools_can_be_enabled_for_dev_mode(self) -> None:
+        original = os.environ.get("SCRATCHPAD_ENABLE_EXECUTOR_TOOLS")
+        os.environ["SCRATCHPAD_ENABLE_EXECUTOR_TOOLS"] = "1"
+        try:
+            definitions = get_tool_definitions()
+            tool_names = [item["function"]["name"] for item in definitions]
+            prompt_text = get_tools_prompt_text()
+        finally:
+            if original is None:
+                os.environ.pop("SCRATCHPAD_ENABLE_EXECUTOR_TOOLS", None)
+            else:
+                os.environ["SCRATCHPAD_ENABLE_EXECUTOR_TOOLS"] = original
+
+        self.assertIn("run_shell", tool_names)
+        self.assertIn("run_python", tool_names)
+        self.assertIn("run_shell", prompt_text)
+        self.assertIn("run_python", prompt_text)
+
     def test_youtube_skill_routes_url_only_inputs_to_youtube_analyze(self) -> None:
         content = skill_view("youtube-content")["content"]
 
