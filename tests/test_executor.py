@@ -15,9 +15,13 @@ from app.tools.youtube_analyze_tool import _chunk_text, youtube_analyze
 import app.tools.url_analyze_tool as url_tool
 from app.fetchers.web import extract_page_content
 from app.tools.url_analyze_tool import url_analyze
+from scripts import eval_content_profiles
 
 
 FIXTURE_PATH = Path(__file__).resolve().parent / "fixtures" / "youtube_profile_eval_cases.json"
+CONTENT_PROFILE_EVAL_FIXTURE_PATH = (
+    Path(__file__).resolve().parent / "fixtures" / "content_profile_eval_cases.json"
+)
 CONTENT_PROFILE_KEYS = {
     "status",
     "source_type",
@@ -475,6 +479,69 @@ class LLMClientToolLoopTests(unittest.IsolatedAsyncioTestCase):
         result = await client.get_response([{"role": "user", "content": "summarize this video"}])
 
         self.assertIn("appears stuck", result)
+
+
+class ContentProfileEvalTests(unittest.TestCase):
+    def test_content_profile_eval_fixture_set_is_well_formed(self) -> None:
+        cases = eval_content_profiles.load_cases(CONTENT_PROFILE_EVAL_FIXTURE_PATH)
+
+        self.assertGreaterEqual(len(cases), 3)
+        for case in cases:
+            self.assertIn(case["source_type"], {"web", "github", "reddit", "youtube"})
+            self.assertTrue(case["url"])
+            self.assertTrue(case["title"])
+            self.assertTrue(case["input"]["text"])
+            self.assertTrue(case["expected"]["subject_options"])
+            self.assertIn(case["expected"]["depth_level"], {"light", "medium", "deep"})
+
+    def test_content_profile_eval_scores_expected_constraints(self) -> None:
+        case = eval_content_profiles.load_cases(CONTENT_PROFILE_EVAL_FIXTURE_PATH)[0]
+        profile = {
+            "status": "completed",
+            "source_type": case["source_type"],
+            "source_id": case["source_id"],
+            "url": case["url"],
+            "title": case["title"],
+            "summary": "This covers offline sync and conflict handling for local-first apps.",
+            "subject": "local-first software",
+            "depth_level": "medium",
+            "categories": ["software", "sync"],
+            "estimated_time_minutes": 5,
+            "confidence": 0.7,
+        }
+
+        checks = eval_content_profiles.score_case(profile, case)
+
+        self.assertTrue(all(checks.values()))
+
+    def test_content_profile_eval_analyzes_frozen_input_without_fetching(self) -> None:
+        case = eval_content_profiles.load_cases(CONTENT_PROFILE_EVAL_FIXTURE_PATH)[1]
+
+        def fake_complete_text(*_args: object, **_kwargs: object) -> str:
+            return json.dumps(
+                {
+                    "summary": (
+                        "A local models evaluation harness for testing agent tool use, "
+                        "structured outputs, latency, and failure modes."
+                    ),
+                    "subject": "local LLM evaluation",
+                    "depth_level": "medium",
+                    "categories": ["LLMs", "evaluation", "agents"],
+                    "estimated_time_minutes": 9,
+                    "confidence": 0.78,
+                }
+            )
+
+        profile = eval_content_profiles.analyze_case(
+            case,
+            config=SimpleNamespace(),
+            complete_text=fake_complete_text,
+        )
+        checks = eval_content_profiles.score_case(profile, case)
+
+        self.assertEqual(profile["source_type"], "github")
+        self.assertEqual(profile["source_id"], "example/small-llm-agent-eval")
+        self.assertTrue(all(checks.values()))
 
 
 class YouTubeAnalyzeToolTests(unittest.TestCase):

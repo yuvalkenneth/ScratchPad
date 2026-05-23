@@ -1,0 +1,147 @@
+[
+  {
+    "id": "web_local_first_sync_notes",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://example.com/local-first-sync-notes",
+    "title": "Local-First Sync Notes",
+    "fetched_at": "2026-05-22T00:00:00Z",
+    "input": {
+      "text": "Local-first applications keep a useful copy of data on the user's device so the product remains fast and usable offline. The article explains how sync engines reconcile local writes with remote state, why conflict resolution must be visible in the product model, and how SQLite or another embedded store can act as the durable local database. It compares last-write-wins with explicit merge strategies, notes that collaboration introduces harder consistency problems, and argues that local-first design is most valuable when users need ownership, speed, and resilience rather than a thin client around a server.",
+      "metadata": {
+        "author": "Example Author",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 4
+    },
+    "expected": {
+      "subject_options": [
+        "local-first software",
+        "local-first sync",
+        "sync systems",
+        "offline-first apps"
+      ],
+      "category_any": [
+        "software",
+        "databases",
+        "distributed systems",
+        "sync"
+      ],
+      "category_concept_groups": [
+        ["sync", "data synchronization"],
+        ["offline", "offline computing", "offline-first"],
+        ["conflict", "conflict resolution", "distributed systems"]
+      ],
+      "depth_level": "medium",
+      "estimated_time_minutes_range": [3, 8],
+      "summary_should_cover": [
+        "offline",
+        "sync",
+        "conflict"
+      ],
+      "summary_must_not_claim": [
+        "blockchain",
+        "neural network"
+      ],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "github_small_llm_agent_eval",
+    "source_type": "github",
+    "source_id": "example/small-llm-agent-eval",
+    "url": "https://github.com/example/small-llm-agent-eval",
+    "title": "example/small-llm-agent-eval",
+    "fetched_at": "2026-05-22T00:00:00Z",
+    "input": {
+      "text": "Repository: example/small-llm-agent-eval. Description: A Python harness for comparing small local language models on tool-use workflows. README: This project runs scripted agent tasks against an OpenAI-compatible local server, captures tool calls, checks whether the model obeyed constraints, and emits JSONL reports for later analysis. The examples include content ingestion, recommendation from a local library, and status updates. The harness is intended for developers testing latency, reliability, structured output quality, and failure modes across quantized local models. Languages: Python 91%, Shell 9%.",
+      "metadata": {
+        "stars": 42,
+        "languages": {
+          "Python": 91,
+          "Shell": 9
+        },
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 7
+    },
+    "expected": {
+      "subject_options": [
+        "LLM evaluation",
+        "local LLM evaluation",
+        "agent evaluation",
+        "small LLM testing"
+      ],
+      "category_any": [
+        "LLMs",
+        "evaluation",
+        "agents",
+        "developer tools"
+      ],
+      "category_concept_groups": [
+        ["LLMs", "local models", "language models"],
+        ["evaluation", "model testing"],
+        ["agents", "tool use", "developer tools"]
+      ],
+      "depth_level": "medium",
+      "estimated_time_minutes_range": [5, 18],
+      "summary_concept_groups": [
+        ["local"],
+        ["models", "language models"],
+        ["tool", "tool-use", "tool use"]
+      ],
+      "summary_must_not_claim": [
+        "image generation",
+        "mobile game"
+      ],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "youtube_retrieval_practice_talk",
+    "source_type": "youtube",
+    "source_id": "retriev1234",
+    "url": "https://www.youtube.com/watch?v=retriev1234",
+    "title": "retriev1234",
+    "fetched_at": "2026-05-22T00:00:00Z",
+    "input": {
+      "text": "Today we are going to build a practical retrieval workflow for a personal learning library. First we normalize saved articles, videos, and repositories into one metadata shape. Then we add filters for unread status, available time, and subject. After that we discuss why semantic search is useful but should come after simple transparent ranking. The talk ends by showing how recommendation explanations should cite item metadata instead of inventing reasons.",
+      "metadata": {
+        "duration": "8:30",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 9
+    },
+    "expected": {
+      "subject_options": [
+        "retrieval",
+        "personal knowledge management",
+        "learning library recommendations",
+        "recommendation systems"
+      ],
+      "category_any": [
+        "retrieval",
+        "recommendations",
+        "knowledge management",
+        "search"
+      ],
+      "category_concept_groups": [
+        ["retrieval", "information retrieval", "search"],
+        ["recommendations", "recommendation systems"],
+        ["knowledge management", "content management", "personal learning library"]
+      ],
+      "depth_level": "medium",
+      "estimated_time_minutes_range": [8, 10],
+      "summary_concept_groups": [
+        ["retrieval", "learning library"],
+        ["metadata"],
+        ["recommendation", "recommendations"]
+      ],
+      "summary_must_not_claim": [
+        "reinforcement learning",
+        "cryptocurrency"
+      ],
+      "min_confidence": 0.4
+    }
+  }
+]
