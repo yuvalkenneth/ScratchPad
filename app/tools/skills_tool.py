@@ -218,9 +218,9 @@ def get_skills_prompt_text() -> str:
     skills = skills_list()["skills"]
     if not skills:
         return (
-            "## Skills (mandatory)\n"
-            "Before replying, scan the skills below. If one clearly matches the task, "
-            "load it with skill_view(name) and follow its instructions.\n"
+            "## Skills\n"
+            "Use skills only when one clearly matches the user's task. Load the "
+            "skill with skill_view(name) before following it.\n"
             "If none match, proceed normally without loading a skill.\n\n"
             "<available_skills>\n"
             "  none\n"
@@ -232,9 +232,9 @@ def get_skills_prompt_text() -> str:
         grouped.setdefault(skill["category"], []).append(skill)
 
     lines = [
-        "## Skills (mandatory)",
-        "Before replying, scan the skills below. If one clearly matches the task, load it with skill_view(name) and follow its instructions.",
-        "After difficult or iterative tasks, offer to save the workflow as a skill.",
+        "## Skills",
+        "Use skills only when one clearly matches the user's task. Load the skill with skill_view(name) before following it.",
+        "If several skills could apply, choose the narrowest relevant skill.",
         "If none match, proceed normally without loading a skill.",
         "",
         "<available_skills>",

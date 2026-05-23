@@ -29,6 +29,11 @@ PROVIDER_TO_API_KEY_ENV_VAR = {
     "llama_cpp": "LLAMA_CPP_API_KEY",
 }
 
+CONTENT_PROFILE_CONTEXT = (
+    "This profile will be saved in a local learning library and later used to help "
+    "a user decide what to watch, revisit, search, filter, or get recommended."
+)
+
 YOUTUBE_ANALYZE_SCHEMA = {
     "name": "youtube_analyze",
     "description": (
@@ -125,12 +130,18 @@ def _analysis_prompt(task: str, question: Optional[str], include_timestamps: boo
 
     task_instructions = {
         "content_profile": (
+            f"{CONTENT_PROFILE_CONTEXT} "
             "Return a compact JSON object only. Use this exact schema: "
             '{"summary":"string","subject":"string","depth_level":"light|medium|deep",'
             '"categories":["string"],"estimated_time_minutes":0,"confidence":0.0}. '
-            "Use 1-4 short categories. `subject` should be the single best primary subject. "
-            "Base `estimated_time_minutes` on likely total viewing time from the transcript, "
-            "rounded to an integer. Keep the summary to 1-2 sentences."
+            "summary: 1-2 decision-useful sentences about what the video teaches or argues. "
+            "subject: the single best primary topic, not the video title, channel, or content format. "
+            "depth_level: light for overview/introduction, medium for practical explanation "
+            "with some detail, deep for advanced, dense, or prerequisite-heavy material. "
+            "categories: 1-4 short topical/domain tags that help search and recommendations; "
+            "avoid generic labels and avoid source format unless central. "
+            "estimated_time_minutes: likely total viewing time from the transcript, rounded to an integer. "
+            "confidence: 0.0-1.0 based on how clear, complete, and consistent the transcript evidence is."
         ),
         "summary": "Produce a concise but faithful summary of the whole video in one short paragraph.",
         "detailed_summary": (
@@ -161,6 +172,24 @@ def _analysis_prompt(task: str, question: Optional[str], include_timestamps: boo
         lines.append("Output JSON only. Do not wrap it in markdown fences.")
     else:
         lines.append("Be concrete. Avoid generic filler.")
+    return "\n".join(lines)
+
+
+def _content_profile_chunk_prompt(question: Optional[str], include_timestamps: bool) -> str:
+    lines = [
+        "You extract evidence notes from one YouTube transcript chunk.",
+        CONTENT_PROFILE_CONTEXT,
+        "Do not produce the final JSON profile.",
+        (
+            "Return compact notes for the final merger: likely subject evidence, candidate "
+            "topical categories, depth/audience/prerequisite signals, time or timestamp "
+            "evidence when useful, and any confidence caveats."
+        ),
+    ]
+    if include_timestamps:
+        lines.append("Preserve timestamps when they materially support the notes.")
+    if question:
+        lines.append(f"Pay extra attention to this user request: {question}")
     return "\n".join(lines)
 
 
@@ -198,17 +227,25 @@ def _analyze_chunks(
     chunk_summaries: list[str] = []
 
     for index, chunk in enumerate(chunks, start=1):
+        chunk_prompt = (
+            _content_profile_chunk_prompt(question, include_timestamps)
+            if task == "content_profile" and len(chunks) > 1
+            else _analysis_prompt(task, question, include_timestamps)
+        )
         chunk_messages = [
-            {"role": "system", "content": _analysis_prompt(task, question, include_timestamps)},
+            {"role": "system", "content": chunk_prompt},
             {
                 "role": "user",
                 "content": (
                     f"Transcript chunk {index} of {len(chunks)}:\n\n{chunk}\n\n"
                     + (
-                        "Extract compact notes for later profiling. Focus on subject matter, "
-                        "difficulty, audience assumptions, and major topics."
-                        if task == "content_profile"
-                        else "Summarize this chunk faithfully for later merging."
+                        "Extract compact evidence notes for later profiling. Do not output JSON."
+                        if task == "content_profile" and len(chunks) > 1
+                        else (
+                            "Analyze this transcript and return the final JSON content profile."
+                            if task == "content_profile"
+                            else "Summarize this chunk faithfully for later merging."
+                        )
                     )
                 ),
             },

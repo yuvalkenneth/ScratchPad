@@ -14,7 +14,25 @@
 * `content_list` lists saved items with basic filters for subject, category, depth, status, max estimated time, and query
 * `content_status_update` marks saved items `unread`, `started`, `done`, `archived`, or `abandoned`
 
-## Priority 1: Recommendation Skill
+## Priority 1: Content-Profile Evaluation Calibration
+
+* Make `scripts/eval_content_profiles.py` report partial scores such as `passed_checks / total_checks`, not only binary pass/fail
+* Split checks into severity levels, such as hard failures for schema/source identity and soft warnings for fuzzy subject/category matches
+* Let the model under test use explicit provider, model id, base URL, API key, and llama.cpp start-script arguments
+* Auto-start the llama.cpp server for eval runs unless explicitly disabled
+* Add `--runs N` so local model nondeterminism is visible across repeated generations
+* Use optional `--judge` scoring for qualitative summary, subject, category, depth, and time usefulness
+* Let the judge use a separate provider, model id, base URL, temperature, and top-p from the model being evaluated
+* Keep LLM judge results separate from deterministic checks so invalid schema/source identity cannot be hidden by a permissive judge
+* Add per-case timing and model metadata to the eval output so model comparisons are traceable
+* Improve semantic matching for subjects and categories without hiding genuinely poor classifications
+* Keep content-profile LLM eval inputs frozen so prompt/model changes are compared against identical source text
+* Allow eval expectations to express semantic alternatives instead of exact strings, especially for subjects, categories, and summary coverage
+* Use source-specific eval rubrics where needed, especially GitHub repository understanding time versus article reading time
+* Add a few real frozen fixtures from valuable URLs once candidate links are collected
+* Keep eval scripts separate from unit tests so normal tests remain deterministic and fast
+
+## Priority 2: Recommendation Skill
 
 * Add a `scratchpad-recommendation` skill that teaches the assistant how to answer "what should I read/learn now?"
 * Require the skill to call `content_list` before recommending saved items
@@ -25,7 +43,7 @@
 * If time, topic, or goal is missing and materially affects the recommendation, ask one short clarification instead of guessing
 * Use the skill as the first recommendation policy before hardcoding ranking behavior into `content_recommend`
 
-## Priority 2: Recommendation Tool Primitives
+## Priority 3: Recommendation Tool Primitives
 
 * Extend `content_list` to support multiple statuses, e.g. `["unread", "started"]`
 * Add sorting options for `content_list`, such as `created_at`, `updated_at`, `estimated_time_minutes`, and `confidence`
@@ -34,7 +52,7 @@
 * Add tests for multi-status filtering, sorting, min/max time filters, and query/topic relevance
 * Add agent behavior tests that verify recommendation requests load the skill, call `content_list`, obey status/time constraints, and use returned metadata in the answer
 
-## Priority 3: User Context
+## Priority 4: User Context
 
 * Add a lightweight editable user profile at `library/user/profile.md`
 * Store explicit preferences such as interests, avoided topics, preferred depth, preferred session length, and current goals
@@ -43,7 +61,7 @@
 * Use user context as transparent recommendation input, not hidden personalization magic
 * Add tests showing explicit user goals can influence recommendation queries without overriding hard constraints like status and available time
 
-## Priority 4: Recommendation Scoring
+## Priority 5: Recommendation Scoring
 
 * Add ranking logic for "what should I read now?" using time, depth, status, topic/query match, explicit preferences, and current goals
 * Start with simple transparent scoring over Markdown frontmatter and body text before adding embeddings
@@ -52,19 +70,14 @@
 * Keep `content_recommend` explainable by returning score components or reason fields
 * Add tests covering empty library, no matching items, time-constrained recommendations, status filtering, user-profile relevance, and query/topic relevance
 
-## Priority 5: Evaluation
+## Evaluation Follow-ups
 
-* Keep content-profile LLM eval inputs frozen so prompt/model changes are compared against identical source text
-* Allow eval expectations to express semantic alternatives instead of exact strings, especially for subjects, categories, and summary coverage
-* Use source-specific eval rubrics where needed, especially GitHub repository understanding time versus article reading time
 * Build recommendation eval fixtures with fake libraries, fake user profiles, user requests, and expected ranking constraints
 * Evaluate hard rules deterministically: status exclusions, time limits, query match, and required tool use
 * Evaluate qualitative recommendation usefulness separately with an optional stronger local model as judge
 * Build a cross-source content-profile eval set from recent, valuable, non-canonical URLs to reduce train-set contamination risk
 * Freeze fetched source text/transcripts/metadata into fixtures so eval runs do not depend on live network access
-* Add `scripts/eval_content_profiles.py` to run profile generation across fixtures and emit a compact score report
 * Later add `scripts/eval_recommendations.py` to compare recommendation behavior across local models
-* Keep eval scripts separate from unit tests so normal tests remain deterministic and fast
 
 ## Markdown Persistence Follow-ups
 
@@ -94,6 +107,7 @@ The core Markdown persistence path is already implemented. Remaining work here i
 * Keep fetchers source-specific, but require analyzers to emit the same contract and persistence to accept only that contract
 * Treat `estimated_time_minutes` as consumption time in v1
 * Decide later whether a separate `time_to_learn_minutes` field is needed
+* Later add prompt-injection hardening to analyzer prompts so scraped pages and transcripts are treated as untrusted source data
 
 ## YouTube Profiling
 

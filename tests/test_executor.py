@@ -1,4 +1,5 @@
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -6,6 +7,7 @@ from types import SimpleNamespace
 
 from app.library.markdown_store import content_list, content_save, content_status_update
 from app.llm.client import LLMClient
+from app.llm.prompting import build_system_prompt
 import app.tools.content_library_tool as content_library_tool
 from app.tools.content_library_tool import content_add
 from app.tools.executor import Executor, WORKSPACE, should_ask_permission
@@ -15,6 +17,7 @@ from app.tools.youtube_analyze_tool import _chunk_text, youtube_analyze
 import app.tools.url_analyze_tool as url_tool
 from app.fetchers.web import extract_page_content
 from app.tools.url_analyze_tool import url_analyze
+from app.tools.skills_tool import skill_view
 from scripts import eval_content_profiles
 
 
@@ -481,6 +484,15 @@ class LLMClientToolLoopTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("appears stuck", result)
 
 
+class PromptSurfaceTests(unittest.TestCase):
+    def test_default_system_prompt_identifies_scratchpad_and_tool_policy(self) -> None:
+        prompt = build_system_prompt()
+
+        self.assertIn("You are Scratchpad", prompt)
+        self.assertIn("local-first assistant", prompt)
+        self.assertIn("inspect tool results", prompt)
+
+
 class ContentProfileEvalTests(unittest.TestCase):
     def test_content_profile_eval_fixture_set_is_well_formed(self) -> None:
         cases = eval_content_profiles.load_cases(CONTENT_PROFILE_EVAL_FIXTURE_PATH)
@@ -511,8 +523,201 @@ class ContentProfileEvalTests(unittest.TestCase):
         }
 
         checks = eval_content_profiles.score_case(profile, case)
+        evaluation = eval_content_profiles.evaluate_case(profile, case)
 
         self.assertTrue(all(checks.values()))
+        self.assertTrue(evaluation["passed"])
+        self.assertEqual(evaluation["passed_checks"], evaluation["total_checks"])
+
+    def test_content_profile_eval_distinguishes_soft_failures(self) -> None:
+        case = eval_content_profiles.load_cases(CONTENT_PROFILE_EVAL_FIXTURE_PATH)[0]
+        profile = {
+            "status": "completed",
+            "source_type": case["source_type"],
+            "source_id": case["source_id"],
+            "url": case["url"],
+            "title": case["title"],
+            "summary": "This covers offline sync and conflict handling for local-first apps.",
+            "subject": "adjacent but not expected",
+            "depth_level": "medium",
+            "categories": ["unrelated"],
+            "estimated_time_minutes": 5,
+            "confidence": 0.7,
+        }
+
+        evaluation = eval_content_profiles.evaluate_case(profile, case)
+
+        self.assertTrue(evaluation["passed"])
+        self.assertEqual(evaluation["hard_failures"], [])
+        self.assertIn("subject", evaluation["soft_failures"])
+        self.assertIn("categories", evaluation["soft_failures"])
+
+    def test_content_profile_eval_judges_profile_with_mocked_llm(self) -> None:
+        case = eval_content_profiles.load_cases(CONTENT_PROFILE_EVAL_FIXTURE_PATH)[0]
+        profile = {
+            "status": "completed",
+            "source_type": case["source_type"],
+            "source_id": case["source_id"],
+            "url": case["url"],
+            "title": case["title"],
+            "summary": "This covers offline sync and conflict handling for local-first apps.",
+            "subject": "local-first software",
+            "depth_level": "medium",
+            "categories": ["software", "sync"],
+            "estimated_time_minutes": 5,
+            "confidence": 0.7,
+        }
+
+        def fake_complete_text(*_args: object, **_kwargs: object) -> str:
+            return json.dumps(
+                {
+                    "summary_faithful": True,
+                    "summary_covers_main_points": True,
+                    "subject_reasonable": True,
+                    "categories_useful": True,
+                    "depth_reasonable": True,
+                    "time_reasonable": True,
+                    "overall_useful": True,
+                    "notes": "The profile captures the main point.",
+                }
+            )
+
+        judgment = eval_content_profiles.judge_case(
+            profile,
+            case,
+            config=SimpleNamespace(),
+            complete_text=fake_complete_text,
+        )
+
+        self.assertEqual(judgment["status"], "completed")
+        self.assertTrue(judgment["overall_useful"])
+        self.assertEqual(judgment["notes"], "The profile captures the main point.")
+
+    def test_content_profile_eval_judge_config_uses_defaults_and_overrides(self) -> None:
+        defaults = SimpleNamespace(
+            provider="llama_cpp",
+            model_name="qwen-small",
+            base_url="http://127.0.0.1:8080/v1",
+            api_key="local",
+        )
+        default_args = SimpleNamespace(
+            judge_provider=None,
+            judge_model=None,
+            judge_base_url=None,
+            judge_api_key=None,
+            judge_temperature=None,
+            judge_top_p=None,
+        )
+        override_args = SimpleNamespace(
+            judge_provider="openai",
+            judge_model="gpt-test",
+            judge_base_url="https://api.example.test/v1",
+            judge_api_key="test-key",
+            judge_temperature=0.1,
+            judge_top_p=0.9,
+        )
+
+        default_config = eval_content_profiles.JudgeConfig.from_args(default_args, defaults)
+        override_config = eval_content_profiles.JudgeConfig.from_args(override_args, defaults)
+
+        self.assertEqual(default_config.provider, "llama_cpp")
+        self.assertEqual(default_config.model_name, "qwen-small")
+        self.assertEqual(default_config.temperature, 0.0)
+        self.assertEqual(default_config.top_p, 1.0)
+        self.assertEqual(override_config.provider, "openai")
+        self.assertEqual(override_config.model_name, "gpt-test")
+        self.assertEqual(override_config.base_url, "https://api.example.test/v1")
+        self.assertEqual(override_config.temperature, 0.1)
+        self.assertEqual(override_config.top_p, 0.9)
+
+    def test_content_profile_eval_config_accepts_model_under_test_overrides(self) -> None:
+        args = SimpleNamespace(
+            provider="llama_cpp",
+            model="Qwen3.5-4B-BF16",
+            base_url="http://127.0.0.1:8080/v1",
+            api_key="local-test",
+            start_script="/tmp/start-model.sh",
+        )
+
+        config = eval_content_profiles.eval_config_from_args(args)
+
+        self.assertEqual(config.provider, "llama_cpp")
+        self.assertEqual(config.model_name, "Qwen3.5-4B-BF16")
+        self.assertEqual(config.base_url, "http://127.0.0.1:8080/v1")
+        self.assertEqual(config.api_key, "local-test")
+        self.assertEqual(config.start_script, "/tmp/start-model.sh")
+
+    def test_content_profile_eval_prepare_provider_auto_starts_llama_cpp(self) -> None:
+        original_ensure = eval_content_profiles.ensure_provider_ready
+        calls = []
+        config = SimpleNamespace(provider="llama_cpp")
+        eval_content_profiles.ensure_provider_ready = lambda value: calls.append(value) or value
+        try:
+            result = eval_content_profiles.prepare_eval_provider(config, auto_start=True)
+            skipped = eval_content_profiles.prepare_eval_provider(config, auto_start=False)
+        finally:
+            eval_content_profiles.ensure_provider_ready = original_ensure
+
+        self.assertIs(result, config)
+        self.assertIs(skipped, config)
+        self.assertEqual(calls, [config])
+
+    def test_content_profile_eval_judge_config_uses_gemini_env_for_gemini_model(self) -> None:
+        defaults = SimpleNamespace(
+            provider="llama_cpp",
+            model_name="qwen-small",
+            base_url="http://127.0.0.1:8080/v1",
+            api_key="local",
+        )
+        args = SimpleNamespace(
+            judge_provider="openai",
+            judge_model="gemini-3.5-flash",
+            judge_base_url=None,
+            judge_api_key=None,
+            judge_temperature=None,
+            judge_top_p=None,
+        )
+        original_base_url = os.environ.get("GEMINI_BASE_URL")
+        original_api_key = os.environ.get("GEMINI_API_KEY")
+        os.environ["GEMINI_BASE_URL"] = "https://gemini.example.test/v1"
+        os.environ["GEMINI_API_KEY"] = "gemini-test-key"
+        try:
+            config = eval_content_profiles.JudgeConfig.from_args(args, defaults)
+        finally:
+            if original_base_url is None:
+                os.environ.pop("GEMINI_BASE_URL", None)
+            else:
+                os.environ["GEMINI_BASE_URL"] = original_base_url
+            if original_api_key is None:
+                os.environ.pop("GEMINI_API_KEY", None)
+            else:
+                os.environ["GEMINI_API_KEY"] = original_api_key
+
+        self.assertEqual(config.provider, "openai")
+        self.assertEqual(config.model_name, "gemini-3.5-flash")
+        self.assertEqual(config.base_url, "https://gemini.example.test/v1")
+        self.assertEqual(config.api_key, "gemini-test-key")
+
+    def test_content_profile_eval_judge_prompt_contains_full_context(self) -> None:
+        case = eval_content_profiles.load_cases(CONTENT_PROFILE_EVAL_FIXTURE_PATH)[0]
+        profile = {
+            "summary": "A summary.",
+            "subject": "local-first software",
+            "categories": ["sync"],
+        }
+
+        messages = eval_content_profiles.build_judge_messages(profile, case)
+        payload = json.loads(messages[1]["content"])
+
+        self.assertIn("Scratchpad", messages[0]["content"])
+        self.assertIn("local-first learning inbox", messages[0]["content"])
+        self.assertIn("search, filtering, recommendation", messages[0]["content"])
+        self.assertIn("summary_faithful", messages[0]["content"])
+        self.assertIn("categories_useful", messages[0]["content"])
+        self.assertIn("Return JSON only", messages[0]["content"])
+        self.assertEqual(payload["source"]["id"], case["id"])
+        self.assertEqual(payload["expected_rubric"], case["expected"])
+        self.assertEqual(payload["actual_profile"], profile)
 
     def test_content_profile_eval_analyzes_frozen_input_without_fetching(self) -> None:
         case = eval_content_profiles.load_cases(CONTENT_PROFILE_EVAL_FIXTURE_PATH)[1]
@@ -670,6 +875,18 @@ class YouTubeAnalyzeToolTests(unittest.TestCase):
         self.assertIn("youtube_analyze", prompt_text)
         self.assertIn("content_profile", prompt_text)
         self.assertNotIn("youtube_transcript_fetch", prompt_text)
+
+    def test_youtube_profile_prompt_prefers_recommendation_categories(self) -> None:
+        prompt = analyze_tool._analysis_prompt(
+            "content_profile",
+            question=None,
+            include_timestamps=False,
+        )
+
+        self.assertIn("local learning library", prompt)
+        self.assertIn("search, filter, or get recommended", prompt)
+        self.assertIn("avoid generic labels", prompt)
+        self.assertIn("confidence: 0.0-1.0", prompt)
 
     def test_tool_definitions_hide_internal_transcript_fetch(self) -> None:
         definitions = get_tool_definitions()
@@ -864,6 +1081,14 @@ class URLAnalyzeToolTests(unittest.TestCase):
         self.assertIn("url_analyze", prompt_text)
         self.assertIn("non-YouTube URLs", prompt_text)
 
+    def test_url_profile_prompt_prefers_recommendation_categories(self) -> None:
+        prompt = url_tool._analysis_prompt("Example", "https://example.com")
+
+        self.assertIn("local learning library", prompt)
+        self.assertIn("search, filter, or get recommended", prompt)
+        self.assertIn("avoid generic labels", prompt)
+        self.assertIn("confidence: 0.0-1.0", prompt)
+
     def test_tool_definitions_include_url_analyze(self) -> None:
         definitions = get_tool_definitions()
         tool_names = [item["function"]["name"] for item in definitions]
@@ -878,6 +1103,13 @@ class URLAnalyzeToolTests(unittest.TestCase):
         self.assertIn("content_save", tool_names)
         self.assertIn("content_list", tool_names)
         self.assertIn("content_status_update", tool_names)
+        self.assertIn("skills_list", tool_names)
+
+    def test_youtube_skill_routes_url_only_inputs_to_youtube_analyze(self) -> None:
+        content = skill_view("youtube-content")["content"]
+
+        self.assertIn("use `youtube_analyze` first", content)
+        self.assertIn("Only present quotes that are directly supported", content)
 
 
 if __name__ == "__main__":

@@ -19,6 +19,11 @@ PROVIDER_TO_API_KEY_ENV_VAR = {
     "llama_cpp": "LLAMA_CPP_API_KEY",
 }
 
+CONTENT_PROFILE_CONTEXT = (
+    "This profile will be saved in a local learning library and later used to help "
+    "a user decide what to read, revisit, search, filter, or get recommended."
+)
+
 URL_ANALYZE_SCHEMA = {
     "name": "url_analyze",
     "description": (
@@ -49,17 +54,28 @@ URL_ANALYZE_SCHEMA = {
 def _analysis_prompt(title: str, url: str) -> str:
     lines = [
         "You classify scraped web page content into a compact content profile.",
+        CONTENT_PROFILE_CONTEXT,
         "Return a compact JSON object only.",
         (
             'Use this exact schema: {"summary":"string","subject":"string",'
             '"depth_level":"light|medium|deep","categories":["string"],'
             '"estimated_time_minutes":0,"confidence":0.0}.'
         ),
-        "Keep the summary to 1-2 sentences.",
-        "Choose the single best primary subject.",
-        "Only use depth_level values light, medium, or deep.",
-        "Use 1-4 short categories.",
-        "Base estimated_time_minutes on likely reading time from the provided content, rounded to an integer.",
+        "summary: 1-2 decision-useful sentences about what the item teaches or argues.",
+        "subject: the single best primary topic, not the page title, site name, or content format.",
+        (
+            "depth_level: light for overview/introduction, medium for practical explanation "
+            "with some detail, deep for advanced, dense, or prerequisite-heavy material."
+        ),
+        (
+            "categories: 1-4 short topical/domain tags that help search and recommendations; "
+            "avoid generic labels and avoid source format or implementation language unless central."
+        ),
+        (
+            "estimated_time_minutes: minutes needed to consume and understand enough to "
+            "decide whether to revisit, save, or act on this item."
+        ),
+        "confidence: 0.0-1.0 based on how clear and complete the extracted page content is.",
         "Output JSON only. Do not wrap it in markdown fences.",
     ]
     if title:

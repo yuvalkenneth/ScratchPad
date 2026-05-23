@@ -13,8 +13,10 @@ from app.tools.url_analyze_tool import (
     url_analyze,
 )
 from app.tools.skills_tool import (
+    SKILLS_LIST_SCHEMA,
     SKILL_VIEW_SCHEMA,
     get_skills_prompt_text,
+    skills_list_json,
     skill_view_json,
 )
 from app.tools.content_library_tool import (
@@ -208,6 +210,13 @@ TOOLS: dict[str, dict[str, Any]] = {
         },
         "handler": content_status_update_json,
     },
+    "skills_list": {
+        "definition": {
+            "type": "function",
+            "function": SKILLS_LIST_SCHEMA,
+        },
+        "handler": skills_list_json,
+    },
     "skill_view": {
         "definition": {
             "type": "function",
@@ -235,6 +244,7 @@ def get_tools_prompt_text() -> str:
         "- content_save: Save a normalized content_profile into the local Markdown library.",
         "- content_list: List saved Markdown library items by subject, category, depth, status, time, or free-text query.",
         "- content_status_update: Update a saved Markdown library item's reading status or notes by id, URL, or source identity.",
+        "- skills_list: List available skills with compact metadata.",
         "- skill_view: Load the full content of a skill or one of its linked files.",
         "For YouTube URLs, do not load a skill first unless you already have transcript data and need a specific transcript-transformation workflow.",
         "Use youtube_analyze with task='content_profile' for product-facing classification such as summary, subject, depth_level, categories, and estimated_time_minutes.",

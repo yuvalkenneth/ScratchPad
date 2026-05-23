@@ -11,6 +11,11 @@ description: >
 Use this skill after transcript data has already been fetched through a tool.
 This skill is for analysis and transformation, not retrieval.
 
+If the user provides only a YouTube URL or asks for whole-video analysis without
+transcript text, use `youtube_analyze` first instead of loading or applying this
+skill directly. Return to this skill only when transcript text or transcript
+segments are available in the context.
+
 ## Inputs
 
 Expected transcript inputs:
@@ -49,8 +54,19 @@ After transcript data is available, format it based on what the user asks for:
 5. **Project-normalize when useful**: infer depth, likely time-to-consume, save-worthy takeaways, and whether the video should become a scratchpad entry.
 6. **Verify**: re-read the transformed output to check for coherence, correct timestamps, and completeness before presenting.
 
+## Quote Grounding
+
+- Only present quotes that are directly supported by transcript text.
+- Keep quoted snippets short and preserve the speaker's wording.
+- Include timestamps when transcript segments provide them.
+- If the user asks for quotes but the available transcript is summarized,
+  paraphrased, or missing the relevant wording, say that exact quotes are not
+  available from the current input and provide paraphrased takeaways instead.
+
 ## Error Handling
 
+- **URL only**: call `youtube_analyze` to fetch and analyze the transcript; do not
+  infer transcript content from the URL, title, or thumbnail alone.
 - **Preview only**: note when the output is based on a partial transcript and avoid overclaiming completeness.
 - **No timestamps**: provide untimestamped summaries or thematic sections instead of fabricated chapter times.
 - **Incomplete transcript**: say so explicitly and limit claims to the available content.
