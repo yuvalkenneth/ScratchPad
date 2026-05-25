@@ -12,6 +12,7 @@ from app.llm.openai_compatible import resolve_api_key, resolve_base_url
 from app.llm.prompting import build_system_prompt
 import app.tools.content_library_tool as content_library_tool
 from app.tools.content_library_tool import content_add
+from app.tools.content_profile import ContentProfile
 from app.tools.executor import Executor, WORKSPACE, should_ask_permission
 from app.tools.registry import get_tool_definitions, get_tools_prompt_text
 import app.tools.youtube_analyze_tool as analyze_tool
@@ -570,6 +571,37 @@ class OpenAICompatibleConfigTests(unittest.TestCase):
                 os.environ.pop("LLM_BASE_URL", None)
             else:
                 os.environ["LLM_BASE_URL"] = original_llm_base_url
+
+
+class ContentProfileTests(unittest.TestCase):
+    def test_content_profile_coerces_model_output(self) -> None:
+        profile = ContentProfile.from_model_output(
+            {
+                "summary": "  A useful summary.  ",
+                "subject": " Local-first software ",
+                "depth_level": "DEEP",
+                "categories": "software, sync, local-first, notes, ignored",
+                "estimated_time_minutes": "12",
+                "confidence": "1.5",
+            },
+            estimated_time_minutes=5,
+            trust_model_time=True,
+        )
+
+        self.assertEqual(profile.summary, "A useful summary.")
+        self.assertEqual(profile.subject, "Local-first software")
+        self.assertEqual(profile.depth_level, "deep")
+        self.assertEqual(profile.categories, ["software", "sync", "local-first", "notes"])
+        self.assertEqual(profile.estimated_time_minutes, 12)
+        self.assertEqual(profile.confidence, 1.0)
+
+    def test_content_profile_fallback_is_safe(self) -> None:
+        profile = ContentProfile.fallback(estimated_time_minutes=0)
+
+        self.assertEqual(profile.depth_level, "medium")
+        self.assertEqual(profile.estimated_time_minutes, 1)
+        self.assertEqual(profile.confidence, 0.0)
+        self.assertEqual(profile.to_dict()["categories"], [])
 
 
 class ContentProfileEvalTests(unittest.TestCase):
