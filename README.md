@@ -82,10 +82,11 @@ Early development.
 Current focus:
 
 * minimal LLM client
-* tool-driven local chat loop with guarded tool execution
+* tool-driven local chat loop with a small product-focused tool surface
 * model switching and local server observability
-* basic classification (depth + estimated time)
-* normalized content profiles before the first save + retrieve flow
+* normalized content profiles across web, GitHub, Reddit, and YouTube
+* Markdown-backed content saving, deduplication, listing, and status updates
+* content-profile eval fixtures for comparing small/local model behavior
 
 ---
 
@@ -172,6 +173,26 @@ uv run python main.py
 
 3. The app will start the local server automatically for `llama_cpp` if needed.
 
+### Tests and evals
+
+Run deterministic unit tests with pytest:
+
+```bash
+uv run pytest
+```
+
+Run the content-profile model eval manually when comparing prompts or models:
+
+```bash
+uv run python scripts/eval_content_profiles.py
+```
+
+The eval script reads frozen cases from:
+
+```text
+evals/content_profiles/cases.json
+```
+
 ### Chat commands
 
 The REPL in [main.py](main.py) supports a few built-in commands:
@@ -193,6 +214,7 @@ Example model switch:
 
 ```text
 app/
+  content.py  # normalized content profile/item contract
   fetchers/   # source-specific fetching and extraction
   library/    # Markdown-backed content storage
   llm/        # model client, runtime, and prompting
@@ -202,7 +224,8 @@ skills/       # markdown skill definitions
 library/      # local Markdown content items, created as needed
 
 scripts/      # dev scripts
-tests/        # unit tests and fixtures
+evals/        # frozen model-eval fixtures
+tests/        # deterministic pytest unit tests
 ```
 
 ---
@@ -245,6 +268,12 @@ It currently supports:
 * timeout support
 * stdout/stderr truncation
 * a stripped environment allowlist to avoid leaking secrets
+
+These executor tools are not exposed to the app LLM by default. Enable them only for development/debugging:
+
+```bash
+SCRATCHPAD_ENABLE_EXECUTOR_TOOLS=1
+```
 
 Permission behavior is intentionally simple:
 

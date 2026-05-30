@@ -9,7 +9,7 @@ from app.fetchers.common import estimate_time_minutes, http_error_payload
 from app.fetchers.router import fetch_source
 from app.llm.config import LLMConfig
 from app.llm.openai_compatible import complete_text
-from app.tools.content_profile import build_content_profile_payload
+from app.content import build_content_profile_payload
 
 
 CONTENT_PROFILE_CONTEXT = (

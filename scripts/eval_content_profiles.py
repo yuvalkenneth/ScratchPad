@@ -16,12 +16,12 @@ from app.fetchers.common import estimate_time_minutes
 from app.llm.config import LLMConfig
 from app.llm.openai_compatible import complete_text
 from app.llm.runtime import ensure_provider_ready
-from app.tools.content_profile import build_content_profile_payload
+from app.content import build_content_profile_payload
 import app.tools.url_analyze_tool as url_analyze_tool
 import app.tools.youtube_analyze_tool as youtube_analyze_tool
 
 
-DEFAULT_FIXTURE_PATH = REPO_ROOT / "tests" / "fixtures" / "content_profile_eval_cases.json"
+DEFAULT_FIXTURE_PATH = REPO_ROOT / "evals" / "content_profiles" / "cases.json"
 REQUIRED_CASE_KEYS = {"id", "source_type", "url", "title", "input", "expected"}
 REQUIRED_INPUT_KEYS = {"text"}
 REQUIRED_PROFILE_KEYS = {
@@ -439,9 +439,13 @@ def _has_overlap(values: Any, options: list[Any]) -> bool:
 
 
 def _has_category_match(values: Any, expected: dict[str, Any]) -> bool:
-    if _has_overlap(values, expected.get("category_any", [])):
+    category_any = expected.get("category_any", [])
+    concept_groups = expected.get("category_concept_groups", [])
+    if _has_overlap(values, category_any):
         return True
-    return _values_cover_concept_groups(values, expected.get("category_concept_groups", []))
+    if concept_groups:
+        return _values_cover_concept_groups(values, concept_groups)
+    return not category_any and bool(values)
 
 
 def _values_cover_concept_groups(values: Any, concept_groups: list[Any]) -> bool:

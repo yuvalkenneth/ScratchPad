@@ -8,19 +8,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
+from app.content import ContentItem, READING_STATUS_VALUES
+
 
 DEFAULT_LIBRARY_ROOT = Path(os.getenv("SCRATCHPAD_LIBRARY_DIR", "library"))
-REQUIRED_PROFILE_FIELDS = {
-    "source_type",
-    "url",
-    "title",
-    "summary",
-    "subject",
-    "depth_level",
-    "estimated_time_minutes",
-}
-DEPTH_LEVELS = {"light", "medium", "deep"}
-STATUS_VALUES = {"unread", "started", "done", "archived", "abandoned"}
 
 
 def content_save(item: dict[str, Any], *, library_root: Path = DEFAULT_LIBRARY_ROOT) -> dict[str, Any]:
@@ -38,7 +29,7 @@ def content_save(item: dict[str, Any], *, library_root: Path = DEFAULT_LIBRARY_R
         existing["frontmatter"].get("created_at") if existing else now
     )
     normalized["updated_at"] = now
-    if existing and "status" not in item:
+    if existing and normalized["status"] == "unread":
         normalized["status"] = str(existing["frontmatter"].get("status") or normalized["status"])
 
     notes = str(item.get("notes") or "")
@@ -69,10 +60,10 @@ def content_status_update(
 ) -> dict[str, Any]:
     if status is None and notes is None:
         return {"status": "error", "error": "Provide at least one field to update."}
-    if status is not None and status not in STATUS_VALUES:
+    if status is not None and status not in READING_STATUS_VALUES:
         return {
             "status": "error",
-            "error": f"status must be one of: {', '.join(sorted(STATUS_VALUES))}",
+            "error": f"status must be one of: {', '.join(sorted(READING_STATUS_VALUES))}",
         }
 
     found = find_item_path(
@@ -127,59 +118,7 @@ def content_list(
 
 
 def normalize_item(item: dict[str, Any]) -> dict[str, Any]:
-    missing = sorted(field for field in REQUIRED_PROFILE_FIELDS if item.get(field) in {None, ""})
-    if missing:
-        raise ValueError(f"Missing required content profile fields: {', '.join(missing)}")
-
-    depth_level = str(item.get("depth_level") or "").strip().lower()
-    if depth_level not in DEPTH_LEVELS:
-        raise ValueError("depth_level must be one of: light, medium, deep")
-
-    categories = item.get("categories") or []
-    if isinstance(categories, str):
-        categories = [part.strip() for part in categories.split(",") if part.strip()]
-    elif isinstance(categories, list):
-        categories = [str(part).strip() for part in categories if str(part).strip()]
-    else:
-        categories = []
-
-    try:
-        estimated_time_minutes = int(item.get("estimated_time_minutes"))
-    except (TypeError, ValueError):
-        raise ValueError("estimated_time_minutes must be an integer")
-    if estimated_time_minutes < 1:
-        raise ValueError("estimated_time_minutes must be at least 1")
-
-    try:
-        confidence = float(item.get("confidence", 0.0))
-    except (TypeError, ValueError):
-        confidence = 0.0
-
-    metadata = item.get("metadata") or {}
-    if not isinstance(metadata, dict):
-        metadata = {"value": metadata}
-
-    status = str(item.get("status") or "unread").strip()
-    if status not in STATUS_VALUES:
-        raise ValueError(f"status must be one of: {', '.join(sorted(STATUS_VALUES))}")
-
-    return {
-        "id": str(item.get("id") or "").strip() or None,
-        "source_type": str(item["source_type"]).strip(),
-        "source_id": item.get("source_id"),
-        "url": str(item["url"]).strip(),
-        "title": str(item["title"]).strip(),
-        "summary": str(item["summary"]).strip(),
-        "subject": str(item["subject"]).strip(),
-        "depth_level": depth_level,
-        "categories": categories,
-        "estimated_time_minutes": estimated_time_minutes,
-        "confidence": max(0.0, min(1.0, confidence)),
-        "status": status,
-        "metadata": metadata,
-        "created_at": item.get("created_at"),
-        "updated_at": item.get("updated_at"),
-    }
+    return ContentItem.from_mapping(item).to_dict()
 
 
 def build_item_id(item: dict[str, Any]) -> str:
@@ -228,10 +167,10 @@ def format_frontmatter_value(value: Any) -> str:
         return "null"
     if isinstance(value, (list, dict)):
         return json.dumps(value, ensure_ascii=True, sort_keys=True)
-    if isinstance(value, (int, float)):
-        return str(value)
     if isinstance(value, bool):
         return "true" if value else "false"
+    if isinstance(value, (int, float)):
+        return str(value)
     return json.dumps(str(value), ensure_ascii=True)
 
 

@@ -5,7 +5,7 @@ from typing import Any, Optional
 
 from app.llm.config import LLMConfig
 from app.llm.openai_compatible import complete_text
-from app.tools.content_profile import build_content_profile_payload
+from app.content import build_content_profile_payload
 from app.tools.youtube_tool import extract_video_id, fetch_transcript_segments, format_timestamp
 
 
