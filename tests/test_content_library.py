@@ -1,6 +1,8 @@
 import json
+import subprocess
 from pathlib import Path
 
+import app.library.git_history as git_history
 import app.tools.content_library_tool as content_library_tool
 from app.library.markdown_store import content_list, content_save, content_status_update
 from app.tools.content_library_tool import content_add
@@ -47,6 +49,16 @@ def content_item(
     }
 
 
+def git_log_messages(library_root: Path) -> list[str]:
+    result = subprocess.run(
+        ["git", "-C", str(library_root), "log", "--format=%s"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return result.stdout.splitlines()
+
+
 def test_content_save_writes_flat_markdown_item(tmp_path: Path) -> None:
     result = content_save(
         {
@@ -76,6 +88,9 @@ def test_content_save_writes_flat_markdown_item(tmp_path: Path) -> None:
     assert 'source_type: "web"' in text
     assert 'categories: ["software", "notes"]' in text
     assert "## Notes" in text
+    assert result["git"]["committed"]
+    assert result["git"]["message"] == "Add content: Local-first Notes"
+    assert git_log_messages(tmp_path)[0] == "Add content: Local-first Notes"
 
 
 def test_content_save_accepts_analyzer_status_and_preserves_extras_in_metadata(
@@ -135,6 +150,8 @@ def test_content_save_updates_existing_url_preserving_status_and_notes(tmp_path:
     assert second["item"]["status"] == "started"
     assert "# Updated Title" in saved_text
     assert "Already looked at this." in saved_text
+    assert second["git"]["committed"]
+    assert git_log_messages(tmp_path)[0] == "Update content: Updated Title"
 
 
 def test_content_list_filters_by_topic_time_and_query(tmp_path: Path) -> None:
@@ -174,6 +191,114 @@ def test_content_list_filters_by_topic_time_and_query(tmp_path: Path) -> None:
     assert result["items"][0]["title"] == "SQLite Guide"
 
 
+def test_content_list_queries_status_time_window_and_sorting(tmp_path: Path) -> None:
+    content_save(
+        content_item(
+            url="https://example.com/short-agent-evals",
+            title="Short Agent Evals",
+            item_profile=profile_fields(
+                summary="A practical note about local LLM agent evaluation.",
+                subject="agent evals",
+                categories=["llm", "evals"],
+                estimated_time_minutes=8,
+                confidence=0.9,
+            ),
+            status="unread",
+        ),
+        library_root=tmp_path,
+    )
+    content_save(
+        content_item(
+            url="https://example.com/started-agent-evals",
+            title="Started Agent Evals",
+            item_profile=profile_fields(
+                summary="A deeper article about evaluating local agents with rubrics.",
+                subject="agent evals",
+                categories=["llm", "evals"],
+                estimated_time_minutes=18,
+                confidence=0.7,
+            ),
+            status="started",
+        ),
+        library_root=tmp_path,
+    )
+    content_save(
+        content_item(
+            url="https://example.com/done-agent-evals",
+            title="Done Agent Evals",
+            item_profile=profile_fields(
+                summary="A completed article about agent evaluation.",
+                subject="agent evals",
+                categories=["llm", "evals"],
+                estimated_time_minutes=6,
+            ),
+            status="done",
+        ),
+        library_root=tmp_path,
+    )
+
+    result = content_list(
+        {
+            "status": ["unread", "started"],
+            "exclude_status": ["done", "archived", "abandoned"],
+            "min_estimated_time_minutes": 5,
+            "max_estimated_time_minutes": 20,
+            "query": "local agent evals",
+            "sort": "estimated_time_minutes",
+        },
+        library_root=tmp_path,
+    )
+
+    assert [item["title"] for item in result["items"]] == [
+        "Short Agent Evals",
+        "Started Agent Evals",
+    ]
+    assert all("match_score" in item for item in result["items"])
+    assert "query:title" in result["items"][0]["match_reasons"]
+
+
+def test_content_list_relevance_sort_prefers_better_text_match(tmp_path: Path) -> None:
+    content_save(
+        content_item(
+            url="https://example.com/generic",
+            title="Local Tools",
+            item_profile=profile_fields(
+                summary="Mentions evaluation briefly.",
+                subject="developer tools",
+                categories=["tools"],
+                estimated_time_minutes=5,
+            ),
+        ),
+        library_root=tmp_path,
+    )
+    content_save(
+        content_item(
+            url="https://example.com/exact",
+            title="Local LLM Evaluation",
+            item_profile=profile_fields(
+                summary="Local LLM evaluation methods for agent workflows.",
+                subject="local llm evaluation",
+                categories=["llm", "evals"],
+                estimated_time_minutes=12,
+            ),
+        ),
+        library_root=tmp_path,
+    )
+
+    result = content_list(
+        {
+            "query": "local llm evaluation",
+            "sort": "relevance",
+            "limit": 1,
+        },
+        library_root=tmp_path,
+    )
+
+    assert result["count"] == 2
+    assert result["items"][0]["title"] == "Local LLM Evaluation"
+    assert result["items"][0]["match_score"] > 0
+
+
 def test_content_status_update_changes_status_and_notes(tmp_path: Path) -> None:
     saved = content_save(
         content_item(url="https://example.com/sqlite", title="SQLite Guide"),
@@ -195,6 +320,31 @@ def test_content_status_update_changes_status_and_notes(tmp_path: Path) -> None:
     assert status_result["item"]["status"] == "done"
     assert "## Notes" in saved_text
     assert "This is useful for local apps." in saved_text
+    assert status_result["git"]["message"] == "Update status: SQLite Guide -> done"
+    assert notes_result["git"]["message"] == "Update notes: SQLite Guide"
+    assert git_log_messages(tmp_path)[:2] == [
+        "Update notes: SQLite Guide",
+        "Update status: SQLite Guide -> done",
+    ]
+
+
+def test_content_save_reports_nonfatal_git_failure(tmp_path: Path, monkeypatch) -> None:
+    def fail_git(*_args, **_kwargs):
+        raise subprocess.CalledProcessError(1, ["git"], stderr="git failed")
+
+    monkeypatch.setattr(git_history, "run_git", fail_git)
+
+    result = content_save(
+        content_item(url="https://example.com/git-failure", title="Git Failure"),
+        library_root=tmp_path,
+    )
+
+    assert result["status"] == "saved"
+    assert Path(result["path"]).exists()
+    assert result["git"]["enabled"]
+    assert not result["git"]["committed"]
+    assert result["git"]["commit"] is None
+    assert result["git"]["error"] == "git failed"
 
 
 def test_content_add_saves_and_deduplicates_analyzed_url(

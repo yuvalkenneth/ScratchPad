@@ -85,7 +85,7 @@ Current focus:
 * tool-driven local chat loop with a small product-focused tool surface
 * model switching and local server observability
 * normalized content profiles across web, GitHub, Reddit, and YouTube
-* Markdown-backed content saving, deduplication, listing, and status updates
+* Markdown-backed content saving, deduplication, listing, status updates, and Git-backed history
 * content-profile eval fixtures for comparing small/local model behavior
 
 ---
@@ -143,6 +143,7 @@ The Markdown library is intentionally not separated by source. Files live under:
 
 ```text
 library/
+  .git/
   items/
     <source-type>-<topic-slug>-<stable-hash>.md
 ```
@@ -150,6 +151,28 @@ library/
 Retrieval should be by metadata and text, such as subject, category, depth, available time, status, and free-text query. `source_type` stays in frontmatter for deduplication and source-specific rendering.
 
 Use `content_add` for the normal ingestion path: it analyzes a URL, converts the analyzer result into the normalized profile contract, and writes the corresponding Markdown item. If the same source is added again, Scratchpad updates the existing Markdown file instead of creating a duplicate.
+
+### Library history
+
+The content library is versioned separately from the application code. On the first content mutation, Scratchpad initializes a Git repository under `library/.git` and commits the changed Markdown item.
+
+This is not just backup. Git history makes local-model experiments easier to inspect:
+
+* every saved or updated item has an operation-level commit
+* analyzer and recommendation behavior can be audited through diffs
+* failed Git commits are reported in tool output without blocking the content write
+* the app repo and the personal library history stay separate
+
+Current commit messages are intentionally simple:
+
+```text
+Add content: <title>
+Update content: <title>
+Update status: <title> -> <status>
+Update notes: <title>
+```
+
+History viewing, diffs, and restore commands are planned later. For now, Git is used to make library mutations observable while keeping Markdown as the source of truth.
 
 ---
 
@@ -221,7 +244,7 @@ app/
   tools/      # tool implementations and registry
 
 skills/       # markdown skill definitions
-library/      # local Markdown content items, created as needed
+library/      # local Markdown content items and their separate Git history, created as needed
 
 scripts/      # dev scripts
 evals/        # frozen model-eval fixtures
@@ -251,7 +274,7 @@ The local chat runtime currently supports:
 * loop protection for repeated or excessive tool rounds
 * local `llama.cpp` server startup and shutdown
 * log-based server timing inspection for prompt/output token counts and speed
-* Markdown-backed content ingestion, saving, status updates, and listing through `content_add`, `content_save`, `content_status_update`, and `content_list`
+* Markdown-backed content ingestion, saving, status updates, listing, and Git-backed mutation history through `content_add`, `content_save`, `content_status_update`, and `content_list`
 
 ---
 

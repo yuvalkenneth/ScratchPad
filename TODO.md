@@ -12,6 +12,7 @@
 * `content_add` analyzes a URL and saves it in one step
 * `content_save` saves an already-normalized profile
 * `content_list` lists saved items with basic filters for subject, category, depth, status, max estimated time, and query
+* `content_list` now uses a lightweight in-memory Markdown query layer with multi-status filters, status exclusions, min/max time windows, sorting, relevance scores, and match reasons
 * `content_status_update` marks saved items `unread`, `started`, `done`, `archived`, or `abandoned`
 
 ## Priority 1: Content-Profile Evaluation Calibration
@@ -45,11 +46,9 @@
 
 ## Priority 3: Recommendation Tool Primitives
 
-* Extend `content_list` to support multiple statuses, e.g. `["unread", "started"]`
-* Add sorting options for `content_list`, such as `created_at`, `updated_at`, `estimated_time_minutes`, and `confidence`
-* Add optional `min_estimated_time_minutes` for better time-window matching
+* Keep the in-memory Markdown query layer simple and transparent; do not add SQLite until file scanning becomes painful
 * Keep tool output compact enough for small local models while preserving fields needed for recommendation
-* Add tests for multi-status filtering, sorting, min/max time filters, and query/topic relevance
+* Tune relevance scoring as real saved libraries expose weak ranking behavior
 * Add agent behavior tests that verify recommendation requests load the skill, call `content_list`, obey status/time constraints, and use returned metadata in the answer
 
 ## Priority 4: User Context

@@ -210,7 +210,7 @@ def judge_case(
     if complete_text is None:
         complete_text = _complete_judge_text
 
-    raw_judgment = complete_text(config, build_judge_messages(profile, case), 500)
+    raw_judgment = complete_text(config, build_judge_messages(profile, case), 4096)
     try:
         parsed = _extract_json_object(raw_judgment)
     except ValueError:

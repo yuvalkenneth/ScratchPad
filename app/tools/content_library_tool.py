@@ -80,17 +80,42 @@ CONTENT_LIST_SCHEMA = {
     "name": "content_list",
     "description": (
         "List saved Markdown library items. Filter by subject, category, depth, "
-        "status, maximum time, or free-text query."
+        "status, time window, free-text query, and sort order."
     ),
     "parameters": {
         "type": "object",
         "properties": {
             "subject": {"type": "string"},
             "categories": {"type": "array", "items": {"type": "string"}},
-            "depth_level": {"type": "string", "enum": ["light", "medium", "deep"]},
-            "status": {"type": "string"},
+            "depth_level": {
+                "oneOf": [
+                    {"type": "string", "enum": ["light", "medium", "deep"]},
+                    {
+                        "type": "array",
+                        "items": {"type": "string", "enum": ["light", "medium", "deep"]},
+                    },
+                ],
+            },
+            "status": {
+                "oneOf": [
+                    {"type": "string"},
+                    {"type": "array", "items": {"type": "string"}},
+                ],
+            },
+            "exclude_status": {"type": "array", "items": {"type": "string"}},
+            "min_estimated_time_minutes": {"type": "integer"},
             "max_estimated_time_minutes": {"type": "integer"},
             "query": {"type": "string"},
+            "sort": {
+                "type": "string",
+                "enum": [
+                    "created_at",
+                    "updated_at",
+                    "estimated_time_minutes",
+                    "confidence",
+                    "relevance",
+                ],
+            },
             "limit": {"type": "integer"},
         },
         "additionalProperties": False,

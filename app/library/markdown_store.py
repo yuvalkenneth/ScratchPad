@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Any, Optional
 
 from app.content import ContentItem, READING_STATUS_VALUES
+from app.library.git_history import commit_library_paths
+from app.library.query import query_items
 
 
 DEFAULT_LIBRARY_ROOT = Path(os.getenv("SCRATCHPAD_LIBRARY_DIR", "library"))
@@ -37,6 +39,11 @@ def content_save(item: dict[str, Any], *, library_root: Path = DEFAULT_LIBRARY_R
         notes = extract_notes_section(existing["body"])
     body = build_markdown_body(normalized, notes)
     path.write_text(render_frontmatter(normalized) + "\n" + body, encoding="utf-8")
+    git_result = commit_library_paths(
+        library_root=library_root,
+        paths=[path],
+        message=content_save_commit_message(normalized, created=existing is None),
+    )
 
     return {
         "status": "saved",
@@ -45,6 +52,7 @@ def content_save(item: dict[str, Any], *, library_root: Path = DEFAULT_LIBRARY_R
         "created": existing is None,
         "duplicate": existing is not None,
         "item": normalized,
+        "git": git_result,
     }
 
 
@@ -78,6 +86,7 @@ def content_status_update(
 
     parsed = read_item_file(found)
     frontmatter = dict(parsed["frontmatter"])
+    previous_status = frontmatter.get("status")
     if status is not None:
         frontmatter["status"] = status
     frontmatter["updated_at"] = utc_now()
@@ -89,7 +98,23 @@ def content_status_update(
     found.write_text(render_frontmatter(frontmatter) + "\n" + body.strip() + "\n", encoding="utf-8")
     updated = read_item_file(found)["frontmatter"]
     updated["path"] = str(found)
-    return {"status": "updated", "id": updated.get("id"), "path": str(found), "item": updated}
+    git_result = commit_library_paths(
+        library_root=library_root,
+        paths=[found],
+        message=content_update_commit_message(
+            updated,
+            previous_status=previous_status,
+            requested_status=status,
+            notes_updated=notes is not None,
+        ),
+    )
+    return {
+        "status": "updated",
+        "id": updated.get("id"),
+        "path": str(found),
+        "item": updated,
+        "git": git_result,
+    }
 
 
 def content_list(
@@ -97,7 +122,6 @@ def content_list(
     *,
     library_root: Path = DEFAULT_LIBRARY_ROOT,
 ) -> dict[str, Any]:
-    filters = filters or {}
     items_dir = library_root / "items"
     if not items_dir.exists():
         return {"status": "completed", "items": [], "count": 0}
@@ -108,13 +132,10 @@ def content_list(
         item = dict(parsed["frontmatter"])
         item["path"] = str(path)
         item["_body"] = parsed["body"]
-        if matches_filters(item, filters):
-            item.pop("_body", None)
-            items.append(item)
+        items.append(item)
 
-    items.sort(key=lambda item: str(item.get("created_at") or ""), reverse=True)
-    limit = coerce_int(filters.get("limit"), default=20)
-    return {"status": "completed", "items": items[:limit], "count": len(items)}
+    result = query_items(items, filters)
+    return {"status": "completed", **result}
 
 
 def normalize_item(item: dict[str, Any]) -> dict[str, Any]:
@@ -129,6 +150,31 @@ def build_item_id(item: dict[str, Any]) -> str:
     slug_source = item.get("subject") or item.get("title") or source_type
     slug = slugify(str(slug_source)) or "item"
     return f"{source_type}-{slug}-{digest}"
+
+
+def content_save_commit_message(item: dict[str, Any], *, created: bool) -> str:
+    action = "Add" if created else "Update"
+    return f"{action} content: {item_title(item)}"
+
+
+def content_update_commit_message(
+    item: dict[str, Any],
+    *,
+    previous_status: Any,
+    requested_status: Optional[str],
+    notes_updated: bool,
+) -> str:
+    title = item_title(item)
+    status_changed = requested_status is not None and requested_status != previous_status
+    if status_changed and not notes_updated:
+        return f"Update status: {title} -> {requested_status}"
+    if notes_updated and not status_changed:
+        return f"Update notes: {title}"
+    return f"Update content: {title}"
+
+
+def item_title(item: dict[str, Any]) -> str:
+    return str(item.get("title") or item.get("id") or "Untitled").strip()
 
 
 def slugify(text: str) -> str:
@@ -274,56 +320,6 @@ def parse_frontmatter_value(value: str) -> Any:
         return float(value)
     except ValueError:
         return value
-
-
-def matches_filters(item: dict[str, Any], filters: dict[str, Any]) -> bool:
-    if filters.get("subject"):
-        needle = str(filters["subject"]).lower()
-        if needle not in str(item.get("subject") or "").lower():
-            return False
-
-    if filters.get("depth_level") and item.get("depth_level") != filters["depth_level"]:
-        return False
-
-    if filters.get("status") and item.get("status") != filters["status"]:
-        return False
-
-    max_time = filters.get("max_estimated_time_minutes")
-    if max_time is not None:
-        max_time_value = coerce_int(max_time, default=0)
-        if coerce_int(item.get("estimated_time_minutes"), default=0) > max_time_value:
-            return False
-
-    if filters.get("categories"):
-        requested = filters["categories"]
-        if isinstance(requested, str):
-            requested = [requested]
-        item_categories = {str(category).lower() for category in item.get("categories", [])}
-        if not any(str(category).lower() in item_categories for category in requested):
-            return False
-
-    if filters.get("query"):
-        query = str(filters["query"]).lower()
-        haystack = " ".join(
-            [
-                str(item.get("title") or ""),
-                str(item.get("summary") or ""),
-                str(item.get("subject") or ""),
-                " ".join(str(category) for category in item.get("categories", [])),
-                str(item.get("_body") or ""),
-            ]
-        ).lower()
-        if query not in haystack:
-            return False
-
-    return True
-
-
-def coerce_int(value: Any, *, default: int) -> int:
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return default
 
 
 def utc_now() -> str:
