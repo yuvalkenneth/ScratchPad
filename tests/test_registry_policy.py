@@ -18,6 +18,25 @@ def test_executor_tools_are_hidden_by_default(monkeypatch) -> None:
     assert "run_python" not in prompt_text
 
 
+def test_default_tool_surface_hides_low_level_analysis_and_save_tools(monkeypatch) -> None:
+    monkeypatch.delenv("SCRATCHPAD_ENABLE_EXECUTOR_TOOLS", raising=False)
+
+    names = tool_names()
+    prompt_text = get_tools_prompt_text()
+
+    assert "analyze_source" in names
+    assert "content_add" in names
+    assert "content_list" in names
+    assert "content_status_update" in names
+    assert "url_analyze" not in names
+    assert "youtube_analyze" not in names
+    assert "content_save" not in names
+    assert "- analyze_source:" in prompt_text
+    assert "- url_analyze:" not in prompt_text
+    assert "- youtube_analyze:" not in prompt_text
+    assert "- content_save:" not in prompt_text
+
+
 def test_executor_tools_can_be_enabled_for_dev_mode(monkeypatch) -> None:
     monkeypatch.setenv("SCRATCHPAD_ENABLE_EXECUTOR_TOOLS", "1")
 
@@ -26,6 +45,9 @@ def test_executor_tools_can_be_enabled_for_dev_mode(monkeypatch) -> None:
 
     assert "run_shell" in names
     assert "run_python" in names
+    assert "url_analyze" not in names
+    assert "youtube_analyze" not in names
+    assert "content_save" not in names
     assert "run_shell" in prompt_text
     assert "run_python" in prompt_text
 
@@ -35,3 +57,22 @@ def test_youtube_skill_routes_url_only_inputs_to_youtube_analyze() -> None:
 
     assert "use `youtube_analyze` first" in content
     assert "Only present quotes that are directly supported" in content
+
+
+def test_save_url_requests_route_to_content_add() -> None:
+    prompt_text = get_tools_prompt_text()
+
+    assert "call content_add directly" in prompt_text
+    assert "The request is complete only after content_add reports a saved result" in prompt_text
+
+
+def test_inspect_url_requests_route_to_analyze_source() -> None:
+    prompt_text = get_tools_prompt_text()
+
+    assert "whether it is worth reading/watching before saving, call analyze_source" in prompt_text
+
+
+def test_content_status_update_prompt_lists_status_values() -> None:
+    prompt_text = get_tools_prompt_text()
+
+    assert "Status values: unread, started, done, archived, abandoned" in prompt_text

@@ -5,7 +5,7 @@ from pathlib import Path
 import app.library.git_history as git_history
 import app.tools.content_library_tool as content_library_tool
 from app.library.markdown_store import content_list, content_save, content_status_update
-from app.tools.content_library_tool import content_add
+from app.tools.content_library_tool import analyze_source, content_add
 
 
 def profile_fields(
@@ -152,6 +152,33 @@ def test_content_save_updates_existing_url_preserving_status_and_notes(tmp_path:
     assert "Already looked at this." in saved_text
     assert second["git"]["committed"]
     assert git_log_messages(tmp_path)[0] == "Update content: Updated Title"
+
+
+def test_content_save_updates_existing_url_when_subject_slug_changes(tmp_path: Path) -> None:
+    first = content_save(
+        content_item(
+            url="https://example.com/same-url-new-subject",
+            title="Original",
+            item_profile=profile_fields(subject="original topic"),
+        ),
+        library_root=tmp_path,
+    )
+    second = content_save(
+        content_item(
+            url="https://example.com/same-url-new-subject",
+            title="Updated",
+            item_profile=profile_fields(subject="updated topic"),
+        ),
+        library_root=tmp_path,
+    )
+
+    files = list((tmp_path / "items").glob("*.md"))
+
+    assert first["id"] == second["id"]
+    assert second["duplicate"]
+    assert len(files) == 1
+    assert second["path"] == first["path"]
+    assert second["item"]["subject"] == "updated topic"
 
 
 def test_content_list_filters_by_topic_time_and_query(tmp_path: Path) -> None:
@@ -382,6 +409,66 @@ def test_content_add_saves_and_deduplicates_analyzed_url(
     file_count = len(list((tmp_path / "items").glob("*.md")))
 
     assert first["id"] == second["id"]
+    assert first["git"]["committed"]
     assert second["duplicate"]
+    assert second["git"]["enabled"]
     assert "First pass." in saved_text
     assert file_count == 1
+
+
+def test_analyze_source_profiles_url_without_saving(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(
+        content_library_tool,
+        "url_analyze",
+        lambda *_args, **_kwargs: json.dumps(
+            {
+                "status": "completed",
+                "source_type": "web",
+                "source_id": None,
+                "url": "https://example.com/source",
+                "title": "Source",
+                **profile_fields(
+                    summary="A source worth inspecting before saving.",
+                    subject="source analysis",
+                    estimated_time_minutes=3,
+                    confidence=0.8,
+                ),
+            }
+        ),
+    )
+
+    result = analyze_source({"url": "https://example.com/source"})
+
+    assert result["status"] == "completed"
+    assert result["subject"] == "source analysis"
+    assert not (tmp_path / "items").exists()
+
+
+def test_content_add_reports_unsaveable_analysis_without_writing(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    monkeypatch.setattr(
+        content_library_tool,
+        "url_analyze",
+        lambda *_args, **_kwargs: json.dumps(
+            {
+                "status": "completed",
+                "source_type": "web",
+                "source_id": None,
+                "url": "https://example.com/bad-profile",
+                "title": "Bad Profile",
+                "summary": "",
+                "subject": "",
+                "depth_level": "medium",
+                "estimated_time_minutes": 1,
+                "confidence": 0.0,
+            }
+        ),
+    )
+
+    result = content_add({"url": "https://example.com/bad-profile"}, library_root=tmp_path)
+
+    assert result["status"] == "error"
+    assert result["missing_fields"] == ["summary", "subject"]
+    assert not (tmp_path / "items").exists()

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import os
+import time
 from typing import Any
 
-from openai import AsyncOpenAI, OpenAI
+from openai import AsyncOpenAI, OpenAI, RateLimitError
 
 from app.llm.config import LLMConfig
 
@@ -76,8 +77,22 @@ def complete_text(
     if top_p is not None:
         request_kwargs["top_p"] = top_p
 
-    response = make_sync_client(config).chat.completions.create(**request_kwargs)
+    response = create_completion_with_retries(config, request_kwargs)
     content = response.choices[0].message.content
     if isinstance(content, str):
         return content.strip()
     return str(content).strip()
+
+
+def create_completion_with_retries(config: LLMConfig | Any, request_kwargs: dict[str, Any]) -> Any:
+    attempts = int(os.getenv("LLM_RATE_LIMIT_RETRIES", "3"))
+    delay_seconds = float(os.getenv("LLM_RATE_LIMIT_DELAY_SECONDS", "20"))
+    client = make_sync_client(config)
+    for attempt in range(attempts + 1):
+        try:
+            return client.chat.completions.create(**request_kwargs)
+        except RateLimitError:
+            if attempt >= attempts:
+                raise
+            time.sleep(delay_seconds)
+    raise RuntimeError("unreachable")

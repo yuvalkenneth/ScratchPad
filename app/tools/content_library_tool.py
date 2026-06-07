@@ -76,6 +76,26 @@ CONTENT_ADD_SCHEMA = {
     },
 }
 
+ANALYZE_SOURCE_SCHEMA = {
+    "name": "analyze_source",
+    "description": (
+        "Analyze a URL or YouTube video into a normalized content profile without saving it. "
+        "Use this when the user wants to know what a source is about or whether it is worth "
+        "reading/watching before adding it to the library."
+    ),
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "A YouTube URL or non-YouTube URL to analyze without saving.",
+            },
+        },
+        "required": ["url"],
+        "additionalProperties": False,
+    },
+}
+
 CONTENT_LIST_SCHEMA = {
     "name": "content_list",
     "description": (
@@ -162,6 +182,18 @@ def content_add(arguments: dict[str, Any], *, library_root: Optional[Path] = Non
     save_input["status"] = str(arguments.get("status") or "unread").strip()
     if arguments.get("notes"):
         save_input["notes"] = str(arguments["notes"])
+    missing_profile_fields = [
+        field
+        for field in ("summary", "subject", "depth_level", "estimated_time_minutes")
+        if save_input.get(field) in {None, ""}
+    ]
+    if missing_profile_fields:
+        return {
+            "status": "error",
+            "error": "Analysis did not produce a saveable content profile.",
+            "missing_fields": missing_profile_fields,
+            "analysis": profile,
+        }
 
     if library_root is None:
         saved = content_save(save_input)
@@ -175,7 +207,18 @@ def content_add(arguments: dict[str, Any], *, library_root: Optional[Path] = Non
         "created": saved["created"],
         "duplicate": saved["duplicate"],
         "item": saved["item"],
+        "git": saved["git"],
     }
+
+
+def analyze_source(arguments: dict[str, Any]) -> dict[str, Any]:
+    url = str(arguments.get("url") or "").strip()
+    if not url:
+        return {"status": "error", "error": "Missing required argument: url"}
+
+    analyzer_arguments = {"url": url, "task": "content_profile"}
+    raw_result = youtube_analyze(analyzer_arguments) if is_youtube_url(url) else url_analyze(analyzer_arguments)
+    return json.loads(raw_result)
 
 
 def is_youtube_url(url: str) -> bool:
@@ -190,6 +233,13 @@ def is_youtube_url(url: str) -> bool:
 def content_add_json(arguments: dict[str, Any]) -> str:
     try:
         return json.dumps(content_add(arguments), ensure_ascii=True)
+    except Exception as exc:
+        return json.dumps({"status": "error", "error": str(exc)}, ensure_ascii=True)
+
+
+def analyze_source_json(arguments: dict[str, Any]) -> str:
+    try:
+        return json.dumps(analyze_source(arguments), ensure_ascii=True)
     except Exception as exc:
         return json.dumps({"status": "error", "error": str(exc)}, ensure_ascii=True)
 

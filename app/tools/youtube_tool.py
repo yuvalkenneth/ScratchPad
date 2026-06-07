@@ -3,6 +3,8 @@ from __future__ import annotations
 import re
 from typing import Any, Optional
 
+from app.fetchers.common import fetch_json
+
 try:
     from youtube_transcript_api import YouTubeTranscriptApi
 except ImportError:
@@ -43,3 +45,15 @@ def fetch_transcript_segments(video_id: str, languages: Optional[list[str]] = No
         {"text": segment.text, "start": segment.start, "duration": segment.duration}
         for segment in result
     ]
+
+
+def fetch_youtube_title(video_id: str) -> str | None:
+    try:
+        payload = fetch_json(
+            "https://www.youtube.com/oembed"
+            f"?url=https://www.youtube.com/watch?v={video_id}&format=json"
+        )
+    except Exception:
+        return None
+    title = str(payload.get("title") or "").strip() if isinstance(payload, dict) else ""
+    return title or None

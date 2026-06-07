@@ -6,7 +6,12 @@ from typing import Any, Optional
 from app.llm.config import LLMConfig
 from app.llm.openai_compatible import complete_text
 from app.content import build_content_profile_payload
-from app.tools.youtube_tool import extract_video_id, fetch_transcript_segments, format_timestamp
+from app.tools.youtube_tool import (
+    extract_video_id,
+    fetch_transcript_segments,
+    fetch_youtube_title,
+    format_timestamp,
+)
 
 
 DEFAULT_CHUNK_CHARS = 12_000
@@ -275,6 +280,7 @@ def _analyze_chunks(
 def youtube_analyze(arguments: dict[str, Any]) -> str:
     config = LLMConfig.from_env()
     video_id = extract_video_id(arguments["url"])
+    title = fetch_youtube_title(video_id) or video_id
     task = arguments.get("task") or "detailed_summary"
     if task not in ANALYSIS_TASKS:
         return json.dumps(
@@ -341,7 +347,7 @@ def youtube_analyze(arguments: dict[str, Any]) -> str:
             source_type="youtube",
             source_id=video_id,
             url=f"https://www.youtube.com/watch?v={video_id}",
-            title=video_id,
+            title=title,
             estimated_time_minutes=duration_minutes,
             raw_analysis=analysis_result["analysis"],
             trust_model_time=False,

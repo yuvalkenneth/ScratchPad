@@ -21,9 +21,13 @@ def content_save(item: dict[str, Any], *, library_root: Path = DEFAULT_LIBRARY_R
     items_dir = library_root / "items"
     items_dir.mkdir(parents=True, exist_ok=True)
 
-    item_id = normalized.get("id") or build_item_id(normalized)
+    existing_path = find_existing_content_path(normalized, library_root=library_root)
+    item_id = normalized.get("id") or (
+        read_item_file(existing_path)["frontmatter"].get("id") if existing_path else None
+    )
+    item_id = item_id or build_item_id(normalized)
     normalized["id"] = item_id
-    path = items_dir / f"{item_id}.md"
+    path = existing_path or items_dir / f"{item_id}.md"
 
     existing = read_item_file(path) if path.exists() else None
     now = utc_now()
@@ -273,6 +277,27 @@ def find_item_path(
         ):
             return path
     return None
+
+
+def find_existing_content_path(
+    item: dict[str, Any],
+    *,
+    library_root: Path = DEFAULT_LIBRARY_ROOT,
+) -> Path | None:
+    item_id = str(item.get("id") or "").strip()
+    if item_id:
+        path = library_root / "items" / f"{item_id}.md"
+        if path.exists():
+            return path
+
+    source_id = item.get("source_id")
+    source_id_value = str(source_id) if source_id is not None else None
+    return find_item_path(
+        url=str(item.get("url") or "").strip() or None,
+        source_type=str(item.get("source_type") or "").strip() or None,
+        source_id=source_id_value,
+        library_root=library_root,
+    )
 
 
 def replace_notes_section(body: str, notes: str) -> str:

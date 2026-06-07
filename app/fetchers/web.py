@@ -5,7 +5,7 @@ from html import unescape
 from html.parser import HTMLParser
 from typing import Optional
 
-from app.fetchers.common import estimate_time_minutes, fetch_url_html, host_for_url, normalize_whitespace, truncate_text
+from app.fetchers.common import fetch_url_html, host_for_url, normalize_whitespace, truncate_text
 
 
 GENERIC_X_ERROR_SNIPPETS = (
@@ -121,8 +121,25 @@ def extract_page_content(url: str, html: str) -> dict[str, str]:
     text = normalize_whitespace(" ".join(extractor.text_parts))
     if is_x_domain(url):
         return extract_x_page_content(title, text, extractor.meta)
+    if not text:
+        return extract_meta_page_content(title, extractor.meta)
 
-    return {"title": title, "text": truncate_text(text)}
+    return {"title": title, "text": truncate_text(text), "extraction_quality": "full_text"}
+
+
+def extract_meta_page_content(title: str, meta: dict[str, str]) -> dict[str, str]:
+    meta_title = meta.get("og:title") or meta.get("twitter:title") or meta.get("title") or title
+    meta_description = (
+        meta.get("og:description")
+        or meta.get("twitter:description")
+        or meta.get("description")
+        or ""
+    )
+    return {
+        "title": normalize_whitespace(meta_title),
+        "text": truncate_text(normalize_whitespace(meta_description)),
+        "extraction_quality": "metadata_only",
+    }
 
 
 def fetch_web_source(url: str) -> dict[str, object]:
@@ -136,5 +153,5 @@ def fetch_web_source(url: str) -> dict[str, object]:
         "title": page["title"],
         "text": text,
         "word_count": len(text.split()),
-        "estimated_time_minutes": estimate_time_minutes(text) if text else 1,
+        "metadata": {"extraction_quality": page.get("extraction_quality", "full_text")},
     }

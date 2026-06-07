@@ -80,7 +80,7 @@ def _analysis_prompt(title: str, url: str) -> str:
 def _complete_text(
     config: LLMConfig,
     messages: list[dict[str, str]],
-    max_tokens: int = 400,
+    max_tokens: int = 800,
 ) -> str:
     return complete_text(config, messages, max_tokens=max_tokens, temperature=0.2)
 
@@ -113,10 +113,19 @@ def url_analyze(arguments: dict[str, Any]) -> str:
 
     word_count = int(source_data.get("word_count") or len(text.split()))
     estimated_time_minutes = int(source_data.get("estimated_time_minutes") or estimate_time_minutes(text))
+    metadata = source_data.get("metadata")
+    extraction_quality = metadata.get("extraction_quality") if isinstance(metadata, dict) else None
+    user_content = text
+    if extraction_quality == "metadata_only":
+        user_content = (
+            "Extraction note: only page metadata was available; the rendered article body "
+            "was not present in the static HTML. Keep the profile conservative and lower confidence.\n\n"
+            f"{text}"
+        )
     config = LLMConfig.from_env()
     messages = [
         {"role": "system", "content": _analysis_prompt(title, url)},
-        {"role": "user", "content": text},
+        {"role": "user", "content": user_content},
     ]
     raw_analysis = _complete_text(config, messages)
 
@@ -128,8 +137,10 @@ def url_analyze(arguments: dict[str, Any]) -> str:
         estimated_time_minutes=estimated_time_minutes,
         raw_analysis=raw_analysis,
         trust_model_time=True,
-        metadata=source_data.get("metadata"),
+        metadata=metadata,
         extra_fields={"word_count": word_count},
     )
+    if extraction_quality == "metadata_only":
+        payload["confidence"] = min(float(payload.get("confidence") or 0.0), 0.6)
 
     return json.dumps(payload, ensure_ascii=True)
