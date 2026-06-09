@@ -18,6 +18,7 @@
 * `content_status_update` marks saved items `unread`, `started`, `done`, `archived`, or `abandoned`
 * Deterministic fake-model tool-choice tests cover source analysis, saving, metadata updates, status updates, and recommendation/listing requests
 * Manual tool-choice eval exists for simple real-model requests without executing tools
+* Tool-choice evals can score required argument constraints such as status updates and recommendation time/status filters
 
 ## Priority 1: Content-Profile Evaluation Calibration
 

@@ -220,13 +220,13 @@ The eval script reads frozen cases from:
 evals/content_profiles/cases.json
 ```
 
-Run the tool-choice eval manually to check whether a model chooses the expected tool for simple requests:
+Run the tool-choice eval manually to check whether a model chooses the expected tool and required arguments for simple requests:
 
 ```bash
 uv run python scripts/eval_tool_choice.py
 ```
 
-This eval does not execute tools. It only inspects the first tool call selected by the model, so it can safely test save/update/status intents without mutating the Markdown library.
+This eval does not execute tools. It only inspects the first tool call selected by the model and applies simple argument constraints, so it can safely test save/update/status intents without mutating the Markdown library.
 
 ### Chat commands
 

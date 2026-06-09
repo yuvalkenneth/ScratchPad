@@ -15,6 +15,7 @@ from app.llm.config import LLMConfig
 from app.llm.openai_compatible import create_completion_with_retries
 from app.llm.prompting import build_system_prompt
 from app.llm.runtime import ensure_provider_ready
+from app.tools.content_library_tool import apply_content_list_defaults
 from app.tools.registry import get_tool_definitions
 
 
@@ -40,7 +41,7 @@ def prepare_eval_provider(config: LLMConfig, *, auto_start: bool) -> LLMConfig:
     return config
 
 
-def load_cases(path: Path = DEFAULT_CASES_PATH) -> list[dict[str, str]]:
+def load_cases(path: Path = DEFAULT_CASES_PATH) -> list[dict[str, Any]]:
     with path.open(encoding="utf-8") as handle:
         cases = json.load(handle)
     if not isinstance(cases, list):
@@ -54,10 +55,80 @@ def validate_case(case: dict[str, Any]) -> None:
     for key in ("id", "user", "expected_tool"):
         if not str(case.get(key) or "").strip():
             raise ValueError(f"Tool-choice case is missing required field: {key}")
+    expected_arguments = case.get("expected_arguments")
+    if expected_arguments is not None and not isinstance(expected_arguments, dict):
+        raise ValueError(f"Tool-choice case {case['id']} expected_arguments must be an object.")
+
+
+def parse_tool_arguments(raw_arguments: str | None) -> dict[str, Any]:
+    if not raw_arguments:
+        return {}
+    parsed = json.loads(raw_arguments)
+    if not isinstance(parsed, dict):
+        raise ValueError("Tool call arguments must decode to a JSON object.")
+    return parsed
+
+
+def effective_tool_arguments(tool_name: str | None, arguments: dict[str, Any]) -> dict[str, Any]:
+    if tool_name == "content_list":
+        return apply_content_list_defaults(arguments)
+    return dict(arguments)
+
+
+def evaluate_arguments(
+    *,
+    expected: dict[str, Any] | None,
+    actual: dict[str, Any],
+) -> dict[str, Any]:
+    if not expected:
+        return {"passed": True, "checks": []}
+
+    checks: list[dict[str, Any]] = []
+    for field, expected_value in expected.get("must_equal", {}).items():
+        actual_value = actual.get(field)
+        checks.append(
+            {
+                "type": "must_equal",
+                "field": field,
+                "expected": expected_value,
+                "actual": actual_value,
+                "passed": actual_value == expected_value,
+            }
+        )
+    for field, expected_values in expected.get("must_include", {}).items():
+        actual_value = actual.get(field)
+        actual_values = actual_value if isinstance(actual_value, list) else [actual_value]
+        missing = [value for value in expected_values if value not in actual_values]
+        checks.append(
+            {
+                "type": "must_include",
+                "field": field,
+                "expected": expected_values,
+                "actual": actual_value,
+                "passed": not missing,
+                "missing": missing,
+            }
+        )
+    for field, forbidden_values in expected.get("must_not_include", {}).items():
+        actual_value = actual.get(field)
+        actual_values = actual_value if isinstance(actual_value, list) else [actual_value]
+        present = [value for value in forbidden_values if value in actual_values]
+        checks.append(
+            {
+                "type": "must_not_include",
+                "field": field,
+                "forbidden": forbidden_values,
+                "actual": actual_value,
+                "passed": not present,
+                "present": present,
+            }
+        )
+
+    return {"passed": all(check["passed"] for check in checks), "checks": checks}
 
 
 def run_case(
-    case: dict[str, str],
+    case: dict[str, Any],
     *,
     config: LLMConfig,
     temperature: float,
@@ -84,15 +155,28 @@ def run_case(
     called_tools = [tool_call.function.name for tool_call in tool_calls]
     first_tool = called_tools[0] if called_tools else None
     first_arguments = tool_calls[0].function.arguments if tool_calls else None
+    parsed_arguments = parse_tool_arguments(first_arguments)
+    effective_arguments = effective_tool_arguments(first_tool, parsed_arguments)
     content = getattr(message, "content", "") or ""
-    passed = first_tool == case["expected_tool"]
+    tool_pass = first_tool == case["expected_tool"]
+    argument_evaluation = evaluate_arguments(
+        expected=case.get("expected_arguments"),
+        actual=effective_arguments,
+    )
+    argument_pass = bool(argument_evaluation["passed"])
+    passed = tool_pass and argument_pass
 
     return {
         "id": case["id"],
         "passed": passed,
+        "tool_pass": tool_pass,
+        "argument_pass": argument_pass,
         "expected_tool": case["expected_tool"],
         "first_tool": first_tool,
         "first_arguments": first_arguments,
+        "parsed_arguments": parsed_arguments,
+        "effective_arguments": effective_arguments,
+        "argument_checks": argument_evaluation["checks"],
         "called_tools": called_tools,
         "finish_reason": getattr(choice, "finish_reason", None),
         "assistant_content": content,
@@ -142,6 +226,12 @@ def run(argv: list[str] | None = None) -> int:
             if result["called_tools"]:
                 print(f"  called_tools: {result['called_tools']}")
                 print(f"  first_arguments: {result['first_arguments']}")
+                if result["effective_arguments"] != result["parsed_arguments"]:
+                    print(f"  effective_arguments: {result['effective_arguments']}")
+                if result["argument_checks"]:
+                    print(f"  argument_pass: {result['argument_pass']}")
+                    for check in result["argument_checks"]:
+                        print(f"  arg_check: {check}")
             elif result["assistant_content"]:
                 print(f"  assistant_content: {result['assistant_content']}")
             if result["finish_reason"]:
