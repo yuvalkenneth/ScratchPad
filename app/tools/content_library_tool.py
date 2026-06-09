@@ -10,6 +10,9 @@ from app.tools.url_analyze_tool import url_analyze
 from app.tools.youtube_analyze_tool import youtube_analyze
 
 
+DEFAULT_CONTENT_LIST_STATUSES = ["unread", "started"]
+
+
 CONTENT_SAVE_SCHEMA = {
     "name": "content_save",
     "description": (
@@ -100,7 +103,9 @@ CONTENT_LIST_SCHEMA = {
     "name": "content_list",
     "description": (
         "List saved Markdown library items. Filter by subject, category, depth, "
-        "status, time window, free-text query, and sort order."
+        "status, time window, free-text query, and sort order. If status is omitted, "
+        "defaults to unread and started items so recommendations do not include done, "
+        "archived, or abandoned content unless explicitly requested."
     ),
     "parameters": {
         "type": "object",
@@ -121,6 +126,7 @@ CONTENT_LIST_SCHEMA = {
                     {"type": "string"},
                     {"type": "array", "items": {"type": "string"}},
                 ],
+                "description": "Reading status filter. Defaults to ['unread', 'started'] when omitted.",
             },
             "exclude_status": {"type": "array", "items": {"type": "string"}},
             "min_estimated_time_minutes": {"type": "integer"},
@@ -329,6 +335,17 @@ def content_update_json(arguments: dict[str, Any]) -> str:
 
 def content_list_json(arguments: dict[str, Any]) -> str:
     try:
-        return json.dumps(content_list(arguments), ensure_ascii=True)
+        filters = apply_content_list_defaults(arguments)
+        result = content_list(filters)
+        if "status" not in arguments:
+            result["applied_defaults"] = {"status": DEFAULT_CONTENT_LIST_STATUSES}
+        return json.dumps(result, ensure_ascii=True)
     except Exception as exc:
         return json.dumps({"status": "error", "error": str(exc)}, ensure_ascii=True)
+
+
+def apply_content_list_defaults(arguments: dict[str, Any]) -> dict[str, Any]:
+    filters = dict(arguments)
+    if "status" not in filters:
+        filters["status"] = list(DEFAULT_CONTENT_LIST_STATUSES)
+    return filters

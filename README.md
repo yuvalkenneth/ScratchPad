@@ -154,6 +154,8 @@ Use `content_add` for the normal ingestion path: it analyzes a URL, converts the
 
 Use `analyze_source` when the user wants to inspect a source before saving it. Use `content_update` for corrections to saved item details such as title, summary, subject, categories, depth, time, confidence, metadata, or notes. Use `content_status_update` only for reading state changes such as `unread`, `started`, `done`, `archived`, and `abandoned`.
 
+The LLM-facing `content_list` tool defaults to `status=["unread", "started"]` when no status is supplied, so recommendation requests do not surface completed, archived, or abandoned items unless the user explicitly asks for them.
+
 ### Library history
 
 The content library is versioned separately from the application code. On the first content mutation, Scratchpad initializes a Git repository under `library/.git` and commits the changed Markdown item.

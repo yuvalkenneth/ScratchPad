@@ -275,7 +275,7 @@ def get_tools_prompt_text() -> str:
         "- list_files: List files in a local directory.",
         "- analyze_source: Analyze a URL or YouTube video into a normalized content profile without saving it.",
         "- content_add: Analyze a URL and save the normalized content_profile into the local Markdown library in one step.",
-        "- content_list: List saved Markdown library items by subject, category, depth, status, time, or free-text query.",
+        "- content_list: List saved Markdown library items by subject, category, depth, status, time, or free-text query. Defaults to status=[unread, started] when status is omitted.",
         "- content_update: Correct saved content metadata/profile fields such as title, summary, subject, categories, depth, time, confidence, metadata, or notes.",
         "- content_status_update: Update a saved Markdown library item's reading status or notes by id, URL, or source identity. Status values: unread, started, done, archived, abandoned.",
         "- skills_list: List available skills with compact metadata.",
@@ -297,7 +297,7 @@ def get_tools_prompt_text() -> str:
         "If content_add reports duplicate=true, tell the user the existing item was updated instead of creating a second copy.",
         "When the user asks to correct saved item details such as title, summary, subject, categories, depth, time, confidence, or metadata, use content_update.",
         "When the user says they started, finished, archived, or abandoned an item, use content_status_update.",
-        "When the user asks what to read or wants saved material, use content_list before answering.",
+        "When the user asks what to read or wants saved material, use content_list before answering. If the user did not ask for done, archived, or abandoned items, rely on the default unread/started status filter or pass status=[\"unread\", \"started\"].",
     ])
     if executor_tools_enabled():
         lines.extend(

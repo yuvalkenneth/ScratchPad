@@ -5,7 +5,7 @@ from pathlib import Path
 import app.library.git_history as git_history
 import app.tools.content_library_tool as content_library_tool
 from app.library.markdown_store import content_list, content_save, content_status_update, content_update
-from app.tools.content_library_tool import analyze_source, content_add
+from app.tools.content_library_tool import analyze_source, content_add, content_list_json
 
 
 def profile_fields(
@@ -282,6 +282,44 @@ def test_content_list_queries_status_time_window_and_sorting(tmp_path: Path) -> 
     ]
     assert all("match_score" in item for item in result["items"])
     assert "query:title" in result["items"][0]["match_reasons"]
+
+
+def test_content_list_json_defaults_to_unread_and_started(tmp_path: Path, monkeypatch) -> None:
+    content_save(
+        content_item(url="https://example.com/unread", title="Unread Item", status="unread"),
+        library_root=tmp_path,
+    )
+    content_save(
+        content_item(url="https://example.com/started", title="Started Item", status="started"),
+        library_root=tmp_path,
+    )
+    content_save(
+        content_item(url="https://example.com/done", title="Done Item", status="done"),
+        library_root=tmp_path,
+    )
+    monkeypatch.setattr(content_library_tool, "content_list", lambda filters: content_list(filters, library_root=tmp_path))
+
+    result = json.loads(content_list_json({}))
+
+    assert result["applied_defaults"] == {"status": ["unread", "started"]}
+    assert [item["title"] for item in result["items"]] == ["Started Item", "Unread Item"]
+
+
+def test_content_list_json_respects_explicit_status(tmp_path: Path, monkeypatch) -> None:
+    content_save(
+        content_item(url="https://example.com/unread", title="Unread Item", status="unread"),
+        library_root=tmp_path,
+    )
+    content_save(
+        content_item(url="https://example.com/done", title="Done Item", status="done"),
+        library_root=tmp_path,
+    )
+    monkeypatch.setattr(content_library_tool, "content_list", lambda filters: content_list(filters, library_root=tmp_path))
+
+    result = json.loads(content_list_json({"status": "done"}))
+
+    assert "applied_defaults" not in result
+    assert [item["title"] for item in result["items"]] == ["Done Item"]
 
 
 def test_content_list_relevance_sort_prefers_better_text_match(tmp_path: Path) -> None:

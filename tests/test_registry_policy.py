@@ -85,3 +85,10 @@ def test_content_update_prompt_handles_profile_corrections() -> None:
     assert "- content_update:" in prompt_text
     assert "correct saved item details" in prompt_text
     assert "title, summary, subject, categories" in prompt_text
+
+
+def test_content_list_prompt_mentions_default_status_filter() -> None:
+    prompt_text = get_tools_prompt_text()
+
+    assert "Defaults to status=[unread, started]" in prompt_text
+    assert "default unread/started status filter" in prompt_text

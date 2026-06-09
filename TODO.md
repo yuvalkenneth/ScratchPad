@@ -13,6 +13,7 @@
 * `content_save` saves an already-normalized profile
 * `content_list` lists saved items with basic filters for subject, category, depth, status, max estimated time, and query
 * `content_list` now uses a lightweight in-memory Markdown query layer with multi-status filters, status exclusions, min/max time windows, sorting, relevance scores, and match reasons
+* LLM-facing `content_list` defaults to `unread` and `started` when status is omitted
 * `content_update` corrects saved item metadata/profile fields and notes while preserving item identity
 * `content_status_update` marks saved items `unread`, `started`, `done`, `archived`, or `abandoned`
 * Deterministic fake-model tool-choice tests cover source analysis, saving, metadata updates, status updates, and recommendation/listing requests
