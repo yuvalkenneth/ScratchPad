@@ -85,7 +85,7 @@ Current focus:
 * tool-driven local chat loop with a small product-focused tool surface
 * model switching and local server observability
 * normalized content profiles across web, GitHub, Reddit, and YouTube
-* Markdown-backed content saving, deduplication, listing, status updates, and Git-backed history
+* Markdown-backed content saving, deduplication, listing, metadata updates, status updates, and Git-backed history
 * content-profile eval fixtures for comparing small/local model behavior
 
 ---
@@ -152,6 +152,8 @@ Retrieval should be by metadata and text, such as subject, category, depth, avai
 
 Use `content_add` for the normal ingestion path: it analyzes a URL, converts the analyzer result into the normalized profile contract, and writes the corresponding Markdown item. If the same source is added again, Scratchpad updates the existing Markdown file instead of creating a duplicate.
 
+Use `analyze_source` when the user wants to inspect a source before saving it. Use `content_update` for corrections to saved item details such as title, summary, subject, categories, depth, time, confidence, metadata, or notes. Use `content_status_update` only for reading state changes such as `unread`, `started`, `done`, `archived`, and `abandoned`.
+
 ### Library history
 
 The content library is versioned separately from the application code. On the first content mutation, Scratchpad initializes a Git repository under `library/.git` and commits the changed Markdown item.
@@ -216,6 +218,14 @@ The eval script reads frozen cases from:
 evals/content_profiles/cases.json
 ```
 
+Run the tool-choice eval manually to check whether a model chooses the expected tool for simple requests:
+
+```bash
+uv run python scripts/eval_tool_choice.py
+```
+
+This eval does not execute tools. It only inspects the first tool call selected by the model, so it can safely test save/update/status intents without mutating the Markdown library.
+
 ### Chat commands
 
 The REPL in [main.py](main.py) supports a few built-in commands:
@@ -274,7 +284,7 @@ The local chat runtime currently supports:
 * loop protection for repeated or excessive tool rounds
 * local `llama.cpp` server startup and shutdown
 * log-based server timing inspection for prompt/output token counts and speed
-* Markdown-backed content ingestion, saving, status updates, listing, and Git-backed mutation history through `content_add`, `content_save`, `content_status_update`, and `content_list`
+* Markdown-backed content analysis, ingestion, metadata updates, status updates, listing, and Git-backed mutation history through `analyze_source`, `content_add`, `content_update`, `content_status_update`, and `content_list`
 
 ---
 

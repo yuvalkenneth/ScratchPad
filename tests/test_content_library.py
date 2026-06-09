@@ -4,7 +4,7 @@ from pathlib import Path
 
 import app.library.git_history as git_history
 import app.tools.content_library_tool as content_library_tool
-from app.library.markdown_store import content_list, content_save, content_status_update
+from app.library.markdown_store import content_list, content_save, content_status_update, content_update
 from app.tools.content_library_tool import analyze_source, content_add
 
 
@@ -353,6 +353,37 @@ def test_content_status_update_changes_status_and_notes(tmp_path: Path) -> None:
         "Update notes: SQLite Guide",
         "Update status: SQLite Guide -> done",
     ]
+
+
+def test_content_update_changes_profile_fields_and_commits(tmp_path: Path) -> None:
+    saved = content_save(
+        content_item(url="https://example.com/sqlite", title="SQLite Guide"),
+        library_root=tmp_path,
+    )
+
+    result = content_update(
+        item_id=saved["id"],
+        updates={
+            "title": "SQLite for Local Apps",
+            "summary": "A corrected summary about SQLite in local apps.",
+            "subject": "local app persistence",
+            "categories": ["sqlite", "local-first"],
+            "confidence": 0.75,
+        },
+        notes="Corrected after review.",
+        library_root=tmp_path,
+    )
+    saved_text = Path(result["path"]).read_text()
+
+    assert result["status"] == "updated"
+    assert result["id"] == saved["id"]
+    assert result["item"]["title"] == "SQLite for Local Apps"
+    assert result["item"]["subject"] == "local app persistence"
+    assert result["item"]["categories"] == ["sqlite", "local-first"]
+    assert result["item"]["confidence"] == 0.75
+    assert "Corrected after review." in saved_text
+    assert result["git"]["committed"]
+    assert git_log_messages(tmp_path)[0] == "Update content: SQLite for Local Apps"
 
 
 def test_content_save_reports_nonfatal_git_failure(tmp_path: Path, monkeypatch) -> None:

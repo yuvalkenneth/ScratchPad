@@ -26,11 +26,13 @@ from app.tools.content_library_tool import (
     CONTENT_LIST_SCHEMA,
     CONTENT_SAVE_SCHEMA,
     CONTENT_STATUS_UPDATE_SCHEMA,
+    CONTENT_UPDATE_SCHEMA,
     analyze_source_json,
     content_add_json,
     content_list_json,
     content_save_json,
     content_status_update_json,
+    content_update_json,
 )
 
 
@@ -222,6 +224,13 @@ TOOLS: dict[str, dict[str, Any]] = {
         },
         "handler": content_status_update_json,
     },
+    "content_update": {
+        "definition": {
+            "type": "function",
+            "function": CONTENT_UPDATE_SCHEMA,
+        },
+        "handler": content_update_json,
+    },
     "skills_list": {
         "definition": {
             "type": "function",
@@ -267,6 +276,7 @@ def get_tools_prompt_text() -> str:
         "- analyze_source: Analyze a URL or YouTube video into a normalized content profile without saving it.",
         "- content_add: Analyze a URL and save the normalized content_profile into the local Markdown library in one step.",
         "- content_list: List saved Markdown library items by subject, category, depth, status, time, or free-text query.",
+        "- content_update: Correct saved content metadata/profile fields such as title, summary, subject, categories, depth, time, confidence, metadata, or notes.",
         "- content_status_update: Update a saved Markdown library item's reading status or notes by id, URL, or source identity. Status values: unread, started, done, archived, abandoned.",
         "- skills_list: List available skills with compact metadata.",
         "- skill_view: Load the full content of a skill or one of its linked files.",
@@ -285,6 +295,7 @@ def get_tools_prompt_text() -> str:
         "For save requests, do not stop after analysis. The request is complete only after content_add reports a saved result.",
         "Use content_add for URL save requests so analysis, Markdown persistence, and library git history happen together.",
         "If content_add reports duplicate=true, tell the user the existing item was updated instead of creating a second copy.",
+        "When the user asks to correct saved item details such as title, summary, subject, categories, depth, time, confidence, or metadata, use content_update.",
         "When the user says they started, finished, archived, or abandoned an item, use content_status_update.",
         "When the user asks what to read or wants saved material, use content_list before answering.",
     ])

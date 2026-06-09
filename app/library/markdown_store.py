@@ -121,6 +121,60 @@ def content_status_update(
     }
 
 
+def content_update(
+    *,
+    item_id: Optional[str] = None,
+    url: Optional[str] = None,
+    source_type: Optional[str] = None,
+    source_id: Optional[str] = None,
+    updates: dict[str, Any] | None = None,
+    notes: Optional[str] = None,
+    library_root: Path = DEFAULT_LIBRARY_ROOT,
+) -> dict[str, Any]:
+    updates = {key: value for key, value in (updates or {}).items() if value is not None}
+    if not updates and notes is None:
+        return {"status": "error", "error": "Provide at least one field to update."}
+
+    found = find_item_path(
+        item_id=item_id,
+        url=url,
+        source_type=source_type,
+        source_id=source_id,
+        library_root=library_root,
+    )
+    if found is None:
+        return {"status": "error", "error": "No matching content item found."}
+
+    parsed = read_item_file(found)
+    merged = dict(parsed["frontmatter"])
+    if "id" in updates:
+        updates.pop("id")
+    if "created_at" in updates:
+        updates.pop("created_at")
+    merged.update(updates)
+    merged["created_at"] = parsed["frontmatter"].get("created_at")
+    merged["updated_at"] = utc_now()
+    normalized = normalize_item(merged)
+
+    body_notes = extract_notes_section(parsed["body"]) if notes is None else notes
+    rendered = render_frontmatter(normalized) + "\n" + build_markdown_body(normalized, body_notes)
+    found.write_text(rendered, encoding="utf-8")
+    updated = read_item_file(found)["frontmatter"]
+    updated["path"] = str(found)
+    git_result = commit_library_paths(
+        library_root=library_root,
+        paths=[found],
+        message=f"Update content: {item_title(updated)}",
+    )
+    return {
+        "status": "updated",
+        "id": updated.get("id"),
+        "path": str(found),
+        "item": updated,
+        "git": git_result,
+    }
+
+
 def content_list(
     filters: dict[str, Any] | None = None,
     *,

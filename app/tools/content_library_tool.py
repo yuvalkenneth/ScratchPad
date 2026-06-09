@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 from typing import Any, Optional
 
-from app.library.markdown_store import content_list, content_save, content_status_update
+from app.library.markdown_store import content_list, content_save, content_status_update, content_update
 from app.tools.url_analyze_tool import url_analyze
 from app.tools.youtube_analyze_tool import youtube_analyze
 
@@ -165,6 +165,34 @@ CONTENT_STATUS_UPDATE_SCHEMA = {
     },
 }
 
+CONTENT_UPDATE_SCHEMA = {
+    "name": "content_update",
+    "description": (
+        "Update saved content metadata/profile fields by id, URL, or source identity. "
+        "Use this for corrections to title, summary, subject, categories, depth, time, "
+        "confidence, metadata, or notes. For reading state only, prefer content_status_update."
+    ),
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "id": {"type": "string"},
+            "url": {"type": "string"},
+            "source_type": {"type": "string"},
+            "source_id": {"type": "string"},
+            "title": {"type": "string"},
+            "summary": {"type": "string"},
+            "subject": {"type": "string"},
+            "depth_level": {"type": "string", "enum": ["light", "medium", "deep"]},
+            "categories": {"type": "array", "items": {"type": "string"}},
+            "estimated_time_minutes": {"type": "integer"},
+            "confidence": {"type": "number"},
+            "metadata": {"type": "object"},
+            "notes": {"type": "string"},
+        },
+        "additionalProperties": False,
+    },
+}
+
 
 def content_add(arguments: dict[str, Any], *, library_root: Optional[Path] = None) -> dict[str, Any]:
     url = str(arguments.get("url") or "").strip()
@@ -260,6 +288,37 @@ def content_status_update_json(arguments: dict[str, Any]) -> str:
                 source_type=arguments.get("source_type"),
                 source_id=arguments.get("source_id"),
                 status=arguments.get("status"),
+                notes=arguments.get("notes"),
+            ),
+            ensure_ascii=True,
+        )
+    except Exception as exc:
+        return json.dumps({"status": "error", "error": str(exc)}, ensure_ascii=True)
+
+
+def content_update_json(arguments: dict[str, Any]) -> str:
+    try:
+        update_fields = {
+            key: arguments[key]
+            for key in (
+                "title",
+                "summary",
+                "subject",
+                "depth_level",
+                "categories",
+                "estimated_time_minutes",
+                "confidence",
+                "metadata",
+            )
+            if key in arguments
+        }
+        return json.dumps(
+            content_update(
+                item_id=arguments.get("id"),
+                url=arguments.get("url"),
+                source_type=arguments.get("source_type"),
+                source_id=arguments.get("source_id"),
+                updates=update_fields,
                 notes=arguments.get("notes"),
             ),
             ensure_ascii=True,

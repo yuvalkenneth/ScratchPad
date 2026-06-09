@@ -1,0 +1,27 @@
+[
+  {
+    "id": "inspect_source_without_saving",
+    "user": "Can you inspect https://example.com/article and tell me if it is worth reading? Do not save it yet.",
+    "expected_tool": "analyze_source"
+  },
+  {
+    "id": "save_url",
+    "user": "Save https://example.com/article to my library.",
+    "expected_tool": "content_add"
+  },
+  {
+    "id": "mark_item_done",
+    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as done.",
+    "expected_tool": "content_status_update"
+  },
+  {
+    "id": "correct_saved_metadata",
+    "user": "Correct the saved content item where source_type is youtube and source_id is PZ9u6DR8qOU: set the title to Claude Code interview and categories to Claude Code and AI coding tools.",
+    "expected_tool": "content_update"
+  },
+  {
+    "id": "recommend_time_boxed_reading",
+    "user": "What should I read in 20 minutes?",
+    "expected_tool": "content_list"
+  }
+]

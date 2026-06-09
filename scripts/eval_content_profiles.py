@@ -49,10 +49,12 @@ JUDGE_RESULT_KEYS = {
 }
 def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
     default = LLMConfig.from_env()
+    provider = args.provider or os.getenv("EVAL_PROVIDER") or default.provider
+    explicit_base_url = args.base_url or os.getenv("EVAL_BASE_URL")
     return LLMConfig(
-        provider=args.provider or os.getenv("EVAL_PROVIDER") or default.provider,
+        provider=provider,
         model_name=args.model or os.getenv("EVAL_MODEL") or default.model_name,
-        base_url=args.base_url or os.getenv("EVAL_BASE_URL") or default.base_url,
+        base_url=explicit_base_url or (default.base_url if provider == "llama_cpp" else ""),
         api_key=args.api_key or os.getenv("EVAL_API_KEY") or default.api_key or "local",
         start_script=args.start_script or os.getenv("EVAL_START_SCRIPT") or default.start_script,
     )

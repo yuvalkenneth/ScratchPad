@@ -13,7 +13,10 @@
 * `content_save` saves an already-normalized profile
 * `content_list` lists saved items with basic filters for subject, category, depth, status, max estimated time, and query
 * `content_list` now uses a lightweight in-memory Markdown query layer with multi-status filters, status exclusions, min/max time windows, sorting, relevance scores, and match reasons
+* `content_update` corrects saved item metadata/profile fields and notes while preserving item identity
 * `content_status_update` marks saved items `unread`, `started`, `done`, `archived`, or `abandoned`
+* Deterministic fake-model tool-choice tests cover source analysis, saving, metadata updates, status updates, and recommendation/listing requests
+* Manual tool-choice eval exists for simple real-model requests without executing tools
 
 ## Priority 1: Content-Profile Evaluation Calibration
 
@@ -71,6 +74,8 @@
 
 ## Evaluation Follow-ups
 
+* Extend deterministic tool-choice evals with harder ambiguous requests, such as "fix this title and mark it done", to verify tool sequencing or clarification behavior
+* Add more real-model tool-choice cases for simple natural-language requests as new user workflows appear
 * Build recommendation eval fixtures with fake libraries, fake user profiles, user requests, and expected ranking constraints
 * Evaluate hard rules deterministically: status exclusions, time limits, query match, and required tool use
 * Evaluate qualitative recommendation usefulness separately with an optional stronger local model as judge

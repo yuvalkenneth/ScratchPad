@@ -27,6 +27,7 @@ def test_default_tool_surface_hides_low_level_analysis_and_save_tools(monkeypatc
     assert "analyze_source" in names
     assert "content_add" in names
     assert "content_list" in names
+    assert "content_update" in names
     assert "content_status_update" in names
     assert "url_analyze" not in names
     assert "youtube_analyze" not in names
@@ -76,3 +77,11 @@ def test_content_status_update_prompt_lists_status_values() -> None:
     prompt_text = get_tools_prompt_text()
 
     assert "Status values: unread, started, done, archived, abandoned" in prompt_text
+
+
+def test_content_update_prompt_handles_profile_corrections() -> None:
+    prompt_text = get_tools_prompt_text()
+
+    assert "- content_update:" in prompt_text
+    assert "correct saved item details" in prompt_text
+    assert "title, summary, subject, categories" in prompt_text

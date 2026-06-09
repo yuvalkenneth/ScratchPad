@@ -38,14 +38,14 @@ def resolve_base_url(config: LLMConfig | Any) -> str:
     base_url = getattr(config, "base_url", None) or getattr(config, "api_url", None)
     if base_url:
         return base_url
-    env_base_url = os.getenv("LLM_BASE_URL")
-    if env_base_url:
-        return env_base_url
     provider = getattr(config, "provider", "llama_cpp")
     if provider == "gemini":
         gemini_base_url = os.getenv("GEMINI_BASE_URL")
         if gemini_base_url:
             return gemini_base_url
+    env_base_url = os.getenv("LLM_BASE_URL")
+    if env_base_url:
+        return env_base_url
     default = PROVIDERS_TO_BASE_URL.get(provider)
     if default is None:
         raise ValueError(f"Base URL for provider {provider} not found.")
