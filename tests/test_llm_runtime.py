@@ -75,6 +75,7 @@ def test_default_system_prompt_identifies_scratchpad_and_tool_policy() -> None:
 
     assert "You are Scratchpad" in prompt
     assert "local-first" in prompt
+    assert "Current local time:" in prompt
 
 
 def test_resolve_api_key_prefers_provider_specific_env(monkeypatch) -> None:

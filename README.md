@@ -283,6 +283,7 @@ The local chat runtime currently supports:
 
 * OpenAI-compatible chat completions
 * tool execution with a small local registry
+* current local time included directly in the system prompt, without a separate time tool
 * loop protection for repeated or excessive tool rounds
 * local `llama.cpp` server startup and shutdown
 * log-based server timing inspection for prompt/output token counts and speed

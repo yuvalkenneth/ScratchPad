@@ -1,6 +1,5 @@
 import json
 import os
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
@@ -42,10 +41,6 @@ EXECUTOR_TOOL_NAMES = {"run_shell", "run_python"}
 INTERNAL_TOOL_NAMES = {"url_analyze", "youtube_analyze", "content_save"}
 
 
-def get_time(_: dict[str, Any]) -> str:
-    return datetime.now(timezone.utc).isoformat()
-
-
 def list_files(arguments: dict[str, Any]) -> str:
     raw_path = arguments.get("path", ".")
     target = Path(raw_path).expanduser().resolve()
@@ -76,21 +71,6 @@ def run_python(arguments: dict[str, Any]) -> str:
 
 
 TOOLS: dict[str, dict[str, Any]] = {
-    "get_time": {
-        "definition": {
-            "type": "function",
-            "function": {
-                "name": "get_time",
-                "description": "Get the current UTC time.",
-                "parameters": {
-                    "type": "object",
-                    "properties": {},
-                    "additionalProperties": False,
-                },
-            },
-        },
-        "handler": get_time,
-    },
     "list_files": {
         "definition": {
             "type": "function",
@@ -271,7 +251,6 @@ def get_tool_definitions() -> list[dict[str, Any]]:
 def get_tools_prompt_text() -> str:
     lines = [
         "Available tools:",
-        "- get_time: Get the current UTC time.",
         "- list_files: List files in a local directory.",
         "- analyze_source: Analyze a URL or YouTube video into a normalized content profile without saving it.",
         "- content_add: Analyze a URL and save the normalized content_profile into the local Markdown library in one step.",

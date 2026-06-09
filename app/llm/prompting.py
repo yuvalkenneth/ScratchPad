@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from app.tools.registry import get_tools_prompt_text
 
@@ -17,6 +18,7 @@ def build_system_prompt() -> str:
     base_prompt = os.getenv("LLM_SYSTEM_PROMPT") or DEFAULT_SYSTEM_PROMPT
     sections = [
         base_prompt.strip(),
+        f"Current local time: {datetime.now().astimezone().isoformat(timespec='seconds')}",
         get_tools_prompt_text(),
     ]
     return "\n\n".join(section for section in sections if section)

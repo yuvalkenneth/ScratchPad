@@ -19,6 +19,7 @@
 * Deterministic fake-model tool-choice tests cover source analysis, saving, metadata updates, status updates, and recommendation/listing requests
 * Manual tool-choice eval exists for simple real-model requests without executing tools
 * Tool-choice evals can score required argument constraints such as status updates and recommendation time/status filters
+* Current local time is injected into the system prompt instead of exposed through a separate tool
 
 ## Priority 1: Content-Profile Evaluation Calibration
 

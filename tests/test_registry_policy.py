@@ -24,6 +24,7 @@ def test_default_tool_surface_hides_low_level_analysis_and_save_tools(monkeypatc
     names = tool_names()
     prompt_text = get_tools_prompt_text()
 
+    assert "get_time" not in names
     assert "analyze_source" in names
     assert "content_add" in names
     assert "content_list" in names
@@ -36,6 +37,7 @@ def test_default_tool_surface_hides_low_level_analysis_and_save_tools(monkeypatc
     assert "- url_analyze:" not in prompt_text
     assert "- youtube_analyze:" not in prompt_text
     assert "- content_save:" not in prompt_text
+    assert "- get_time:" not in prompt_text
 
 
 def test_executor_tools_can_be_enabled_for_dev_mode(monkeypatch) -> None:
