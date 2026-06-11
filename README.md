@@ -96,8 +96,8 @@ The evaluation ladder is:
 * deterministic unit tests for storage, parsing, query behavior, safety checks, and fake-model tool routing
 * tool-choice evals for whether a real local model chooses the right first tool and required arguments
 * content-profile evals for whether a model produces useful, faithful, normalized metadata from frozen source text
+* deterministic workflow evals for whether save, query, recommendation constraints, and status updates compose correctly
 * future recommendation evals with fake libraries, fake user profiles, user requests, and expected ranking constraints
-* future end-to-end workflow evals that cover save -> recommend -> status update state transitions
 
 The project should avoid treating a green eval as a vague "model is good" claim. Each eval should name the behavior it measures and preserve enough output to compare local models over time.
 
@@ -140,6 +140,7 @@ Already implemented foundation:
 * separate Git history for personal library mutations
 * deterministic pytest coverage for analyzers, tool policy, executor safety, library behavior, and eval scoring
 * manual model eval scripts for content profiles and tool choice
+* deterministic workflow evals for save -> list/recommend -> status-update product flows
 
 ---
 
@@ -287,6 +288,18 @@ This eval does not execute tools. It only inspects the first tool call selected 
 
 Use `--report <path>` to write aggregate classification metrics, including first-tool accuracy, argument accuracy, confusion matrix, per-class precision/recall/F1, default reliance rate, and latency.
 
+Run deterministic product workflow evals to check whether library operations compose into useful flows:
+
+```bash
+uv run python scripts/eval_workflows.py
+```
+
+Workflow fixtures live in:
+
+```text
+evals/workflows/cases.json
+```
+
 ### Chat commands
 
 The REPL in [main.py](main.py) supports a few built-in commands:
@@ -360,7 +373,7 @@ These are the main improvement ideas after rereading the repo against the projec
 ### Evaluation
 
 * Add recommendation evals as the next major eval type. Use fake libraries and fake user profiles so expected ranking constraints can be deterministic.
-* Add end-to-end workflow evals. The important product behavior is not only "right first tool"; it is whether save, query, recommend, and status update compose correctly.
+* Extend workflow evals toward real model-in-the-loop runs. The deterministic base now checks whether save, query, recommend constraints, and status update compose correctly.
 * Diversify content-profile fixtures beyond LLM-agent material. Keep adding recent non-arXiv examples across security, systems, product, design, finance, research, videos, and repos.
 * Track failure categories in reports. Reports should make it easy to compare models by wrong tool, no tool, invalid arguments, weak summary, generic categories, hallucination, bad time estimate, and latency.
 * Run repeated generations for unstable local models. A `--runs N` mode would expose nondeterminism that a single pass hides.

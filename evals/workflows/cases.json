@@ -1,0 +1,143 @@
+[
+  {
+    "id": "time_boxed_recommendation_state_flow",
+    "description": "A saved library can be queried for a time-boxed recommendation and then mark the chosen item started.",
+    "steps": [
+      {
+        "type": "save",
+        "item": {
+          "source_type": "youtube",
+          "source_id": "ILdE7FaAjVA",
+          "url": "https://www.youtube.com/watch?v=ILdE7FaAjVA",
+          "title": "LLM Endpoint Deployment",
+          "summary": "A practical short video about deploying an LLM endpoint on hosted GPU infrastructure.",
+          "subject": "LLM deployment",
+          "depth_level": "light",
+          "categories": ["LLMs", "deployment", "infrastructure"],
+          "estimated_time_minutes": 5,
+          "confidence": 0.8,
+          "status": "unread"
+        },
+        "expect": {"created": true}
+      },
+      {
+        "type": "save",
+        "item": {
+          "source_type": "web",
+          "source_id": null,
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "title": "OWASP LLM Prompt Injection Prevention Cheat Sheet",
+          "summary": "A security guide covering LLM prompt injection attacks and practical defenses.",
+          "subject": "LLM application security",
+          "depth_level": "medium",
+          "categories": ["security", "LLMs", "prompt injection"],
+          "estimated_time_minutes": 18,
+          "confidence": 0.9,
+          "status": "unread"
+        },
+        "expect": {"created": true}
+      },
+      {
+        "type": "save",
+        "item": {
+          "source_type": "youtube",
+          "source_id": "l6DKRf-fAAM",
+          "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "title": "Reinventing Entropy",
+          "summary": "A deeper technical video connecting compression, entropy, prediction, and intelligence.",
+          "subject": "information theory for AI",
+          "depth_level": "deep",
+          "categories": ["AI", "information theory", "compression"],
+          "estimated_time_minutes": 45,
+          "confidence": 0.8,
+          "status": "unread"
+        },
+        "expect": {"created": true}
+      },
+      {
+        "type": "list",
+        "filters": {
+          "query": "LLM deployment endpoint",
+          "status": ["unread", "started"],
+          "max_estimated_time_minutes": 20,
+          "sort": "relevance",
+          "limit": 3
+        },
+        "expect": {
+          "titles_include": ["LLM Endpoint Deployment"],
+          "titles_exclude": ["Reinventing Entropy"],
+          "max_count": 2
+        }
+      },
+      {
+        "type": "status_update",
+        "url": "https://www.youtube.com/watch?v=ILdE7FaAjVA",
+        "status": "started",
+        "expect": {"status": "started"}
+      },
+      {
+        "type": "list",
+        "filters": {
+          "status": ["started"],
+          "query": "LLM deployment",
+          "sort": "relevance"
+        },
+        "expect": {
+          "titles_exact": ["LLM Endpoint Deployment"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "default_recommendation_status_excludes_done",
+    "description": "Default recommendation/listing status constraints should keep completed items out of active suggestions.",
+    "steps": [
+      {
+        "type": "save",
+        "item": {
+          "source_type": "web",
+          "source_id": null,
+          "url": "https://example.com/started-agent-evals",
+          "title": "Started Agent Evals",
+          "summary": "A practical article about evaluating local LLM agents with rubrics and workflow checks.",
+          "subject": "agent evals",
+          "depth_level": "medium",
+          "categories": ["LLMs", "agents", "evaluation"],
+          "estimated_time_minutes": 12,
+          "confidence": 0.85,
+          "status": "started"
+        },
+        "expect": {"created": true}
+      },
+      {
+        "type": "save",
+        "item": {
+          "source_type": "web",
+          "source_id": null,
+          "url": "https://example.com/done-agent-evals",
+          "title": "Done Agent Evals",
+          "summary": "A completed article about agent evaluation.",
+          "subject": "agent evals",
+          "depth_level": "medium",
+          "categories": ["LLMs", "agents", "evaluation"],
+          "estimated_time_minutes": 8,
+          "confidence": 0.75,
+          "status": "done"
+        },
+        "expect": {"created": true}
+      },
+      {
+        "type": "list",
+        "filters": {
+          "query": "agent evals",
+          "status": ["unread", "started"],
+          "sort": "relevance"
+        },
+        "expect": {
+          "titles_exact": ["Started Agent Evals"],
+          "titles_exclude": ["Done Agent Evals"]
+        }
+      }
+    ]
+  }
+]

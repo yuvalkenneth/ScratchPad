@@ -22,6 +22,7 @@
 * Tool-choice evals report first-tool multiclass classification metrics, per-class precision/recall/F1, confusion matrix, default reliance, and latency
 * Current local time is injected into the system prompt instead of exposed through a separate tool
 * `scratchpad-recommendation` skill exists and is loaded before recommendation requests
+* Deterministic workflow evals cover save, time-boxed library querying, and status-update state transitions
 
 ## Priority 1: Content-Profile Evaluation Calibration
 
@@ -89,6 +90,7 @@
 * Build a cross-source content-profile eval set from recent, valuable, non-canonical URLs to reduce train-set contamination risk
 * Freeze fetched source text/transcripts/metadata into fixtures so eval runs do not depend on live network access
 * Later add `scripts/eval_recommendations.py` to compare recommendation behavior across local models
+* Extend deterministic workflow evals into model-in-the-loop workflow evals once recommendation policy stabilizes
 
 ## Markdown Persistence Follow-ups
 
