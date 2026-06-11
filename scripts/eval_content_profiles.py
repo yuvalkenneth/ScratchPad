@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
@@ -130,7 +131,14 @@ def validate_case(case: dict[str, Any]) -> None:
     expected = case["expected"]
     if not isinstance(expected, dict):
         raise ValueError(f"Case {case['id']} expected must be an object.")
-    if expected.get("depth_level") not in {"light", "medium", "deep"}:
+    if "depth_level_options" in expected:
+        options = expected["depth_level_options"]
+        if not isinstance(options, list) or not options:
+            raise ValueError(f"Case {case['id']} expected.depth_level_options must be a non-empty list.")
+        invalid = [option for option in options if option not in {"light", "medium", "deep"}]
+        if invalid:
+            raise ValueError(f"Case {case['id']} has invalid depth options: {invalid}")
+    elif expected.get("depth_level") not in {"light", "medium", "deep"}:
         raise ValueError(f"Case {case['id']} expected.depth_level must be light, medium, or deep.")
 
 
@@ -344,7 +352,7 @@ def evaluate_case(profile: dict[str, Any], case: dict[str, Any]) -> dict[str, An
             severity="soft",
         ),
         "depth_level": _check(
-            profile.get("depth_level") == expected.get("depth_level"),
+            profile.get("depth_level") in expected_depth_options(expected),
             severity="hard",
         ),
         "estimated_time": _check(
@@ -402,6 +410,12 @@ def evaluate_case(profile: dict[str, Any], case: dict[str, Any]) -> dict[str, An
 def score_case(profile: dict[str, Any], case: dict[str, Any]) -> dict[str, bool]:
     """Return legacy boolean checks for unit tests and simple consumers."""
     return {name: check["passed"] for name, check in evaluate_case(profile, case)["checks"].items()}
+
+
+def expected_depth_options(expected: dict[str, Any]) -> list[str]:
+    if "depth_level_options" in expected:
+        return [str(option) for option in expected["depth_level_options"]]
+    return [str(expected.get("depth_level"))]
 
 
 def _check(passed: bool, *, severity: str) -> dict[str, Any]:
@@ -513,6 +527,7 @@ def run(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Evaluate content-profile LLM output on frozen inputs.")
     parser.add_argument("--fixtures", type=Path, default=DEFAULT_FIXTURE_PATH)
     parser.add_argument("--case", dest="case_id")
+    parser.add_argument("--limit", type=int, help="Evaluate only the first N loaded cases.")
     parser.add_argument("--provider", help="Provider for the model under test. Defaults to EVAL_PROVIDER or LLM_PROVIDER.")
     parser.add_argument("--model", help="Model id for the model under test. Defaults to EVAL_MODEL or LLM_MODEL.")
     parser.add_argument("--base-url", help="OpenAI-compatible base URL for the model under test.")
@@ -540,15 +555,69 @@ def run(argv: list[str] | None = None) -> int:
         cases = [case for case in cases if case["id"] == args.case_id]
         if not cases:
             raise ValueError(f"No eval case found with id: {args.case_id}")
+    if args.limit is not None:
+        if args.limit < 1:
+            raise ValueError("--limit must be at least 1")
+        cases = cases[: args.limit]
 
     failures = 0
+    results: list[dict[str, Any]] = []
+    total_started_at = time.perf_counter()
     for case in cases:
-        profile = analyze_case(case, config=eval_config)
+        case_started_at = time.perf_counter()
+        try:
+            profile = analyze_case(case, config=eval_config)
+            analysis_error = None
+        except Exception as exc:
+            profile = {}
+            analysis_error = str(exc)
+        analysis_latency_seconds = time.perf_counter() - case_started_at
+        if analysis_error is not None:
+            failures += 1
+            result = {
+                "type": "case",
+                "id": case["id"],
+                "passed": False,
+                "score": 0.0,
+                "passed_checks": 0,
+                "total_checks": 0,
+                "hard_failures": ["analysis_error"],
+                "soft_failures": [],
+                "checks": {},
+                "profile": profile,
+                "analysis_error": analysis_error,
+                "eval_config": {
+                    "provider": eval_config.provider,
+                    "model": eval_config.model_name,
+                    "base_url": eval_config.base_url,
+                },
+                "latency": {
+                    "analysis_seconds": round(analysis_latency_seconds, 3),
+                    "judge_seconds": None,
+                    "total_seconds": round(time.perf_counter() - case_started_at, 3),
+                },
+            }
+            results.append(result)
+            if args.json:
+                print(json.dumps(result, ensure_ascii=True))
+            else:
+                print(f"CASE {case['id']}: ERROR")
+                print(f"  analysis_latency_seconds: {result['latency']['analysis_seconds']}")
+                print(f"  analysis_error: {analysis_error}")
+                print()
+            continue
         evaluation = evaluate_case(profile, case)
-        judgment = judge_case(profile, case, config=judge_config) if judge_config else None
+        judge_latency_seconds = None
+        if judge_config:
+            judge_started_at = time.perf_counter()
+            judgment = judge_case(profile, case, config=judge_config)
+            judge_latency_seconds = time.perf_counter() - judge_started_at
+        else:
+            judgment = None
         passed = bool(evaluation["passed"])
         failures += 0 if passed else 1
         result = {
+            "type": "case",
             "id": case["id"],
             "passed": passed,
             "score": evaluation["score"],
@@ -563,6 +632,13 @@ def run(argv: list[str] | None = None) -> int:
                 "model": eval_config.model_name,
                 "base_url": eval_config.base_url,
             },
+            "latency": {
+                "analysis_seconds": round(analysis_latency_seconds, 3),
+                "judge_seconds": round(judge_latency_seconds, 3)
+                if judge_latency_seconds is not None
+                else None,
+                "total_seconds": round(time.perf_counter() - case_started_at, 3),
+            },
         }
         if judge_config is not None:
             result["judge_config"] = {
@@ -574,6 +650,7 @@ def run(argv: list[str] | None = None) -> int:
             }
         if judgment is not None:
             result["judgment"] = judgment
+        results.append(result)
         if args.json:
             print(json.dumps(result, ensure_ascii=True))
         else:
@@ -586,6 +663,7 @@ def run(argv: list[str] | None = None) -> int:
             print(f"  depth: {profile.get('depth_level', '')}")
             print(f"  estimated_time_minutes: {profile.get('estimated_time_minutes', '')}")
             print(f"  categories: {profile.get('categories', [])}")
+            print(f"  analysis_latency_seconds: {result['latency']['analysis_seconds']}")
             print(f"  hard_failures: {evaluation['hard_failures']}")
             print(f"  soft_failures: {evaluation['soft_failures']}")
             if judgment is not None:
@@ -602,7 +680,78 @@ def run(argv: list[str] | None = None) -> int:
 
             print()
 
+    total_latency_seconds = time.perf_counter() - total_started_at
+    summary = build_run_summary(
+        results,
+        total_latency_seconds=total_latency_seconds,
+        eval_config=eval_config,
+        judge_config=judge_config,
+    )
+    if args.json:
+        print(json.dumps(summary, ensure_ascii=True))
+    else:
+        print(
+            "SUMMARY: "
+            f"{summary['passed_cases']}/{summary['total_cases']} cases passed, "
+            f"avg_score {summary['average_score']:.2f}, "
+            f"total {summary['latency']['total_seconds']}s, "
+            f"avg_analysis {summary['latency']['average_analysis_seconds']}s"
+        )
+
     return 1 if failures else 0
+
+
+def build_run_summary(
+    results: list[dict[str, Any]],
+    *,
+    total_latency_seconds: float,
+    eval_config: LLMConfig,
+    judge_config: JudgeConfig | None,
+) -> dict[str, Any]:
+    total_cases = len(results)
+    passed_cases = sum(1 for result in results if result["passed"])
+    analysis_latencies = [result["latency"]["analysis_seconds"] for result in results]
+    judge_latencies = [
+        result["latency"]["judge_seconds"]
+        for result in results
+        if result["latency"]["judge_seconds"] is not None
+    ]
+    return {
+        "type": "summary",
+        "total_cases": total_cases,
+        "passed_cases": passed_cases,
+        "failed_cases": total_cases - passed_cases,
+        "average_score": round(
+            sum(float(result["score"]) for result in results) / total_cases,
+            4,
+        )
+        if total_cases
+        else 0.0,
+        "latency": {
+            "total_seconds": round(total_latency_seconds, 3),
+            "average_analysis_seconds": round(sum(analysis_latencies) / total_cases, 3)
+            if total_cases
+            else 0.0,
+            "max_analysis_seconds": max(analysis_latencies) if analysis_latencies else 0.0,
+            "average_judge_seconds": round(sum(judge_latencies) / len(judge_latencies), 3)
+            if judge_latencies
+            else None,
+        },
+        "eval_config": {
+            "provider": eval_config.provider,
+            "model": eval_config.model_name,
+            "base_url": eval_config.base_url,
+        },
+        "judge_config": {
+            "provider": judge_config.provider,
+            "model": judge_config.model_name,
+            "base_url": judge_config.base_url,
+            "temperature": judge_config.temperature,
+            "top_p": judge_config.top_p,
+        }
+        if judge_config
+        else None,
+    }
 
 
 if __name__ == "__main__":

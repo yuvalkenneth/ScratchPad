@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from app.llm.client import LLMClient
 from app.llm.config import LLMConfig
 from app.llm.config import load_env_file
-from app.llm.openai_compatible import resolve_api_key, resolve_base_url
+from app.llm.openai_compatible import is_non_retryable_quota_error, resolve_api_key, resolve_base_url
 from app.llm.prompting import build_system_prompt
 
 
@@ -87,6 +87,13 @@ def test_resolve_api_key_prefers_provider_specific_env(monkeypatch) -> None:
     )
 
     assert api_key == "provider-key"
+
+
+def test_detects_non_retryable_daily_quota_errors() -> None:
+    assert is_non_retryable_quota_error(
+        RuntimeError("quotaId: GenerateRequestsPerDayPerProjectPerModel-FreeTier")
+    )
+    assert not is_non_retryable_quota_error(RuntimeError("Please retry in 27s"))
 
 
 def test_load_env_file_sets_missing_values_without_overriding(tmp_path, monkeypatch) -> None:

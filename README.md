@@ -220,6 +220,8 @@ The eval script reads frozen cases from:
 evals/content_profiles/cases.json
 ```
 
+The fixture includes recent real-source cases for agent/coding-agent evaluation papers and repositories. Eval output reports per-case analysis latency plus an aggregate summary with pass counts, average score, total runtime, and average analysis latency.
+
 Run the tool-choice eval manually to check whether a model chooses the expected tool and required arguments for simple requests:
 
 ```bash
@@ -227,6 +229,8 @@ uv run python scripts/eval_tool_choice.py
 ```
 
 This eval does not execute tools. It only inspects the first tool call selected by the model and applies simple argument constraints, so it can safely test save/update/status intents without mutating the Markdown library.
+
+Use `--report <path>` to write aggregate classification metrics, including first-tool accuracy, argument accuracy, confusion matrix, per-class precision/recall/F1, default reliance rate, and latency.
 
 ### Chat commands
 

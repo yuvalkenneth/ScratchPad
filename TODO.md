@@ -19,6 +19,7 @@
 * Deterministic fake-model tool-choice tests cover source analysis, saving, metadata updates, status updates, and recommendation/listing requests
 * Manual tool-choice eval exists for simple real-model requests without executing tools
 * Tool-choice evals can score required argument constraints such as status updates and recommendation time/status filters
+* Tool-choice evals report first-tool multiclass classification metrics, per-class precision/recall/F1, confusion matrix, default reliance, and latency
 * Current local time is injected into the system prompt instead of exposed through a separate tool
 
 ## Priority 1: Content-Profile Evaluation Calibration
@@ -32,6 +33,8 @@
 * Let the judge use a separate provider, model id, base URL, temperature, and top-p from the model being evaluated
 * Keep LLM judge results separate from deterministic checks so invalid schema/source identity cannot be hidden by a permissive judge
 * Add per-case timing and model metadata to the eval output so model comparisons are traceable
+* Expand and keep curating the recent real-source content-profile fixture; it currently includes agent/coding-agent papers and repositories from February-June 2026
+* Rerun `uv run python scripts/eval_content_profiles.py --provider gemini --model gemini-3.5-flash --limit 3 --json` after Gemini free-tier daily quota resets; the latest attempt failed with `GenerateRequestsPerDayPerProjectPerModel-FreeTier`
 * Improve semantic matching for subjects and categories without hiding genuinely poor classifications
 * Keep content-profile LLM eval inputs frozen so prompt/model changes are compared against identical source text
 * Allow eval expectations to express semantic alternatives instead of exact strings, especially for subjects, categories, and summary coverage

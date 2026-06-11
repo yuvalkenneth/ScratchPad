@@ -4,7 +4,7 @@ import os
 import time
 from typing import Any
 
-from openai import AsyncOpenAI, OpenAI, RateLimitError
+from openai import APIStatusError, AsyncOpenAI, OpenAI, RateLimitError
 
 from app.llm.config import LLMConfig
 
@@ -53,11 +53,21 @@ def resolve_base_url(config: LLMConfig | Any) -> str:
 
 
 def make_sync_client(config: LLMConfig | Any) -> OpenAI:
-    return OpenAI(api_key=resolve_api_key(config), base_url=resolve_base_url(config))
+    return OpenAI(
+        api_key=resolve_api_key(config),
+        base_url=resolve_base_url(config),
+        timeout=float(os.getenv("LLM_REQUEST_TIMEOUT_SECONDS", "60")),
+        max_retries=int(os.getenv("LLM_CLIENT_MAX_RETRIES", "0")),
+    )
 
 
 def make_async_client(config: LLMConfig | Any) -> AsyncOpenAI:
-    return AsyncOpenAI(api_key=resolve_api_key(config), base_url=resolve_base_url(config))
+    return AsyncOpenAI(
+        api_key=resolve_api_key(config),
+        base_url=resolve_base_url(config),
+        timeout=float(os.getenv("LLM_REQUEST_TIMEOUT_SECONDS", "60")),
+        max_retries=int(os.getenv("LLM_CLIENT_MAX_RETRIES", "0")),
+    )
 
 
 def complete_text(
@@ -91,8 +101,21 @@ def create_completion_with_retries(config: LLMConfig | Any, request_kwargs: dict
     for attempt in range(attempts + 1):
         try:
             return client.chat.completions.create(**request_kwargs)
-        except RateLimitError:
-            if attempt >= attempts:
+        except RateLimitError as exc:
+            if is_non_retryable_quota_error(exc) or attempt >= attempts:
+                raise
+            time.sleep(delay_seconds)
+        except APIStatusError as exc:
+            if exc.status_code not in {500, 502, 503, 504} or attempt >= attempts:
                 raise
             time.sleep(delay_seconds)
     raise RuntimeError("unreachable")
+
+
+def is_non_retryable_quota_error(exc: BaseException) -> bool:
+    text = str(exc)
+    return (
+        "GenerateRequestsPerDay" in text
+        or "current quota" in text
+        or "please check your plan and billing details" in text.lower()
+    )

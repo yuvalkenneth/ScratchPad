@@ -40,5 +40,59 @@
         "status": ["done", "archived", "abandoned"]
       }
     }
+  },
+  {
+    "id": "explain_general_concept_no_tool",
+    "user": "What is local-first software? Give me a short explanation, don't inspect or save anything.",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "list_saved_agent_items",
+    "user": "Show me saved items about AI agents.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": ["unread", "started"]
+      },
+      "must_not_include": {
+        "status": ["done", "archived", "abandoned"]
+      }
+    }
+  },
+  {
+    "id": "mark_item_started",
+    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as started.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking",
+        "status": "started"
+      }
+    }
+  },
+  {
+    "id": "archive_saved_url",
+    "user": "Archive https://example.com/old-rag-post in my reading list.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/old-rag-post",
+        "status": "archived"
+      }
+    }
+  },
+  {
+    "id": "recommend_deep_eval_material",
+    "user": "Find me unread deep dives about evals from my library.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "depth_level": ["deep"],
+        "status": ["unread"]
+      },
+      "must_not_include": {
+        "status": ["done", "archived", "abandoned"]
+      }
+    }
   }
 ]

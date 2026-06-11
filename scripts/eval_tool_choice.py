@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +21,7 @@ from app.tools.registry import get_tool_definitions
 
 
 DEFAULT_CASES_PATH = REPO_ROOT / "evals" / "tool_choice" / "cases.json"
+NO_TOOL_LABEL = "no_tool"
 
 
 def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
@@ -127,6 +129,10 @@ def evaluate_arguments(
     return {"passed": all(check["passed"] for check in checks), "checks": checks}
 
 
+def uses_tool_defaults(tool_name: str | None, parsed: dict[str, Any], effective: dict[str, Any]) -> bool:
+    return tool_name == "content_list" and parsed != effective
+
+
 def run_case(
     case: dict[str, Any],
     *,
@@ -148,22 +154,32 @@ def run_case(
     if top_p is not None:
         request_kwargs["top_p"] = top_p
 
+    started_at = time.perf_counter()
     response = create_completion_with_retries(config, request_kwargs)
+    latency_seconds = time.perf_counter() - started_at
     choice = response.choices[0]
     message = choice.message
     tool_calls = getattr(message, "tool_calls", None) or []
     called_tools = [tool_call.function.name for tool_call in tool_calls]
     first_tool = called_tools[0] if called_tools else None
     first_arguments = tool_calls[0].function.arguments if tool_calls else None
-    parsed_arguments = parse_tool_arguments(first_arguments)
+    parse_error = None
+    try:
+        parsed_arguments = parse_tool_arguments(first_arguments)
+    except (json.JSONDecodeError, ValueError) as exc:
+        parsed_arguments = {}
+        parse_error = str(exc)
     effective_arguments = effective_tool_arguments(first_tool, parsed_arguments)
     content = getattr(message, "content", "") or ""
-    tool_pass = first_tool == case["expected_tool"]
+    expected_tool = case["expected_tool"]
+    actual_tool = first_tool or NO_TOOL_LABEL
+    tool_pass = actual_tool == expected_tool
     argument_evaluation = evaluate_arguments(
         expected=case.get("expected_arguments"),
         actual=effective_arguments,
     )
-    argument_pass = bool(argument_evaluation["passed"])
+    argument_json_valid = parse_error is None
+    argument_pass = bool(argument_evaluation["passed"]) and argument_json_valid
     passed = tool_pass and argument_pass
 
     return {
@@ -171,15 +187,122 @@ def run_case(
         "passed": passed,
         "tool_pass": tool_pass,
         "argument_pass": argument_pass,
-        "expected_tool": case["expected_tool"],
+        "expected_tool": expected_tool,
+        "actual_tool": actual_tool,
         "first_tool": first_tool,
         "first_arguments": first_arguments,
         "parsed_arguments": parsed_arguments,
         "effective_arguments": effective_arguments,
         "argument_checks": argument_evaluation["checks"],
+        "argument_json_valid": argument_json_valid,
+        "argument_parse_error": parse_error,
+        "used_tool_defaults": uses_tool_defaults(first_tool, parsed_arguments, effective_arguments),
         "called_tools": called_tools,
+        "extra_tool_count": max(0, len(called_tools) - 1),
         "finish_reason": getattr(choice, "finish_reason", None),
         "assistant_content": content,
+        "latency_seconds": round(latency_seconds, 3),
+    }
+
+
+def build_report(results: list[dict[str, Any]], *, model: str, provider: str) -> dict[str, Any]:
+    labels = sorted(
+        {
+            result["expected_tool"]
+            for result in results
+        }
+        | {result["actual_tool"] for result in results}
+    )
+    total = len(results)
+    confusion_matrix = {
+        expected: {actual: 0 for actual in labels}
+        for expected in labels
+    }
+    for result in results:
+        confusion_matrix[result["expected_tool"]][result["actual_tool"]] += 1
+
+    per_class = {}
+    for label in labels:
+        true_positive = confusion_matrix[label][label]
+        false_positive = sum(
+            confusion_matrix[expected][label] for expected in labels if expected != label
+        )
+        false_negative = sum(
+            confusion_matrix[label][actual] for actual in labels if actual != label
+        )
+        precision = true_positive / (true_positive + false_positive) if true_positive + false_positive else 0.0
+        recall = true_positive / (true_positive + false_negative) if true_positive + false_negative else 0.0
+        f1 = (2 * precision * recall / (precision + recall)) if precision + recall else 0.0
+        per_class[label] = {
+            "precision": round(precision, 4),
+            "recall": round(recall, 4),
+            "f1": round(f1, 4),
+            "support": sum(confusion_matrix[label].values()),
+        }
+
+    called_tool_count = sum(1 for result in results if result["actual_tool"] != NO_TOOL_LABEL)
+    expected_tool_count = sum(1 for result in results if result["expected_tool"] != NO_TOOL_LABEL)
+    wrong_tool_count = sum(1 for result in results if not result["tool_pass"] and result["actual_tool"] != NO_TOOL_LABEL)
+    no_tool_false_negative_count = sum(
+        1
+        for result in results
+        if result["expected_tool"] != NO_TOOL_LABEL and result["actual_tool"] == NO_TOOL_LABEL
+    )
+    tool_false_positive_count = sum(
+        1
+        for result in results
+        if result["expected_tool"] == NO_TOOL_LABEL and result["actual_tool"] != NO_TOOL_LABEL
+    )
+    default_reliance_count = sum(1 for result in results if result["used_tool_defaults"])
+    constrained_results = [result for result in results if result["argument_checks"]]
+    latencies = [float(result["latency_seconds"]) for result in results]
+    return {
+        "type": "tool_choice_report",
+        "provider": provider,
+        "model": model,
+        "total_cases": total,
+        "passed_cases": sum(1 for result in results if result["passed"]),
+        "tool_selection_accuracy": round(
+            sum(1 for result in results if result["tool_pass"]) / total,
+            4,
+        )
+        if total
+        else 0.0,
+        "argument_accuracy": round(
+            sum(1 for result in constrained_results if result["argument_pass"]) / len(constrained_results),
+            4,
+        )
+        if constrained_results
+        else None,
+        "overall_accuracy": round(sum(1 for result in results if result["passed"]) / total, 4)
+        if total
+        else 0.0,
+        "argument_json_validity_rate": round(
+            sum(1 for result in results if result["argument_json_valid"]) / total,
+            4,
+        )
+        if total
+        else 0.0,
+        "call_rate": round(called_tool_count / total, 4) if total else 0.0,
+        "expected_call_rate": round(expected_tool_count / total, 4) if total else 0.0,
+        "wrong_tool_rate": round(wrong_tool_count / total, 4) if total else 0.0,
+        "no_tool_false_negative_rate": round(no_tool_false_negative_count / total, 4) if total else 0.0,
+        "tool_false_positive_rate": round(tool_false_positive_count / total, 4) if total else 0.0,
+        "extra_tool_rate": round(
+            sum(1 for result in results if result["extra_tool_count"] > 0) / total,
+            4,
+        )
+        if total
+        else 0.0,
+        "default_reliance_rate": round(default_reliance_count / total, 4) if total else 0.0,
+        "confusion_matrix": confusion_matrix,
+        "per_class": per_class,
+        "latency": {
+            "average_seconds": round(sum(latencies) / total, 3) if total else 0.0,
+            "max_seconds": round(max(latencies), 3) if latencies else 0.0,
+            "total_seconds": round(sum(latencies), 3),
+        },
+        "results": results,
     }
 
 
@@ -196,6 +319,7 @@ def run(argv: list[str] | None = None) -> int:
     parser.add_argument("--start-script", help="llama.cpp start script for the model under test.")
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--top-p", type=float)
+    parser.add_argument("--report", type=Path, help="Write a JSON report with aggregate metrics.")
     parser.add_argument(
         "--no-auto-start",
         action="store_true",
@@ -211,10 +335,10 @@ def run(argv: list[str] | None = None) -> int:
         if not cases:
             raise ValueError(f"No tool-choice eval case found with id: {args.case_id}")
 
-    failures = 0
+    results: list[dict[str, Any]] = []
     for case in cases:
         result = run_case(case, config=config, temperature=args.temperature, top_p=args.top_p)
-        failures += 0 if result["passed"] else 1
+        results.append(result)
         if args.json:
             print(json.dumps(result, ensure_ascii=True))
         else:
@@ -237,6 +361,22 @@ def run(argv: list[str] | None = None) -> int:
             if result["finish_reason"]:
                 print(f"  finish_reason: {result['finish_reason']}")
 
+    report = build_report(results, model=config.model_name, provider=config.provider)
+    if args.report:
+        args.report.parent.mkdir(parents=True, exist_ok=True)
+        args.report.write_text(json.dumps(report, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+    if args.json:
+        print(json.dumps({key: value for key, value in report.items() if key != "results"}, ensure_ascii=True))
+    else:
+        print(
+            "SUMMARY: "
+            f"{report['passed_cases']}/{report['total_cases']} passed, "
+            f"tool_accuracy {report['tool_selection_accuracy']:.2f}, "
+            f"argument_accuracy {report['argument_accuracy']}, "
+            f"avg_latency {report['latency']['average_seconds']}s"
+        )
+
+    failures = sum(1 for result in results if not result["passed"])
     return 1 if failures else 0
 
 

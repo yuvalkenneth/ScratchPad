@@ -143,5 +143,507 @@
       ],
       "min_confidence": 0.4
     }
+  },
+  {
+    "id": "web_benchagent_multi_agent_eval",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://arxiv.org/abs/2606.05670",
+    "title": "Do More Agents Help? Controlled and Protocol-Aligned Evaluation of LLM Agent Workflows",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Paper published June 4, 2026. BenchAgent compares single-agent, fixed multi-agent, and evolving multi-agent LLM workflows under the same benchmark loader, tool access, answer contract, usage accounting, and trajectory logging protocol. The study evaluates workflows across reasoning, coding, and tool-use benchmarks, reporting that most multi-agent systems do not beat a matched single-agent anchor once protocols are normalized. A separate protocol-aligned GAIA study shows a Claude-Code-style runtime workflow performing strongly, especially on harder Level 3 tasks, but the paper emphasizes cost-accuracy tradeoffs and controlled comparisons over broad claims that more agents always help.",
+      "metadata": {
+        "published": "2026-06-04",
+        "authors": ["Yuhang Fu", "Ruishan Fang", "Jiaqi Shao", "Huiyu Zheng", "Zhengtao Zhu", "Bing Luo", "Tao Lin"],
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 8
+    },
+    "expected": {
+      "subject_options": ["multi-agent evaluation", "LLM agent workflows", "agent benchmark protocols", "BenchAgent"],
+      "category_any": ["agents", "evaluation", "benchmarks", "multi-agent systems"],
+      "category_concept_groups": [["agents", "LLM agents"], ["evaluation", "benchmarks"], ["multi-agent", "agent workflows"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [6, 20],
+      "summary_concept_groups": [["multi-agent", "agents"], ["evaluation", "benchmark"], ["protocol", "controlled"]],
+      "summary_must_not_claim": ["robotics", "image generation"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "web_swe_explore_repo_exploration",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://arxiv.org/abs/2606.07297",
+    "title": "SWE-Explore: Benchmarking How Coding Agents Explore Repositories",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Paper published June 5, 2026. SWE-Explore isolates repository exploration as a separate capability for coding agents instead of scoring only final bug-fix success. Given a repository and issue, an explorer must return a ranked list of relevant code regions under a fixed line budget. The benchmark covers hundreds of issues across many languages and open-source repositories, with line-level ground truth derived from successful agent trajectories. It evaluates coverage, ranking quality, and context efficiency, finding that modern agentic explorers beat classical retrieval but still struggle with line-level localization and efficient ranking.",
+      "metadata": {
+        "published": "2026-06-05",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 7
+    },
+    "expected": {
+      "subject_options": ["repository exploration", "coding agent evaluation", "code localization", "SWE-Explore"],
+      "category_any": ["coding agents", "software engineering", "evaluation", "retrieval"],
+      "category_concept_groups": [["coding agents", "software agents"], ["repository", "codebase"], ["exploration", "localization", "retrieval"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [5, 18],
+      "summary_concept_groups": [["repository", "code"], ["exploration", "localization"], ["benchmark", "evaluation"]],
+      "summary_must_not_claim": ["mobile UI design", "customer support"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "web_customer_support_agents_eval",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://arxiv.org/abs/2606.08867",
+    "title": "Building Customer Support AI Agents at 100M-User Scale: An Evaluation-Driven Framework",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Paper published June 7, 2026. The paper describes an evaluation-driven framework for building production customer-support AI agents at Nubank scale, serving more than 100 million users. It links structured context engineering, human-in-the-loop prompt iteration, LLM-judge evaluation with inter-rater agreement, GEPA optimization, and online A/B validation. The authors report deployments across card delivery, debt management, credit-limit support, card management, and product explanation. Their central claim is that eval-pipeline quality controls iteration velocity and that offline simulation metrics can predict online customer satisfaction and self-service improvements.",
+      "metadata": {
+        "published": "2026-06-07",
+        "organization": "Nubank",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 8
+    },
+    "expected": {
+      "subject_options": ["customer support agents", "production AI agent evaluation", "eval-driven agent development", "AI support automation"],
+      "category_any": ["agents", "evaluation", "customer support", "production AI"],
+      "category_concept_groups": [["customer support", "support automation"], ["evaluation", "LLM judge", "offline metrics"], ["production", "deployment"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [6, 20],
+      "summary_concept_groups": [["customer support"], ["evaluation"], ["production", "deployment"]],
+      "summary_must_not_claim": ["coding benchmark", "robotics"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "web_unified_agentic_eval_framework",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://arxiv.org/abs/2605.27898",
+    "title": "A Unified Framework for the Evaluation of LLM Agentic Capabilities",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Paper published May 27, 2026. This work proposes a unified framework for evaluating LLM agentic capabilities across benchmarks by standardizing instruction, tool, environment, execution architecture, sandboxing, and metrics. It adapts multiple benchmarks into a fixed ReAct-style setup and supports offline snapshots to separate framework effects from live-environment volatility. The paper reports large-scale rollouts across many domains and models, emphasizing that benchmark packaging, scaffold choice, and environment instability can materially change results, so agent evaluations need shared configuration, resource accounting, and failure attribution.",
+      "metadata": {
+        "published": "2026-05-27",
+        "repo": "https://github.com/whfeLingYu/A-Unified-Framework-for-the-Evaluation-of-LLM-Agentic-Capabilities",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 8
+    },
+    "expected": {
+      "subject_options": ["LLM agent evaluation", "agentic capability evaluation", "benchmark standardization", "agent evaluation framework"],
+      "category_any": ["agents", "evaluation", "benchmarks", "tool use"],
+      "category_concept_groups": [["agents", "agentic"], ["evaluation", "benchmarks"], ["framework", "standardization", "sandbox"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [6, 20],
+      "summary_concept_groups": [["evaluation", "benchmark"], ["agent"], ["framework", "standardized"]],
+      "summary_must_not_claim": ["mobile app development", "customer service only"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "web_auto_benchmark_audit",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://arxiv.org/abs/2605.26079",
+    "title": "Automated Benchmark Auditing for AI Agents and Large Language Models",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Paper published May 25, 2026. Auto Benchmark Audit is an agentic auditing framework for finding flaws in benchmark tasks for LLMs and agents. It audits individual tasks for hidden environment dependencies, ambiguous specifications, incomplete grading logic, and incorrect ground truths. The authors run the system across many benchmarks and report that problematic tasks can distort capability assessments and shift leaderboard rankings when filtered out. The core idea is that benchmark quality itself needs automated, reproducible verification because agent benchmarks are too complex for manual review alone.",
+      "metadata": {
+        "published": "2026-05-25",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 7
+    },
+    "expected": {
+      "subject_options": ["benchmark auditing", "LLM benchmark quality", "agent benchmark validation", "automated benchmark audit"],
+      "category_any": ["evaluation", "benchmarks", "agents", "quality assurance"],
+      "category_concept_groups": [["benchmark", "benchmarks"], ["audit", "validation", "quality"], ["agents", "LLMs"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [5, 18],
+      "summary_concept_groups": [["benchmark"], ["audit", "validation"], ["agent", "LLM"]],
+      "summary_must_not_claim": ["browser automation product", "3D printing"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "web_engiai_engineering_design_agents",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://arxiv.org/abs/2605.19743",
+    "title": "EngiAI: A Multi-Agent Framework and Benchmark Suite for LLM-Driven Engineering Design",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Paper published May 19, 2026. EngiAI combines a benchmark suite and a LangGraph-based multi-agent reference implementation for engineering design tasks. The benchmark evaluates workflow skills, retrieval-augmented parameter selection, and HPC job orchestration. The system coordinates specialized agents for topology optimization, document retrieval, SLURM training jobs, and 3D printer preparation. Results compare proprietary and open-source models, showing that direct tool use and retrieval can perform well while conditional branching and long-running multi-step orchestration remain difficult.",
+      "metadata": {
+        "published": "2026-05-19",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 8
+    },
+    "expected": {
+      "subject_options": ["engineering design agents", "multi-agent engineering design", "EngiAI", "LLM-driven engineering design"],
+      "category_any": ["agents", "engineering", "benchmarks", "RAG"],
+      "category_concept_groups": [["engineering", "design"], ["multi-agent", "agents"], ["benchmark", "evaluation"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [6, 20],
+      "summary_concept_groups": [["engineering"], ["multi-agent", "agents"], ["benchmark", "workflow"]],
+      "summary_must_not_claim": ["mobile apps", "customer support"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "web_contractbench_observation_contracts",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://arxiv.org/abs/2605.17281",
+    "title": "ContractBench: Can LLM Agents Preserve Observation Contracts?",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Paper published May 17, 2026. ContractBench studies whether tool-using LLM agents preserve observation contracts: intermediate API artifacts such as presigned URLs, session tokens, and OAuth state parameters whose validity and byte integrity must be maintained across later actions. The benchmark uses deterministic tasks with a virtual clock and hash checks to detect validity failures and integrity failures. Results show that observation-contract compliance is regression-prone and not guaranteed by general tool-use ability, with sharp capability cliffs between small and larger model families.",
+      "metadata": {
+        "published": "2026-05-17",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 7
+    },
+    "expected": {
+      "subject_options": ["tool-use reliability", "observation contracts", "LLM agent API compliance", "ContractBench"],
+      "category_any": ["agents", "tool use", "evaluation", "API reliability"],
+      "category_concept_groups": [["tool use", "API"], ["contracts", "integrity", "validity"], ["evaluation", "benchmark"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [5, 18],
+      "summary_concept_groups": [["tool", "API"], ["contract", "validity", "integrity"], ["benchmark", "evaluation"]],
+      "summary_must_not_claim": ["image classification", "user interface design"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "web_care_agent_methodology",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://arxiv.org/abs/2604.28043",
+    "title": "Collaborative Agent Reasoning Engineering (CARE): A Three-Party Design Methodology for Systematically Engineering AI Agents with Subject Matter Experts, Developers, and Helper Agents",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Paper published April 30, 2026. CARE is a methodology for engineering LLM agents in scientific domains through collaboration among subject-matter experts, developers, and helper agents. It turns informal domain intent into structured artifacts such as interaction requirements, reasoning policies, grounding rules, tool orchestration plans, and evaluation criteria. The process is stage-gated so humans approve specifications before implementation. The paper argues that disciplined artifacts and review gates improve maintainability and reduce ad-hoc prompt trial-and-error for complex agent systems.",
+      "metadata": {
+        "published": "2026-04-30",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 7
+    },
+    "expected": {
+      "subject_options": ["agent engineering methodology", "CARE methodology", "scientific AI agents", "LLM agent design"],
+      "category_any": ["agents", "methodology", "software engineering", "scientific workflows"],
+      "category_concept_groups": [["agents", "LLM agents"], ["methodology", "design"], ["requirements", "policies", "evaluation"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [5, 18],
+      "summary_concept_groups": [["methodology", "process"], ["subject-matter experts", "developers"], ["artifacts", "requirements", "evaluation"]],
+      "summary_must_not_claim": ["benchmark leaderboard", "mobile application"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "web_swe_bench_5g",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://arxiv.org/abs/2604.26278",
+    "title": "SWE-Bench 5G: Benchmarking AI Coding Agents on Telecom Network Engineering Tasks",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Paper published April 29, 2026. SWE-Bench 5G evaluates AI coding agents on real bugs from open-source 5G core network software. The benchmark packages tasks in Docker environments with automated tests and includes optional concise 3GPP specification context for issues that depend on telecom standards. Experiments show that models often diagnose bugs but resolve rates remain low, suggesting that iterative code editing and domain knowledge both matter. Specification injection helps primarily when the bug depends on standards knowledge rather than generic defensive programming.",
+      "metadata": {
+        "published": "2026-04-29",
+        "domain": "telecom",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 7
+    },
+    "expected": {
+      "subject_options": ["AI coding agents for telecom", "SWE-Bench 5G", "5G software engineering benchmark", "domain-specific coding agents"],
+      "category_any": ["coding agents", "software engineering", "telecom", "benchmarks"],
+      "category_concept_groups": [["coding agents", "software agents"], ["5G", "telecom"], ["benchmark", "SWE-Bench"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [5, 18],
+      "summary_concept_groups": [["5G", "telecom"], ["coding agents"], ["benchmark", "bugs"]],
+      "summary_must_not_claim": ["customer support", "browser automation"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "web_alphaeval_production_agents",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://arxiv.org/abs/2604.12162",
+    "title": "AlphaEval: Evaluating Agents in Production",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Paper published April 14, 2026. AlphaEval argues that production AI agents need evaluation tasks that reflect messy real business requirements rather than only clean benchmark prompts. The benchmark contains tasks sourced from companies deploying agents across multiple occupational domains. It evaluates complete agent products such as Claude Code and Codex, not just base models, using a mixture of LLM-as-judge, reference metrics, formal verification, rubric scoring, and automated UI tests. The paper also proposes a requirement-to-benchmark construction process for turning production requirements into executable evals.",
+      "metadata": {
+        "published": "2026-04-14",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 7
+    },
+    "expected": {
+      "subject_options": ["production agent evaluation", "AlphaEval", "agent product benchmarks", "enterprise AI evals"],
+      "category_any": ["agents", "evaluation", "production AI", "benchmarks"],
+      "category_concept_groups": [["production", "business"], ["agents", "agent products"], ["evaluation", "benchmarks"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [5, 18],
+      "summary_concept_groups": [["production"], ["agents"], ["evaluation", "benchmark"]],
+      "summary_must_not_claim": ["5G networks", "mathematical animation"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "web_analysisbench_software_analysis_agents",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://arxiv.org/abs/2604.11270",
+    "title": "Evaluating LLM Agents on Automated Software Analysis Tasks",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Paper published April 13, 2026. AnalysisBench evaluates LLM agents on automated software analysis tasks that require setting up separate tools, resolving dependencies, configuring target projects, and validating meaningful analysis output. The benchmark spans multiple C/C++ and Java projects and several analysis tools. The authors compare agent architectures and LLM backends, finding that their AnalysisAgent performs best and that architecture matters beyond model capability. They identify stage mixing, poor error localization, premature termination, and overconfident self-validation as common failure modes.",
+      "metadata": {
+        "published": "2026-04-13",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 7
+    },
+    "expected": {
+      "subject_options": ["software analysis agents", "AnalysisBench", "LLM agents for static analysis", "automated software analysis"],
+      "category_any": ["software engineering", "agents", "evaluation", "program analysis"],
+      "category_concept_groups": [["software analysis", "program analysis"], ["agents", "LLM agents"], ["benchmark", "evaluation"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [5, 18],
+      "summary_concept_groups": [["software analysis"], ["agents"], ["benchmark", "tools"]],
+      "summary_must_not_claim": ["customer support", "social network"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "web_swe_bench_mobile",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://arxiv.org/abs/2602.09540",
+    "title": "SWE-Bench Mobile: Can Large Language Model Agents Develop Industry-Level Mobile Applications?",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Paper published February 10, 2026. SWE-Bench Mobile evaluates coding agents on realistic mobile application development tasks from a production iOS codebase. The tasks include multimodal product requirements and Figma designs, a large Swift and Objective-C codebase, and comprehensive tests. The study compares commercial agents such as Cursor, Codex, and Claude Code with an open-source agent, finding low success rates even for the best configuration. It concludes that agent design strongly affects results and that current agents remain far from reliable industry-level mobile development.",
+      "metadata": {
+        "published": "2026-02-10",
+        "domain": "mobile development",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 7
+    },
+    "expected": {
+      "subject_options": ["mobile coding agent evaluation", "SWE-Bench Mobile", "AI agents for mobile development", "industry mobile app benchmark"],
+      "category_any": ["coding agents", "mobile development", "software engineering", "benchmarks"],
+      "category_concept_groups": [["mobile", "iOS"], ["coding agents", "software agents"], ["benchmark", "SWE-Bench"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [5, 18],
+      "summary_concept_groups": [["mobile", "iOS"], ["coding agents"], ["benchmark", "tasks"]],
+      "summary_must_not_claim": ["5G telecom", "customer support"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "web_aidev_agentic_pr_dataset",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://arxiv.org/abs/2602.09185",
+    "title": "AIDev: Studying AI Coding Agents on GitHub",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Paper published February 9, 2026. AIDev is a large-scale dataset studying agent-authored pull requests on GitHub. It aggregates hundreds of thousands of Agentic-PRs produced by agents such as Codex, Devin, GitHub Copilot, Cursor, and Claude Code across many repositories and developers. A curated subset contains richer metadata including comments, reviews, commits, and related issues. The dataset is intended to support research on AI coding adoption, developer productivity, repository impact, and human-AI collaboration in software engineering.",
+      "metadata": {
+        "published": "2026-02-09",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 6
+    },
+    "expected": {
+      "subject_options": ["AI coding agent pull requests", "AIDev dataset", "agent-authored PRs", "AI software engineering dataset"],
+      "category_any": ["coding agents", "GitHub", "datasets", "software engineering"],
+      "category_concept_groups": [["coding agents", "AI agents"], ["pull requests", "GitHub"], ["dataset", "empirical study"]],
+      "depth_level": "medium",
+      "estimated_time_minutes_range": [4, 15],
+      "summary_concept_groups": [["GitHub", "pull requests"], ["coding agents"], ["dataset"]],
+      "summary_must_not_claim": ["mobile benchmark", "3D printing"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "web_agent_generated_tests",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://arxiv.org/abs/2602.07900",
+    "title": "Rethinking the Value of Agent-Generated Tests for LLM-Based Software Engineering Agents",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Paper published February 8, 2026. This study asks whether tests generated by software engineering agents actually improve issue resolution or merely consume interaction budget. It analyzes agent trajectories on SWE-bench Verified across several LLMs and observes that resolved and unresolved tasks often show similar rates of test writing. The tests frequently function as observational feedback through print statements rather than formal assertions. Controlled prompt experiments increasing or reducing test writing show limited impact on final outcomes, suggesting that agent-written tests may provide less utility than commonly assumed.",
+      "metadata": {
+        "published": "2026-02-08",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 6
+    },
+    "expected": {
+      "subject_options": ["agent-generated tests", "AI coding agent testing", "SWE-bench test writing", "software agent validation"],
+      "category_any": ["coding agents", "testing", "software engineering", "evaluation"],
+      "category_concept_groups": [["testing", "tests"], ["coding agents", "software agents"], ["SWE-bench", "evaluation"]],
+      "depth_level": "medium",
+      "estimated_time_minutes_range": [4, 15],
+      "summary_concept_groups": [["tests", "testing"], ["agents"], ["SWE-bench", "issue resolution"]],
+      "summary_must_not_claim": ["customer support", "5G networks"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "github_openclaw_personal_agent",
+    "source_type": "github",
+    "source_id": "openclaw/openclaw",
+    "url": "https://github.com/openclaw/openclaw",
+    "title": "openclaw/openclaw",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Repository: openclaw/openclaw. OpenClaw is an open-source autonomous personal AI assistant that runs locally and integrates with external LLMs such as Claude, DeepSeek, or OpenAI models. It originated as Clawdbot, later Moltbot, before being renamed OpenClaw in early 2026. The project is associated with messaging-based agent workflows and the broader Moltbook AI-agent ecosystem. The software is described as cross-platform, MIT licensed, and focused on allowing AI agents to execute tasks through user-configured services while preserving local control.",
+      "metadata": {
+        "published": "2026-03-02",
+        "license": "MIT",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 7
+    },
+    "expected": {
+      "subject_options": ["personal AI assistant", "autonomous AI agent", "OpenClaw", "local AI agent"],
+      "category_any": ["agents", "open source", "personal assistant", "automation"],
+      "category_concept_groups": [["agent", "assistant"], ["open source", "local"], ["automation", "workflow"]],
+      "depth_level": "medium",
+      "estimated_time_minutes_range": [5, 18],
+      "summary_concept_groups": [["OpenClaw", "agent"], ["assistant"], ["local", "open-source", "open source"]],
+      "summary_must_not_claim": ["benchmark paper", "mobile app benchmark"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "github_unified_agent_eval_framework",
+    "source_type": "github",
+    "source_id": "whfeLingYu/A-Unified-Framework-for-the-Evaluation-of-LLM-Agentic-Capabilities",
+    "url": "https://github.com/whfeLingYu/A-Unified-Framework-for-the-Evaluation-of-LLM-Agentic-Capabilities",
+    "title": "whfeLingYu/A-Unified-Framework-for-the-Evaluation-of-LLM-Agentic-Capabilities",
+    "fetched_at": "2026-06-09T00:00:00Z",
+    "input": {
+      "text": "Repository: whfeLingYu/A-Unified-Framework-for-the-Evaluation-of-LLM-Agentic-Capabilities. The repository accompanies a May 2026 paper on unified evaluation of LLM agentic capabilities. It packages benchmarks into a shared instruction-tool-environment format, runs agents through a fixed ReAct-style architecture, supports sandboxed execution, and provides metrics for resource consumption and failure attribution. The project is intended as a reproducible testbed for comparing agentic capabilities while separating model performance from scaffold choices and volatile live environments.",
+      "metadata": {
+        "published": "2026-05-27",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 8
+    },
+    "expected": {
+      "subject_options": ["agent evaluation framework", "LLM agent benchmark framework", "unified agent evaluation", "agentic capability evaluation"],
+      "category_any": ["agents", "evaluation", "benchmarks", "developer tools"],
+      "category_concept_groups": [["agents", "agentic"], ["evaluation", "benchmarks"], ["framework", "testbed"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [6, 20],
+      "summary_concept_groups": [["repository", "framework"], ["agent", "agentic"], ["evaluation", "benchmark"]],
+      "summary_must_not_claim": ["customer support product", "telecom-specific bugs"],
+      "min_confidence": 0.4
+    }
+  },
+  {
+    "id": "youtube_reinventing_entropy_compression_intelligence",
+    "source_type": "youtube",
+    "source_id": "l6DKRf-fAAM",
+    "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM&t=8s",
+    "title": "Reinventing Entropy | Compression is Intelligence Part 1",
+    "fetched_at": "2026-06-11T00:00:00Z",
+    "input": {
+      "text": "YouTube video titled Reinventing Entropy | Compression is Intelligence Part 1. The source should be treated as a technical learning video, not as an arXiv paper. It introduces the relationship between compression, entropy, prediction, and intelligence, using information-theoretic framing to explain why reducing uncertainty and finding compact representations matter for reasoning systems. This fixture is intended to test whether the analyzer can produce useful metadata for a non-paper video about AI concepts and foundational machine learning ideas.",
+      "metadata": {
+        "source_fixture": true,
+        "title_source": "youtube_oembed"
+      },
+      "estimated_time_minutes": 20
+    },
+    "expected": {
+      "subject_options": ["compression and intelligence", "entropy in AI", "information theory for AI", "AI foundations"],
+      "category_any": ["AI", "information theory", "machine learning", "learning"],
+      "category_concept_groups": [["compression", "entropy"], ["intelligence", "AI"], ["information theory", "prediction"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [8, 60],
+      "summary_concept_groups": [["compression"], ["entropy", "uncertainty"], ["intelligence", "AI"]],
+      "summary_must_not_claim": ["arXiv paper", "coding benchmark", "cybersecurity checklist"],
+      "min_confidence": 0.35
+    }
+  },
+  {
+    "id": "youtube_runpod_deployed_llm_endpoint",
+    "source_type": "youtube",
+    "source_id": "ILdE7FaAjVA",
+    "url": "https://www.youtube.com/watch?v=ILdE7FaAjVA",
+    "title": "Under 5 minutes to a deployed LLM endpoint — Audry Hsu, RunPod",
+    "fetched_at": "2026-06-11T00:00:00Z",
+    "input": {
+      "text": "YouTube video titled Under 5 minutes to a deployed LLM endpoint, presented by Audry Hsu from RunPod. The source is a practical deployment video rather than a research paper. It focuses on quickly getting an LLM endpoint running, likely covering hosted GPU infrastructure, model serving, endpoint setup, deployment workflow, and developer-facing considerations for making an LLM available through an API. This fixture tests whether the analyzer recognizes operational LLM deployment content from a video source.",
+      "metadata": {
+        "presenter": "Audry Hsu",
+        "organization": "RunPod",
+        "source_fixture": true,
+        "title_source": "youtube_oembed"
+      },
+      "estimated_time_minutes": 5
+    },
+    "expected": {
+      "subject_options": ["LLM deployment", "deployed LLM endpoints", "model serving", "RunPod LLM hosting"],
+      "category_any": ["LLMs", "deployment", "infrastructure", "developer tools"],
+      "category_concept_groups": [["LLM", "model"], ["deployment", "endpoint", "serving"], ["infrastructure", "RunPod", "GPU"]],
+      "depth_level_options": ["light", "medium"],
+      "estimated_time_minutes_range": [3, 15],
+      "summary_concept_groups": [["LLM", "model"], ["endpoint", "deployment"], ["RunPod", "infrastructure", "serving"]],
+      "summary_must_not_claim": ["arXiv paper", "prompt injection", "mobile app benchmark"],
+      "min_confidence": 0.35
+    }
+  },
+  {
+    "id": "web_owasp_llm_prompt_injection_prevention",
+    "source_type": "web",
+    "source_id": null,
+    "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+    "title": "OWASP LLM Prompt Injection Prevention Cheat Sheet",
+    "fetched_at": "2026-06-11T00:00:00Z",
+    "input": {
+      "text": "OWASP cheat sheet for LLM prompt injection prevention. It explains that prompt injection is a vulnerability in LLM applications where malicious input changes intended model behavior because instructions and data are not clearly separated. The page covers direct and indirect prompt injection, encoding and obfuscation, typoglycemia, Best-of-N jailbreaks, HTML and Markdown injection, multi-turn and persistent attacks, system prompt extraction, data exfiltration, multimodal injection, RAG poisoning, and agent-specific attacks. It recommends defenses such as input validation, structured prompts with clear instruction/data separation, output monitoring, human-in-the-loop controls, remote content sanitization, least privilege for tools, comprehensive monitoring, guardrails, implementation pipelines, framework-specific controls, and vulnerability testing.",
+      "metadata": {
+        "organization": "OWASP",
+        "source_fixture": true
+      },
+      "estimated_time_minutes": 18
+    },
+    "expected": {
+      "subject_options": ["LLM prompt injection prevention", "prompt injection security", "LLM application security", "AI security"],
+      "category_any": ["security", "LLMs", "prompt injection", "application security"],
+      "category_concept_groups": [["prompt injection", "jailbreak"], ["security", "application security"], ["LLM", "AI"]],
+      "depth_level_options": ["medium", "deep"],
+      "estimated_time_minutes_range": [10, 45],
+      "summary_concept_groups": [["prompt injection"], ["defense", "prevention"], ["LLM", "agent", "tool"]],
+      "summary_must_not_claim": ["arXiv paper", "compression theory", "mobile development benchmark"],
+      "min_confidence": 0.4
+    }
   }
 ]
