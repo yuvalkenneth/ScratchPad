@@ -39,6 +39,24 @@ It is a system that:
 
 The product goal is to make reading and learning more intentional. The engineering goal is to use that bounded product loop to test agentic LLM systems under realistic constraints.
 
+The key loop is:
+
+```text
+capture source -> analyze into a content profile -> save as Markdown -> query/recommend later -> update status -> evaluate what the model did
+```
+
+This loop matters because it is small enough to run locally, but real enough to expose local-model failures that isolated prompts hide: wrong tool choice, weak extraction, bad time estimates, hallucinated summaries, poor ranking, missing persistence, and unhelpful recommendations.
+
+### Product success hypotheses
+
+Scratchpad should be judged by a few concrete hypotheses:
+
+* Given a time budget and a rough goal, the assistant can recommend 1-3 saved items that are actually worth reading or watching now.
+* Saved metadata should make future retrieval and recommendation better than searching raw links alone.
+* User-visible explanations should cite concrete item metadata such as status, estimated time, depth, subject, categories, and match reason.
+* Small/local models should be able to complete the core workflow reliably enough to be useful, even if larger models remain better judges.
+* Every important workflow should leave inspectable artifacts: Markdown files, Git commits, eval fixtures, reports, or test output.
+
 ---
 
 ## Local LLM testbed
@@ -73,6 +91,29 @@ The intended eval loop:
 
 The unit tests should stay deterministic. Model-quality evals should live in explicit scripts so they can be run manually when comparing prompts or models.
 
+The evaluation ladder is:
+
+* deterministic unit tests for storage, parsing, query behavior, safety checks, and fake-model tool routing
+* tool-choice evals for whether a real local model chooses the right first tool and required arguments
+* content-profile evals for whether a model produces useful, faithful, normalized metadata from frozen source text
+* future recommendation evals with fake libraries, fake user profiles, user requests, and expected ranking constraints
+* future end-to-end workflow evals that cover save -> recommend -> status update state transitions
+
+The project should avoid treating a green eval as a vague "model is good" claim. Each eval should name the behavior it measures and preserve enough output to compare local models over time.
+
+### Failure taxonomy
+
+Local-model failures should be tracked in product terms, not just pass/fail:
+
+* schema failure: invalid JSON, missing fields, invalid enum values
+* source-identity failure: wrong URL, title, source type, or source ID
+* faithfulness failure: summary or metadata claims unsupported by the source
+* usefulness failure: subject/categories are too generic to help retrieval
+* time/depth failure: estimates do not match how hard the item is to consume
+* tool-choice failure: wrong tool, no tool, extra tool, or missing required arguments
+* persistence failure: user asked to save/update, but the library state did not change correctly
+* recommendation failure: ignores status, time budget, user goals, or cannot explain why an item fits
+
 ---
 
 ## Current state
@@ -87,6 +128,17 @@ Current focus:
 * normalized content profiles across web, GitHub, Reddit, and YouTube
 * Markdown-backed content saving, deduplication, listing, metadata updates, status updates, and Git-backed history
 * content-profile eval fixtures for comparing small/local model behavior
+
+Already implemented foundation:
+
+* flat Markdown persistence under `library/items/`
+* deterministic deduplication by source identity or URL
+* a normalized `ContentProfile` / `ContentItem` contract in code
+* content add, list, update, and status-update tools
+* basic metadata and free-text query over Markdown frontmatter/body
+* separate Git history for personal library mutations
+* deterministic pytest coverage for analyzers, tool policy, executor safety, library behavior, and eval scoring
+* manual model eval scripts for content profiles and tool choice
 
 ---
 
@@ -125,6 +177,8 @@ Notes:
 * `url` should also be unique when present once persistence exists
 * `subject` is intentionally singular for v1 to keep the schema simple, though multi-topic support may replace it later
 * `estimated_time_minutes` means consumption time in v1, not broader learning time
+
+One open product decision is whether v1 should keep only consumption time or add a separate learning-effort estimate. Recommendation requests such as "I have 20 minutes" probably need consumption time as a hard constraint, while learning plans may need a separate estimate for understanding, practice, or follow-up work.
 
 For YouTube ingestion, the product goal is not just transcript retrieval. The target output is a save-ready content profile with fields such as:
 
@@ -276,6 +330,39 @@ tests/        # deterministic pytest unit tests
 * use rough estimates, then learn from behavior
 * keep systems observable and debuggable
 * avoid premature abstraction
+* prefer transparent scoring before semantic search or embeddings
+* keep local-model constraints visible in tool and prompt design
+
+---
+
+## Improvement roadmap
+
+These are the main improvement ideas after rereading the repo against the project objective.
+
+### Architecture
+
+* Narrow the public tool surface further. Small models are sensitive to adjacent tools with overlapping meanings, so the visible interface should stay centered on `analyze_source`, `content_add`, `content_list`, `content_update`, and `content_status_update`; lower-level analyzer/save tools should remain internal.
+* Split Markdown storage responsibilities once the file grows painful. `app/library/markdown_store.py` currently handles normalization, serialization, lookup, mutation, notes, querying, and Git commits. The likely split is serializer, repository, mutations, and history.
+* Replace hand-rolled frontmatter parsing when human editing becomes common. The current JSON-in-frontmatter approach is simple and testable, but real YAML frontmatter or an explicit JSON metadata block would be safer for multiline fields and manual edits.
+* Move shared content-profile prompt/schema logic into one profiler module. URL and YouTube analyzers should share the same core profile contract with source-specific context hooks.
+* Move runtime/server lifecycle logic out of the CLI over time. `main.py` should mostly orchestrate the REPL; provider startup, shutdown, health, model listing, and timing should live under `app/llm/runtime.py`.
+* Avoid eval scripts depending on private underscore functions from tool modules. Export stable profile-message builders so evals and tools test the same behavior through an intentional interface.
+
+### Product and Recommendation
+
+* Build the recommendation policy before adding heavy ranking infrastructure. Start with a `scratchpad-recommendation` skill plus `content_list`, then only add a `content_recommend` tool when repeated behavior shows the policy is stable.
+* Add a lightweight user profile earlier than embeddings. A readable `library/user/profile.md` plus append-only behavioral signals would make recommendations meaningfully personal without hidden magic.
+* Keep recommendation output explainable. Recommendations should show why each item fits: time, status, depth, topic match, preference match, and whether it is a stretch.
+* Decide how to model topic multiplicity. A singular `subject` keeps v1 simple, but real recommendations likely need multi-topic support or weighted tags.
+* Treat semantic search as an optional later layer, not the core design. For a small library, transparent Markdown scanning and simple scoring are easier to debug and better for local-model evals.
+
+### Evaluation
+
+* Add recommendation evals as the next major eval type. Use fake libraries and fake user profiles so expected ranking constraints can be deterministic.
+* Add end-to-end workflow evals. The important product behavior is not only "right first tool"; it is whether save, query, recommend, and status update compose correctly.
+* Diversify content-profile fixtures beyond LLM-agent material. Keep adding recent non-arXiv examples across security, systems, product, design, finance, research, videos, and repos.
+* Track failure categories in reports. Reports should make it easy to compare models by wrong tool, no tool, invalid arguments, weak summary, generic categories, hallucination, bad time estimate, and latency.
+* Run repeated generations for unstable local models. A `--runs N` mode would expose nondeterminism that a single pass hides.
 
 ---
 
