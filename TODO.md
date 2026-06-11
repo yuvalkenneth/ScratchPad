@@ -30,6 +30,7 @@
 * Deterministic recommendation evals cover fake libraries, fake user profiles, and expected ranking constraints
 * Tool-choice eval reports include failure-type counts for wrong tool, no tool, false positive tool use, invalid arguments, argument mismatch, and extra tool calls
 * URL and YouTube analyzers share the core content-profile prompt/schema contract
+* Benchmark runner can execute deterministic evals plus optional local-model evals into `evals/runs/`
 
 ## Priority 1: Content-Profile Evaluation Calibration
 

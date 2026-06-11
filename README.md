@@ -324,6 +324,15 @@ Recommendation fixtures live in:
 evals/recommendations/cases.json
 ```
 
+Run the mini-harness as one benchmark command:
+
+```bash
+uv run python scripts/run_benchmark.py --label qwen4b --provider llama_cpp --model Qwen3.5-4B-BF16 --start-script /path/to/run-qwen-4b-server.sh
+```
+
+The benchmark runner writes manifests under `evals/runs/` and can run only
+deterministic evals with `--skip-model-evals`.
+
 ### Chat commands
 
 The REPL in [main.py](main.py) supports a few built-in commands:
