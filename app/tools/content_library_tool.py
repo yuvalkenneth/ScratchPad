@@ -31,6 +31,7 @@ CONTENT_SAVE_SCHEMA = {
             "depth_level": {"type": "string", "enum": ["light", "medium", "deep"]},
             "categories": {"type": "array", "items": {"type": "string"}},
             "estimated_time_minutes": {"type": "integer"},
+            "learning_effort_minutes": {"type": ["integer", "null"]},
             "confidence": {"type": "number"},
             "status": {
                 "type": "string",
@@ -191,6 +192,7 @@ CONTENT_UPDATE_SCHEMA = {
             "depth_level": {"type": "string", "enum": ["light", "medium", "deep"]},
             "categories": {"type": "array", "items": {"type": "string"}},
             "estimated_time_minutes": {"type": "integer"},
+            "learning_effort_minutes": {"type": ["integer", "null"]},
             "confidence": {"type": "number"},
             "metadata": {"type": "object"},
             "notes": {"type": "string"},
@@ -313,6 +315,7 @@ def content_update_json(arguments: dict[str, Any]) -> str:
                 "depth_level",
                 "categories",
                 "estimated_time_minutes",
+                "learning_effort_minutes",
                 "confidence",
                 "metadata",
             )

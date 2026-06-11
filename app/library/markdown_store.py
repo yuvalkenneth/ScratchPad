@@ -255,6 +255,7 @@ def render_frontmatter(item: dict[str, Any]) -> str:
         "depth_level",
         "categories",
         "estimated_time_minutes",
+        "learning_effort_minutes",
         "confidence",
         "status",
         "created_at",

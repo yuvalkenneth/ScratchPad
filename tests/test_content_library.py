@@ -15,9 +15,10 @@ def profile_fields(
     depth_level: str = "light",
     categories: list[str] | None = None,
     estimated_time_minutes: int = 6,
+    learning_effort_minutes: int | None = None,
     confidence: float = 0.9,
 ) -> dict[str, object]:
-    return {
+    profile: dict[str, object] = {
         "summary": summary,
         "subject": subject,
         "depth_level": depth_level,
@@ -25,6 +26,9 @@ def profile_fields(
         "estimated_time_minutes": estimated_time_minutes,
         "confidence": confidence,
     }
+    if learning_effort_minutes is not None:
+        profile["learning_effort_minutes"] = learning_effort_minutes
+    return profile
 
 
 def content_item(
@@ -71,6 +75,7 @@ def test_content_save_writes_flat_markdown_item(tmp_path: Path) -> None:
                     depth_level="medium",
                     categories=["software", "notes"],
                     estimated_time_minutes=8,
+                    learning_effort_minutes=20,
                     confidence=0.81,
                 ),
                 metadata={"author": "Example"},
@@ -87,6 +92,7 @@ def test_content_save_writes_flat_markdown_item(tmp_path: Path) -> None:
     assert saved_path.name.startswith("web-local-first-software-")
     assert 'source_type: "web"' in text
     assert 'categories: ["software", "notes"]' in text
+    assert "learning_effort_minutes: 20" in text
     assert "## Notes" in text
     assert result["git"]["committed"]
     assert result["git"]["message"] == "Add content: Local-first Notes"

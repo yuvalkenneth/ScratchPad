@@ -20,6 +20,7 @@ CONTENT_ITEM_FIELDS = {
     "depth_level",
     "categories",
     "estimated_time_minutes",
+    "learning_effort_minutes",
     "confidence",
     "status",
     "metadata",
@@ -46,6 +47,7 @@ class ContentProfile:
     categories: list[str]
     estimated_time_minutes: int
     confidence: float
+    learning_effort_minutes: int | None = None
 
     @classmethod
     def from_saved_item(cls, item: dict[str, Any]) -> "ContentProfile":
@@ -74,6 +76,9 @@ class ContentProfile:
             categories=coerce_categories(item.get("categories") or []),
             estimated_time_minutes=estimated_time_minutes,
             confidence=max(0.0, min(1.0, confidence)),
+            learning_effort_minutes=coerce_optional_positive_int(
+                item.get("learning_effort_minutes")
+            ),
         )
 
     @classmethod
@@ -109,6 +114,9 @@ class ContentProfile:
             categories=coerce_categories(profile.get("categories") or [])[:4],
             estimated_time_minutes=max(1, time_value),
             confidence=max(0.0, min(1.0, confidence_value)),
+            learning_effort_minutes=coerce_optional_positive_int(
+                profile.get("learning_effort_minutes")
+            ),
         )
 
     @classmethod
@@ -120,6 +128,7 @@ class ContentProfile:
             categories=[],
             estimated_time_minutes=max(1, estimated_time_minutes),
             confidence=0.0,
+            learning_effort_minutes=None,
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -205,6 +214,16 @@ def coerce_categories(value: Any) -> list[str]:
     if isinstance(value, list):
         return [str(item).strip() for item in value if str(item).strip()]
     return []
+
+
+def coerce_optional_positive_int(value: Any) -> int | None:
+    if value is None or value == "":
+        return None
+    try:
+        numeric = int(value)
+    except (TypeError, ValueError):
+        return None
+    return numeric if numeric >= 1 else None
 
 
 def extract_json_object(text: str) -> dict[str, Any]:

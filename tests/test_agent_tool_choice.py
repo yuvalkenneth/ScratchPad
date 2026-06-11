@@ -87,7 +87,8 @@ def test_recommendation_intent_loads_skill_then_uses_content_list(monkeypatch) -
             return (
                 '{"status":"completed","items":[{"title":"LLM endpoint deployment",'
                 '"subject":"LLM deployment","categories":["LLMs"],"depth_level":"light",'
-                '"estimated_time_minutes":5,"status":"unread","match_reasons":["time:5m"]}],'
+                '"estimated_time_minutes":5,"learning_effort_minutes":15,'
+                '"status":"unread","match_reasons":["time:5m"]}],'
                 '"count":1}'
             )
         return '{"status":"ok"}'

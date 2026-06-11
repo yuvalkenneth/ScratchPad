@@ -26,6 +26,7 @@
 * Editable user profile support exists at `library/user/profile.md` through `user_profile_get`
 * `content_list` exposes transparent query-policy metadata and stays on frontmatter/body scanning without SQLite or embeddings
 * Default LLM-facing tool surface hides local dev tools such as `list_files`, `run_shell`, and `run_python`
+* Content profiles separate consumption time (`estimated_time_minutes`) from optional learning effort (`learning_effort_minutes`)
 
 ## Priority 1: Content-Profile Evaluation Calibration
 
@@ -122,7 +123,7 @@ The core Markdown persistence path is already implemented. Remaining work here i
 * Keep one unified analysis schema for all sources/fetchers/analyzers so GitHub, Reddit, web articles, YouTube, and future X/browser paths all converge to the same LLM output and persistence shape
 * Keep fetchers source-specific, but require analyzers to emit the same contract and persistence to accept only that contract
 * Treat `estimated_time_minutes` as consumption time in v1
-* Decide later whether a separate `time_to_learn_minutes` field is needed
+* DONE: Add optional `learning_effort_minutes` for broader follow-up effort beyond consumption time
 * Later add prompt-injection hardening to analyzer prompts so scraped pages and transcripts are treated as untrusted source data
 
 ## YouTube Profiling
@@ -142,7 +143,7 @@ The core Markdown persistence path is already implemented. Remaining work here i
 ## Cross-Source Profiling
 
 * Make all analysis paths estimate `time_to_learn` for the main topic `Y`, not just generic reading or viewing time
-* Define whether `estimated_time_minutes` should mean consumption time, learning time, or whether both fields are needed
+* DONE: Define whether `estimated_time_minutes` should mean consumption time, learning time, or whether both fields are needed
 * For GitHub repos, estimate learning time based on repo complexity, codebase size/signals, and whether the repo is educational/tutorial-oriented versus a regular production library or app
 * For Reddit posts, estimate learning time based on whether the post is a deep dive, experiment, walkthrough, or a short discussion/update
 * Extend other source types similarly so learning-time estimates reflect depth and effort, not only source length

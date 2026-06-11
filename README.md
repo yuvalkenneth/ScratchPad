@@ -170,6 +170,7 @@ Current v1 fields:
 * `depth_level`
 * `categories`
 * `estimated_time_minutes`
+* `learning_effort_minutes`
 * `confidence`
 * `metadata`
 
@@ -179,9 +180,10 @@ Notes:
 * `source_type + source_id` should be unique for deduplication once persistence exists
 * `url` should also be unique when present once persistence exists
 * `subject` is intentionally singular for v1 to keep the schema simple, though multi-topic support may replace it later
-* `estimated_time_minutes` means consumption time in v1, not broader learning time
+* `estimated_time_minutes` means consumption time: reading, watching, or skimming enough to decide what to do with the item
+* `learning_effort_minutes` is optional and means broader follow-up effort such as practice, implementation, note-taking, or deeper understanding
 
-One open product decision is whether v1 should keep only consumption time or add a separate learning-effort estimate. Recommendation requests such as "I have 20 minutes" probably need consumption time as a hard constraint, while learning plans may need a separate estimate for understanding, practice, or follow-up work.
+Recommendation requests such as "I have 20 minutes" should use `estimated_time_minutes` as the hard constraint. Learning plans can use `learning_effort_minutes` when present to explain the follow-up investment.
 
 For YouTube ingestion, the product goal is not just transcript retrieval. The target output is a save-ready content profile with fields such as:
 

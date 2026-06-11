@@ -288,6 +288,7 @@ def test_content_profile_coerces_model_output() -> None:
             "depth_level": "DEEP",
             "categories": "software, sync, local-first, notes, ignored",
             "estimated_time_minutes": "12",
+            "learning_effort_minutes": "45",
             "confidence": "1.5",
         },
         estimated_time_minutes=5,
@@ -299,6 +300,7 @@ def test_content_profile_coerces_model_output() -> None:
     assert profile.depth_level == "deep"
     assert profile.categories == ["software", "sync", "local-first", "notes"]
     assert profile.estimated_time_minutes == 12
+    assert profile.learning_effort_minutes == 45
     assert profile.confidence == 1.0
 
 
@@ -307,5 +309,6 @@ def test_content_profile_fallback_is_safe() -> None:
 
     assert profile.depth_level == "medium"
     assert profile.estimated_time_minutes == 1
+    assert profile.learning_effort_minutes is None
     assert profile.confidence == 0.0
     assert profile.to_dict()["categories"] == []
