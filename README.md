@@ -97,7 +97,7 @@ The evaluation ladder is:
 * tool-choice evals for whether a real local model chooses the right first tool and required arguments
 * content-profile evals for whether a model produces useful, faithful, normalized metadata from frozen source text
 * deterministic workflow evals for whether save, query, recommendation constraints, and status updates compose correctly
-* future recommendation evals with fake libraries, fake user profiles, user requests, and expected ranking constraints
+* deterministic recommendation evals with fake libraries, fake user profiles, user requests, and expected ranking constraints
 
 The project should avoid treating a green eval as a vague "model is good" claim. Each eval should name the behavior it measures and preserve enough output to compare local models over time.
 
@@ -142,6 +142,7 @@ Already implemented foundation:
 * deterministic pytest coverage for analyzers, tool policy, executor safety, library behavior, and eval scoring
 * manual model eval scripts for content profiles and tool choice
 * deterministic workflow evals for save -> list/recommend -> status-update product flows
+* deterministic recommendation ranking evals with fake libraries and fake user profiles
 
 ---
 
@@ -309,6 +310,18 @@ Workflow fixtures live in:
 evals/workflows/cases.json
 ```
 
+Run deterministic recommendation ranking evals:
+
+```bash
+uv run python scripts/eval_recommendations.py
+```
+
+Recommendation fixtures live in:
+
+```text
+evals/recommendations/cases.json
+```
+
 ### Chat commands
 
 The REPL in [main.py](main.py) supports a few built-in commands:
@@ -381,7 +394,7 @@ These are the main improvement ideas after rereading the repo against the projec
 
 ### Evaluation
 
-* Add recommendation evals as the next major eval type. Use fake libraries and fake user profiles so expected ranking constraints can be deterministic.
+* Extend recommendation evals toward model-in-the-loop recommendation answers. The deterministic base now covers fake libraries, fake user profiles, and expected ranking constraints.
 * Extend workflow evals toward real model-in-the-loop runs. The deterministic base now checks whether save, query, recommend constraints, and status update compose correctly.
 * Diversify content-profile fixtures beyond LLM-agent material. Keep adding recent non-arXiv examples across security, systems, product, design, finance, research, videos, and repos.
 * Track failure categories in reports. Reports should make it easy to compare models by wrong tool, no tool, invalid arguments, weak summary, generic categories, hallucination, bad time estimate, and latency.

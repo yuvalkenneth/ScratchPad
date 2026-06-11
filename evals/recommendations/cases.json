@@ -1,0 +1,121 @@
+[
+  {
+    "id": "time_boxed_llm_deployment",
+    "user_request": "I have 15 minutes and want something practical about LLM deployment.",
+    "user_profile": {
+      "current_goals": ["ship small LLM tools"],
+      "interests": ["local LLMs", "developer infrastructure"],
+      "avoided_topics": ["crypto"],
+      "preferences": {
+        "preferred_depth": "medium",
+        "preferred_session_minutes": "20"
+      }
+    },
+    "items": [
+      {
+        "source_type": "youtube",
+        "source_id": "ILdE7FaAjVA",
+        "url": "https://www.youtube.com/watch?v=ILdE7FaAjVA",
+        "title": "LLM Endpoint Deployment",
+        "summary": "A practical short video about deploying an LLM endpoint on hosted GPU infrastructure.",
+        "subject": "LLM deployment",
+        "depth_level": "light",
+        "categories": ["LLMs", "deployment", "infrastructure"],
+        "estimated_time_minutes": 5,
+        "learning_effort_minutes": 15,
+        "confidence": 0.8,
+        "status": "unread"
+      },
+      {
+        "source_type": "web",
+        "source_id": null,
+        "url": "https://example.com/deep-serving-paper",
+        "title": "Deep Model Serving Survey",
+        "summary": "A dense survey of model serving architectures, scheduling, and cluster economics.",
+        "subject": "model serving",
+        "depth_level": "deep",
+        "categories": ["LLMs", "deployment", "systems"],
+        "estimated_time_minutes": 55,
+        "learning_effort_minutes": 180,
+        "confidence": 0.9,
+        "status": "unread"
+      },
+      {
+        "source_type": "web",
+        "source_id": null,
+        "url": "https://example.com/finished-endpoints",
+        "title": "Finished Endpoint Notes",
+        "summary": "A short completed note about endpoint setup.",
+        "subject": "LLM deployment",
+        "depth_level": "light",
+        "categories": ["LLMs", "deployment"],
+        "estimated_time_minutes": 8,
+        "confidence": 0.7,
+        "status": "done"
+      }
+    ],
+    "filters": {
+      "query": "LLM deployment endpoint",
+      "status": ["unread", "started"],
+      "max_estimated_time_minutes": 15,
+      "sort": "relevance",
+      "limit": 3
+    },
+    "expected": {
+      "first_title": "LLM Endpoint Deployment",
+      "titles_exclude": ["Deep Model Serving Survey", "Finished Endpoint Notes"],
+      "max_estimated_time_minutes": 15
+    }
+  },
+  {
+    "id": "security_goal_ignores_done_items",
+    "user_request": "Recommend something about LLM security that I have not finished.",
+    "user_profile": {
+      "current_goals": ["harden LLM apps"],
+      "interests": ["security", "LLMs"],
+      "avoided_topics": [],
+      "preferences": {
+        "preferred_depth": "medium"
+      }
+    },
+    "items": [
+      {
+        "source_type": "web",
+        "source_id": null,
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+        "title": "OWASP LLM Prompt Injection Prevention Cheat Sheet",
+        "summary": "A security guide covering LLM prompt injection attacks and practical defenses.",
+        "subject": "LLM application security",
+        "depth_level": "medium",
+        "categories": ["security", "LLMs", "prompt injection"],
+        "estimated_time_minutes": 18,
+        "learning_effort_minutes": 45,
+        "confidence": 0.9,
+        "status": "started"
+      },
+      {
+        "source_type": "web",
+        "source_id": null,
+        "url": "https://example.com/done-security",
+        "title": "Done LLM Security Primer",
+        "summary": "A completed primer about LLM security basics.",
+        "subject": "LLM application security",
+        "depth_level": "light",
+        "categories": ["security", "LLMs"],
+        "estimated_time_minutes": 12,
+        "confidence": 0.7,
+        "status": "done"
+      }
+    ],
+    "filters": {
+      "query": "LLM security prompt injection",
+      "status": ["unread", "started"],
+      "sort": "relevance",
+      "limit": 3
+    },
+    "expected": {
+      "first_title": "OWASP LLM Prompt Injection Prevention Cheat Sheet",
+      "titles_exclude": ["Done LLM Security Primer"]
+    }
+  }
+]

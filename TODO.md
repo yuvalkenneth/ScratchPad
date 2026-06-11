@@ -27,6 +27,7 @@
 * `content_list` exposes transparent query-policy metadata and stays on frontmatter/body scanning without SQLite or embeddings
 * Default LLM-facing tool surface hides local dev tools such as `list_files`, `run_shell`, and `run_python`
 * Content profiles separate consumption time (`estimated_time_minutes`) from optional learning effort (`learning_effort_minutes`)
+* Deterministic recommendation evals cover fake libraries, fake user profiles, and expected ranking constraints
 
 ## Priority 1: Content-Profile Evaluation Calibration
 
@@ -88,7 +89,7 @@
 
 * Extend deterministic tool-choice evals with harder ambiguous requests, such as "fix this title and mark it done", to verify tool sequencing or clarification behavior
 * Add more real-model tool-choice cases for simple natural-language requests as new user workflows appear
-* Build recommendation eval fixtures with fake libraries, fake user profiles, user requests, and expected ranking constraints
+* DONE: Build recommendation eval fixtures with fake libraries, fake user profiles, user requests, and expected ranking constraints
 * Evaluate hard rules deterministically: status exclusions, time limits, query match, and required tool use
 * Evaluate qualitative recommendation usefulness separately with an optional stronger local model as judge
 * Build a cross-source content-profile eval set from recent, valuable, non-canonical URLs to reduce train-set contamination risk
