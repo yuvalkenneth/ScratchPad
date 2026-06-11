@@ -24,6 +24,7 @@
 * `scratchpad-recommendation` skill exists and is loaded before recommendation requests
 * Deterministic workflow evals cover save, time-boxed library querying, and status-update state transitions
 * Editable user profile support exists at `library/user/profile.md` through `user_profile_get`
+* `content_list` exposes transparent query-policy metadata and stays on frontmatter/body scanning without SQLite or embeddings
 
 ## Priority 1: Content-Profile Evaluation Calibration
 
@@ -58,7 +59,7 @@
 
 ## Priority 3: Recommendation Tool Primitives
 
-* Keep the in-memory Markdown query layer simple and transparent; do not add SQLite until file scanning becomes painful
+* DONE: Keep the in-memory Markdown query layer simple and transparent; do not add SQLite until file scanning becomes painful
 * Keep tool output compact enough for small local models while preserving fields needed for recommendation
 * Tune relevance scoring as real saved libraries expose weak ranking behavior
 * Add agent behavior tests that verify recommendation requests load the skill, call `content_list`, obey status/time constraints, and use returned metadata in the answer

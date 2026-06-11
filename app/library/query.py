@@ -28,7 +28,27 @@ def query_items(items: list[dict[str, Any]], filters: dict[str, Any] | None = No
 
     matched.sort(key=lambda item: sort_key(item, sort), reverse=sort != "estimated_time_minutes")
     limit = coerce_int(filters.get("limit"), default=DEFAULT_LIMIT)
-    return {"items": matched[:limit], "count": len(matched)}
+    return {
+        "items": matched[:limit],
+        "count": len(matched),
+        "query_policy": query_policy(filters, sort=sort, limit=limit),
+    }
+
+
+def query_policy(filters: dict[str, Any], *, sort: str, limit: int) -> dict[str, Any]:
+    applied_filters = sorted(
+        key
+        for key, value in filters.items()
+        if value is not None and value != "" and value != []
+    )
+    return {
+        "mode": "frontmatter_body_scan",
+        "uses_embeddings": False,
+        "uses_sqlite": False,
+        "sort": sort,
+        "limit": limit,
+        "applied_filters": applied_filters,
+    }
 
 
 def match_item(item: dict[str, Any], filters: dict[str, Any]) -> dict[str, Any]:

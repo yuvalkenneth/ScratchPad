@@ -216,6 +216,13 @@ def test_content_list_filters_by_topic_time_and_query(tmp_path: Path) -> None:
     assert result["status"] == "completed"
     assert result["count"] == 1
     assert result["items"][0]["title"] == "SQLite Guide"
+    assert result["query_policy"]["mode"] == "frontmatter_body_scan"
+    assert not result["query_policy"]["uses_embeddings"]
+    assert sorted(result["query_policy"]["applied_filters"]) == [
+        "categories",
+        "max_estimated_time_minutes",
+        "query",
+    ]
 
 
 def test_content_list_queries_status_time_window_and_sorting(tmp_path: Path) -> None:
@@ -282,6 +289,7 @@ def test_content_list_queries_status_time_window_and_sorting(tmp_path: Path) -> 
     ]
     assert all("match_score" in item for item in result["items"])
     assert "query:title" in result["items"][0]["match_reasons"]
+    assert result["query_policy"]["sort"] == "estimated_time_minutes"
 
 
 def test_content_list_json_defaults_to_unread_and_started(tmp_path: Path, monkeypatch) -> None:

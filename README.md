@@ -137,7 +137,7 @@ Already implemented foundation:
 * content add, list, update, and status-update tools
 * a `scratchpad-recommendation` skill that requires querying saved items before recommending
 * a local editable user profile at `library/user/profile.md` exposed through `user_profile_get`
-* basic metadata and free-text query over Markdown frontmatter/body
+* basic metadata and free-text query over Markdown frontmatter/body with explicit query-policy metadata
 * separate Git history for personal library mutations
 * deterministic pytest coverage for analyzers, tool policy, executor safety, library behavior, and eval scoring
 * manual model eval scripts for content profiles and tool choice
@@ -206,6 +206,12 @@ library/
 ```
 
 Retrieval should be by metadata and text, such as subject, category, depth, available time, status, and free-text query. `source_type` stays in frontmatter for deduplication and source-specific rendering.
+
+Querying is intentionally boring in v1. `content_list` scans Markdown frontmatter
+and body text in memory, returns match scores and match reasons, and includes a
+`query_policy` block showing that it used `frontmatter_body_scan` rather than
+SQLite or embeddings. This keeps recommendations debuggable while the library is
+small.
 
 Use `content_add` for the normal ingestion path: it analyzes a URL, converts the analyzer result into the normalized profile contract, and writes the corresponding Markdown item. If the same source is added again, Scratchpad updates the existing Markdown file instead of creating a duplicate.
 
@@ -369,7 +375,7 @@ These are the main improvement ideas after rereading the repo against the projec
 * Add behavioral signals after the explicit profile. The readable `library/user/profile.md` now provides transparent context; append-only signals can later record saved, recommended, started, done, and accepted events.
 * Keep recommendation output explainable. Recommendations should show why each item fits: time, status, depth, topic match, preference match, and whether it is a stretch.
 * Decide how to model topic multiplicity. A singular `subject` keeps v1 simple, but real recommendations likely need multi-topic support or weighted tags.
-* Treat semantic search as an optional later layer, not the core design. For a small library, transparent Markdown scanning and simple scoring are easier to debug and better for local-model evals.
+* Add semantic search only after simple query reports show a real need. `content_list` now exposes its simple query policy, so weak ranking behavior can be debugged before adding embeddings.
 
 ### Evaluation
 
