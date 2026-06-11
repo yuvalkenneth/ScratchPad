@@ -29,6 +29,7 @@
 * Content profiles separate consumption time (`estimated_time_minutes`) from optional learning effort (`learning_effort_minutes`)
 * Deterministic recommendation evals cover fake libraries, fake user profiles, and expected ranking constraints
 * Tool-choice eval reports include failure-type counts for wrong tool, no tool, false positive tool use, invalid arguments, argument mismatch, and extra tool calls
+* URL and YouTube analyzers share the core content-profile prompt/schema contract
 
 ## Priority 1: Content-Profile Evaluation Calibration
 

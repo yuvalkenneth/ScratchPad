@@ -7,6 +7,10 @@ import httpx
 
 from app.fetchers.common import estimate_time_minutes, http_error_payload
 from app.fetchers.router import fetch_source
+from app.content_profile_prompt import (
+    common_content_profile_field_guidance,
+    content_profile_schema_instruction,
+)
 from app.llm.config import LLMConfig
 from app.llm.openai_compatible import complete_text
 from app.content import build_content_profile_payload
@@ -49,30 +53,13 @@ def _analysis_prompt(title: str, url: str) -> str:
         "You classify scraped web page content into a compact content profile.",
         CONTENT_PROFILE_CONTEXT,
         "Return a compact JSON object only.",
-        (
-            'Use this exact schema: {"summary":"string","subject":"string",'
-            '"depth_level":"light|medium|deep","categories":["string"],'
-            '"estimated_time_minutes":0,"learning_effort_minutes":0,"confidence":0.0}.'
+        content_profile_schema_instruction(),
+        *common_content_profile_field_guidance(
+            consumption_time_label=(
+                "estimated_time_minutes: minutes needed to consume and understand enough to "
+                "decide whether to revisit, save, or act on this item."
+            )
         ),
-        "summary: 1-2 decision-useful sentences about what the item teaches or argues.",
-        "subject: the single best primary topic, not the page title, site name, or content format.",
-        (
-            "depth_level: light for overview/introduction, medium for practical explanation "
-            "with some detail, deep for advanced, dense, or prerequisite-heavy material."
-        ),
-        (
-            "categories: 1-4 short topical/domain tags that help search and recommendations; "
-            "avoid generic labels and avoid source format or implementation language unless central."
-        ),
-        (
-            "estimated_time_minutes: minutes needed to consume and understand enough to "
-            "decide whether to revisit, save, or act on this item."
-        ),
-        (
-            "learning_effort_minutes: optional broader time needed to practice, follow up, "
-            "or understand the topic beyond basic consumption; use null if not applicable."
-        ),
-        "confidence: 0.0-1.0 based on how clear and complete the extracted page content is.",
         "Output JSON only. Do not wrap it in markdown fences.",
     ]
     if title:

@@ -6,6 +6,10 @@ from typing import Any, Optional
 from app.llm.config import LLMConfig
 from app.llm.openai_compatible import complete_text
 from app.content import build_content_profile_payload
+from app.content_profile_prompt import (
+    CONTENT_PROFILE_SCHEMA_TEXT,
+    common_content_profile_field_guidance,
+)
 from app.tools.youtube_tool import (
     extract_video_id,
     fetch_transcript_segments,
@@ -129,20 +133,14 @@ def _analysis_prompt(task: str, question: Optional[str], include_timestamps: boo
     task_instructions = {
         "content_profile": (
             f"{CONTENT_PROFILE_CONTEXT} "
-            "Return a compact JSON object only. Use this exact schema: "
-            '{"summary":"string","subject":"string","depth_level":"light|medium|deep",'
-            '"categories":["string"],"estimated_time_minutes":0,'
-            '"learning_effort_minutes":0,"confidence":0.0}. '
-            "summary: 1-2 decision-useful sentences about what the video teaches or argues. "
-            "subject: the single best primary topic, not the video title, channel, or content format. "
-            "depth_level: light for overview/introduction, medium for practical explanation "
-            "with some detail, deep for advanced, dense, or prerequisite-heavy material. "
-            "categories: 1-4 short topical/domain tags that help search and recommendations; "
-            "avoid generic labels and avoid source format unless central. "
-            "estimated_time_minutes: likely total viewing time from the transcript, rounded to an integer. "
-            "learning_effort_minutes: optional broader time needed to practice, follow up, "
-            "or understand the topic beyond watching; use null if not applicable. "
-            "confidence: 0.0-1.0 based on how clear, complete, and consistent the transcript evidence is."
+            f"Return a compact JSON object only. Use this exact schema: {CONTENT_PROFILE_SCHEMA_TEXT}. "
+            + " ".join(
+                common_content_profile_field_guidance(
+                    consumption_time_label=(
+                        "estimated_time_minutes: likely total viewing time from the transcript, rounded to an integer."
+                    )
+                )
+            )
         ),
         "summary": "Produce a concise but faithful summary of the whole video in one short paragraph.",
         "detailed_summary": (

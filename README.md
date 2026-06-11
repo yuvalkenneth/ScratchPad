@@ -382,7 +382,7 @@ These are the main improvement ideas after rereading the repo against the projec
 * Narrow the public tool surface further. Small models are sensitive to adjacent tools with overlapping meanings, so the visible interface should stay centered on `analyze_source`, `content_add`, `content_list`, `content_update`, and `content_status_update`; lower-level analyzer/save tools should remain internal.
 * Split Markdown storage responsibilities once the file grows painful. `app/library/markdown_store.py` currently handles normalization, serialization, lookup, mutation, notes, querying, and Git commits. The likely split is serializer, repository, mutations, and history.
 * Replace hand-rolled frontmatter parsing when human editing becomes common. The current JSON-in-frontmatter approach is simple and testable, but real YAML frontmatter or an explicit JSON metadata block would be safer for multiline fields and manual edits.
-* Move shared content-profile prompt/schema logic into one profiler module. URL and YouTube analyzers should share the same core profile contract with source-specific context hooks.
+* Continue isolating analyzer seams without a broad refactor. URL and YouTube analyzers now share the core content-profile prompt contract; future cleanup can move full message construction behind a stable profiler interface.
 * Move runtime/server lifecycle logic out of the CLI over time. `main.py` should mostly orchestrate the REPL; provider startup, shutdown, health, model listing, and timing should live under `app/llm/runtime.py`.
 * Avoid eval scripts depending on private underscore functions from tool modules. Export stable profile-message builders so evals and tools test the same behavior through an intentional interface.
 
