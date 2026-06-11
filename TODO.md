@@ -28,6 +28,7 @@
 * Default LLM-facing tool surface hides local dev tools such as `list_files`, `run_shell`, and `run_python`
 * Content profiles separate consumption time (`estimated_time_minutes`) from optional learning effort (`learning_effort_minutes`)
 * Deterministic recommendation evals cover fake libraries, fake user profiles, and expected ranking constraints
+* Tool-choice eval reports include failure-type counts for wrong tool, no tool, false positive tool use, invalid arguments, argument mismatch, and extra tool calls
 
 ## Priority 1: Content-Profile Evaluation Calibration
 
@@ -92,6 +93,7 @@
 * DONE: Build recommendation eval fixtures with fake libraries, fake user profiles, user requests, and expected ranking constraints
 * Evaluate hard rules deterministically: status exclusions, time limits, query match, and required tool use
 * Evaluate qualitative recommendation usefulness separately with an optional stronger local model as judge
+* Add failure-type counts to content-profile and recommendation eval reports
 * Build a cross-source content-profile eval set from recent, valuable, non-canonical URLs to reduce train-set contamination risk
 * Freeze fetched source text/transcripts/metadata into fixtures so eval runs do not depend on live network access
 * Later add `scripts/eval_recommendations.py` to compare recommendation behavior across local models

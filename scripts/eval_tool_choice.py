@@ -181,6 +181,13 @@ def run_case(
     argument_json_valid = parse_error is None
     argument_pass = bool(argument_evaluation["passed"]) and argument_json_valid
     passed = tool_pass and argument_pass
+    failure_types = classify_failure_types(
+        expected_tool=expected_tool,
+        actual_tool=actual_tool,
+        argument_json_valid=argument_json_valid,
+        argument_pass=argument_pass,
+        extra_tool_count=max(0, len(called_tools) - 1),
+    )
 
     return {
         "id": case["id"],
@@ -199,10 +206,36 @@ def run_case(
         "used_tool_defaults": uses_tool_defaults(first_tool, parsed_arguments, effective_arguments),
         "called_tools": called_tools,
         "extra_tool_count": max(0, len(called_tools) - 1),
+        "failure_types": failure_types,
         "finish_reason": getattr(choice, "finish_reason", None),
         "assistant_content": content,
         "latency_seconds": round(latency_seconds, 3),
     }
+
+
+def classify_failure_types(
+    *,
+    expected_tool: str,
+    actual_tool: str,
+    argument_json_valid: bool,
+    argument_pass: bool,
+    extra_tool_count: int,
+) -> list[str]:
+    failures: list[str] = []
+    if actual_tool != expected_tool:
+        if actual_tool == NO_TOOL_LABEL:
+            failures.append("no_tool_false_negative")
+        elif expected_tool == NO_TOOL_LABEL:
+            failures.append("tool_false_positive")
+        else:
+            failures.append("wrong_tool")
+    if not argument_json_valid:
+        failures.append("invalid_tool_arguments_json")
+    elif not argument_pass:
+        failures.append("argument_mismatch")
+    if extra_tool_count > 0:
+        failures.append("extra_tool_call")
+    return failures
 
 
 def build_report(results: list[dict[str, Any]], *, model: str, provider: str) -> dict[str, Any]:
@@ -256,6 +289,10 @@ def build_report(results: list[dict[str, Any]], *, model: str, provider: str) ->
     default_reliance_count = sum(1 for result in results if result["used_tool_defaults"])
     constrained_results = [result for result in results if result["argument_checks"]]
     latencies = [float(result["latency_seconds"]) for result in results]
+    failure_type_counts: dict[str, int] = {}
+    for result in results:
+        for failure_type in result.get("failure_types", []):
+            failure_type_counts[failure_type] = failure_type_counts.get(failure_type, 0) + 1
     return {
         "type": "tool_choice_report",
         "provider": provider,
@@ -295,6 +332,7 @@ def build_report(results: list[dict[str, Any]], *, model: str, provider: str) ->
         if total
         else 0.0,
         "default_reliance_rate": round(default_reliance_count / total, 4) if total else 0.0,
+        "failure_type_counts": failure_type_counts,
         "confusion_matrix": confusion_matrix,
         "per_class": per_class,
         "latency": {

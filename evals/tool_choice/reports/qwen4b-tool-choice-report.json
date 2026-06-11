@@ -15,6 +15,7 @@
   "tool_false_positive_rate": 0.0,
   "extra_tool_rate": 0.0,
   "default_reliance_rate": 0.1,
+  "failure_type_counts": {},
   "confusion_matrix": {
     "analyze_source": {
       "analyze_source": 1,
@@ -125,9 +126,9 @@
     }
   },
   "latency": {
-    "average_seconds": 8.893,
-    "max_seconds": 12.332,
-    "total_seconds": 88.932
+    "average_seconds": 9.188,
+    "max_seconds": 15.944,
+    "total_seconds": 91.879
   },
   "results": [
     {
@@ -153,9 +154,10 @@
         "analyze_source"
       ],
       "extra_tool_count": 0,
+      "failure_types": [],
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 8.165
+      "latency_seconds": 7.388
     },
     {
       "id": "save_url",
@@ -180,9 +182,10 @@
         "content_add"
       ],
       "extra_tool_count": 0,
+      "failure_types": [],
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 7.23
+      "latency_seconds": 7.29
     },
     {
       "id": "mark_item_done",
@@ -224,9 +227,10 @@
         "content_status_update"
       ],
       "extra_tool_count": 0,
+      "failure_types": [],
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 8.713
+      "latency_seconds": 8.714
     },
     {
       "id": "correct_saved_metadata",
@@ -263,9 +267,10 @@
         "content_update"
       ],
       "extra_tool_count": 0,
+      "failure_types": [],
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 11.185
+      "latency_seconds": 11.364
     },
     {
       "id": "recommend_time_boxed_reading",
@@ -298,9 +303,10 @@
         "skill_view"
       ],
       "extra_tool_count": 0,
+      "failure_types": [],
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 7.211
+      "latency_seconds": 7.388
     },
     {
       "id": "explain_general_concept_no_tool",
@@ -319,9 +325,10 @@
       "used_tool_defaults": false,
       "called_tools": [],
       "extra_tool_count": 0,
+      "failure_types": [],
       "finish_reason": "stop",
-      "assistant_content": "Local-first software is an architecture where your primary data lives on your personal device (your \"local\" storage), but you can seamlessly sync that data to other devices and cloud backups when you choose.\n\nUnlike traditional \"cloud-first\" apps that require an internet connection and store everything remotely, local-first apps let you work offline with full functionality. When you're online, changes automatically sync across all your devices, ensuring your data is always up-to-date without losing access to your local copy.",
-      "latency_seconds": 12.332
+      "assistant_content": "Local-first software is an architecture where your primary data lives on your personal device (your \"local\" storage), but you can seamlessly sync that data to other devices and cloud backups when you choose.\n\nUnlike traditional \"cloud-first\" apps that require an internet connection and store everything remotely, local-first apps let you work offline with full functionality. When you're online again, your changes automatically sync across all your devices.\n\nKey characteristics:\n- **Primary storage is local**: Your main copy of data lives on your device\n- **Offline capability**: Full functionality without internet\n- **Optional syncing**: Data can be synchronized to other devices/cloud when available\n- **User control**: You maintain ownership and control of your data",
+      "latency_seconds": 15.944
     },
     {
       "id": "list_saved_agent_items",
@@ -380,9 +387,10 @@
         "content_list"
       ],
       "extra_tool_count": 0,
+      "failure_types": [],
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 7.094
+      "latency_seconds": 7.205
     },
     {
       "id": "mark_item_started",
@@ -424,9 +432,10 @@
         "content_status_update"
       ],
       "extra_tool_count": 0,
+      "failure_types": [],
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 8.823
+      "latency_seconds": 8.79
     },
     {
       "id": "archive_saved_url",
@@ -468,9 +477,10 @@
         "content_status_update"
       ],
       "extra_tool_count": 0,
+      "failure_types": [],
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 8.731
+      "latency_seconds": 8.555
     },
     {
       "id": "recommend_deep_eval_material",
@@ -546,9 +556,10 @@
         "content_list"
       ],
       "extra_tool_count": 0,
+      "failure_types": [],
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 9.448
+      "latency_seconds": 9.241
     }
   ]
 }

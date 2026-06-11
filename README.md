@@ -297,6 +297,8 @@ uv run python scripts/eval_tool_choice.py
 This eval does not execute tools. It only inspects the first tool call selected by the model and applies simple argument constraints, so it can safely test save/update/status intents without mutating the Markdown library.
 
 Use `--report <path>` to write aggregate classification metrics, including first-tool accuracy, argument accuracy, confusion matrix, per-class precision/recall/F1, default reliance rate, and latency.
+Reports also include failure-type counts such as wrong tool, missing tool, tool
+false positive, invalid tool arguments, argument mismatch, and extra tool call.
 
 Run deterministic product workflow evals to check whether library operations compose into useful flows:
 
@@ -397,7 +399,7 @@ These are the main improvement ideas after rereading the repo against the projec
 * Extend recommendation evals toward model-in-the-loop recommendation answers. The deterministic base now covers fake libraries, fake user profiles, and expected ranking constraints.
 * Extend workflow evals toward real model-in-the-loop runs. The deterministic base now checks whether save, query, recommend constraints, and status update compose correctly.
 * Diversify content-profile fixtures beyond LLM-agent material. Keep adding recent non-arXiv examples across security, systems, product, design, finance, research, videos, and repos.
-* Track failure categories in reports. Reports should make it easy to compare models by wrong tool, no tool, invalid arguments, weak summary, generic categories, hallucination, bad time estimate, and latency.
+* Extend failure categories beyond tool choice. Tool-choice reports now count wrong tool, no tool, false positive tool use, invalid arguments, argument mismatch, and extra tool calls; content-profile and recommendation reports should get similar taxonomies.
 * Run repeated generations for unstable local models. A `--runs N` mode would expose nondeterminism that a single pass hides.
 
 ---

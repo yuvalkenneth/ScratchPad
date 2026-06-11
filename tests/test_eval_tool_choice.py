@@ -1,5 +1,6 @@
 from scripts.eval_tool_choice import (
     build_report,
+    classify_failure_types,
     effective_tool_arguments,
     evaluate_arguments,
     parse_tool_arguments,
@@ -61,6 +62,7 @@ def test_build_report_scores_tool_selection_as_multiclass_classification() -> No
                 "argument_json_valid": True,
                 "used_tool_defaults": False,
                 "extra_tool_count": 0,
+                "failure_types": [],
                 "latency_seconds": 1.0,
             },
             {
@@ -74,6 +76,7 @@ def test_build_report_scores_tool_selection_as_multiclass_classification() -> No
                 "argument_json_valid": True,
                 "used_tool_defaults": True,
                 "extra_tool_count": 0,
+                "failure_types": ["wrong_tool"],
                 "latency_seconds": 2.0,
             },
             {
@@ -87,6 +90,7 @@ def test_build_report_scores_tool_selection_as_multiclass_classification() -> No
                 "argument_json_valid": True,
                 "used_tool_defaults": False,
                 "extra_tool_count": 0,
+                "failure_types": [],
                 "latency_seconds": 3.0,
             },
         ],
@@ -100,4 +104,22 @@ def test_build_report_scores_tool_selection_as_multiclass_classification() -> No
     assert report["confusion_matrix"]["content_update"]["content_list"] == 1
     assert report["per_class"]["content_list"]["precision"] == 0.5
     assert report["per_class"]["content_update"]["recall"] == 0.0
+    assert report["failure_type_counts"] == {"wrong_tool": 1}
     assert report["latency"]["average_seconds"] == 2.0
+
+
+def test_classify_failure_types_names_tool_and_argument_failures() -> None:
+    assert classify_failure_types(
+        expected_tool="content_list",
+        actual_tool="no_tool",
+        argument_json_valid=True,
+        argument_pass=True,
+        extra_tool_count=0,
+    ) == ["no_tool_false_negative"]
+    assert classify_failure_types(
+        expected_tool="no_tool",
+        actual_tool="content_list",
+        argument_json_valid=False,
+        argument_pass=False,
+        extra_tool_count=1,
+    ) == ["tool_false_positive", "invalid_tool_arguments_json", "extra_tool_call"]
