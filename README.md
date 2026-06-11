@@ -135,6 +135,7 @@ Already implemented foundation:
 * deterministic deduplication by source identity or URL
 * a normalized `ContentProfile` / `ContentItem` contract in code
 * content add, list, update, and status-update tools
+* a `scratchpad-recommendation` skill that requires querying saved items before recommending
 * basic metadata and free-text query over Markdown frontmatter/body
 * separate Git history for personal library mutations
 * deterministic pytest coverage for analyzers, tool policy, executor safety, library behavior, and eval scoring
@@ -350,7 +351,7 @@ These are the main improvement ideas after rereading the repo against the projec
 
 ### Product and Recommendation
 
-* Build the recommendation policy before adding heavy ranking infrastructure. Start with a `scratchpad-recommendation` skill plus `content_list`, then only add a `content_recommend` tool when repeated behavior shows the policy is stable.
+* Build the recommendation policy before adding heavy ranking infrastructure. The first version uses a `scratchpad-recommendation` skill plus `content_list`; add a `content_recommend` tool only when repeated behavior shows the policy is stable.
 * Add a lightweight user profile earlier than embeddings. A readable `library/user/profile.md` plus append-only behavioral signals would make recommendations meaningfully personal without hidden magic.
 * Keep recommendation output explainable. Recommendations should show why each item fits: time, status, depth, topic match, preference match, and whether it is a stretch.
 * Decide how to model topic multiplicity. A singular `subject` keeps v1 simple, but real recommendations likely need multi-topic support or weighted tags.

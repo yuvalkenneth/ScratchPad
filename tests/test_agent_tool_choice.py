@@ -70,6 +70,77 @@ def run_tool_choice_case(
     return response, completions.requests, calls, messages
 
 
+def test_recommendation_intent_loads_skill_then_uses_content_list(monkeypatch) -> None:
+    calls: list[tuple[str, dict[str, object]]] = []
+
+    def fake_run_tool(name: str, args: dict[str, object]) -> str:
+        calls.append((name, args))
+        if name == "skill_view":
+            return '{"content":"Call content_list before recommending saved items."}'
+        if name == "content_list":
+            return (
+                '{"status":"completed","items":[{"title":"LLM endpoint deployment",'
+                '"subject":"LLM deployment","categories":["LLMs"],"depth_level":"light",'
+                '"estimated_time_minutes":5,"status":"unread","match_reasons":["time:5m"]}],'
+                '"count":1}'
+            )
+        return '{"status":"ok"}'
+
+    monkeypatch.setattr(llm_client, "run_tool", fake_run_tool)
+    completions = RecordingCompletions(
+        [
+            make_response(
+                SimpleNamespace(
+                    content="",
+                    tool_calls=[
+                        make_tool_call(
+                            "skill_view",
+                            '{"name":"scratchpad-recommendation"}',
+                            call_id="call_skill",
+                        )
+                    ],
+                )
+            ),
+            make_response(
+                SimpleNamespace(
+                    content="",
+                    tool_calls=[
+                        make_tool_call(
+                            "content_list",
+                            '{"status":["unread","started"],"max_estimated_time_minutes":20,"sort":"relevance"}',
+                            call_id="call_list",
+                        )
+                    ],
+                )
+            ),
+            make_response(
+                SimpleNamespace(
+                    content="Pick LLM endpoint deployment: unread, 5 minutes, light.",
+                    tool_calls=[],
+                )
+            ),
+        ]
+    )
+    client = LLMClient(config=LLMConfig(model_name="test-model"))
+    client._get_client = lambda: RecordingClient(completions)  # type: ignore[method-assign]
+    messages = [{"role": "user", "content": "What should I read in 20 minutes?"}]
+
+    response = asyncio.run(client.get_response(messages))
+
+    assert response == "Pick LLM endpoint deployment: unread, 5 minutes, light."
+    assert calls == [
+        ("skill_view", {"name": "scratchpad-recommendation"}),
+        (
+            "content_list",
+            {
+                "status": ["unread", "started"],
+                "max_estimated_time_minutes": 20,
+                "sort": "relevance",
+            },
+        ),
+    ]
+
+
 def first_request_tool_names(requests: list[dict[str, object]]) -> set[str]:
     tools = requests[0]["tools"]
     assert isinstance(tools, list)
@@ -145,10 +216,10 @@ def test_detail_correction_intent_uses_content_update(monkeypatch) -> None:
     assert "content_update" in first_request_tool_names(requests)
 
 
-def test_recommendation_intent_uses_content_list(monkeypatch) -> None:
+def test_listing_intent_can_use_content_list_directly(monkeypatch) -> None:
     _response, _requests, calls, _messages = run_tool_choice_case(
         monkeypatch,
-        user_message="What should I read in 20 minutes?",
+        user_message="List my unread saved items under 20 minutes.",
         tool_name="content_list",
         arguments='{"status":["unread","started"],"max_estimated_time_minutes":20,"sort":"relevance"}',
     )

@@ -60,6 +60,14 @@ def test_youtube_skill_routes_url_only_inputs_to_youtube_analyze() -> None:
     assert "Only present quotes that are directly supported" in content
 
 
+def test_recommendation_skill_requires_content_list() -> None:
+    content = skill_view("scratchpad-recommendation")["content"]
+
+    assert "Call `content_list` before recommending saved items" in content
+    assert "status=[\"unread\",\"started\"]" in content
+    assert "content_status_update" in content
+
+
 def test_save_url_requests_route_to_content_add() -> None:
     prompt_text = get_tools_prompt_text()
 
@@ -92,3 +100,10 @@ def test_content_list_prompt_mentions_default_status_filter() -> None:
 
     assert "Defaults to status=[unread, started]" in prompt_text
     assert "default unread/started status filter" in prompt_text
+
+
+def test_recommendation_requests_load_recommendation_skill() -> None:
+    prompt_text = get_tools_prompt_text()
+
+    assert 'name="scratchpad-recommendation"' in prompt_text
+    assert "then follow that skill and call content_list before answering" in prompt_text

@@ -276,7 +276,8 @@ def get_tools_prompt_text() -> str:
         "If content_add reports duplicate=true, tell the user the existing item was updated instead of creating a second copy.",
         "When the user asks to correct saved item details such as title, summary, subject, categories, depth, time, confidence, or metadata, use content_update.",
         "When the user says they started, finished, archived, or abandoned an item, use content_status_update.",
-        "When the user asks what to read or wants saved material, use content_list before answering. If the user did not ask for done, archived, or abandoned items, rely on the default unread/started status filter or pass status=[\"unread\", \"started\"].",
+        "When the user asks what to read, watch, learn, study, revisit, or pick next from saved material, first load skill_view with name=\"scratchpad-recommendation\", then follow that skill and call content_list before answering.",
+        "For recommendation/listing requests, if the user did not ask for done, archived, or abandoned items, rely on the content_list default unread/started status filter or pass status=[\"unread\", \"started\"].",
     ])
     if executor_tools_enabled():
         lines.extend(

@@ -22,7 +22,8 @@
       "content_list": 0,
       "content_status_update": 0,
       "content_update": 0,
-      "no_tool": 0
+      "no_tool": 0,
+      "skill_view": 0
     },
     "content_add": {
       "analyze_source": 0,
@@ -30,15 +31,17 @@
       "content_list": 0,
       "content_status_update": 0,
       "content_update": 0,
-      "no_tool": 0
+      "no_tool": 0,
+      "skill_view": 0
     },
     "content_list": {
       "analyze_source": 0,
       "content_add": 0,
-      "content_list": 3,
+      "content_list": 2,
       "content_status_update": 0,
       "content_update": 0,
-      "no_tool": 0
+      "no_tool": 0,
+      "skill_view": 0
     },
     "content_status_update": {
       "analyze_source": 0,
@@ -46,7 +49,8 @@
       "content_list": 0,
       "content_status_update": 3,
       "content_update": 0,
-      "no_tool": 0
+      "no_tool": 0,
+      "skill_view": 0
     },
     "content_update": {
       "analyze_source": 0,
@@ -54,7 +58,8 @@
       "content_list": 0,
       "content_status_update": 0,
       "content_update": 1,
-      "no_tool": 0
+      "no_tool": 0,
+      "skill_view": 0
     },
     "no_tool": {
       "analyze_source": 0,
@@ -62,7 +67,17 @@
       "content_list": 0,
       "content_status_update": 0,
       "content_update": 0,
-      "no_tool": 1
+      "no_tool": 1,
+      "skill_view": 0
+    },
+    "skill_view": {
+      "analyze_source": 0,
+      "content_add": 0,
+      "content_list": 0,
+      "content_status_update": 0,
+      "content_update": 0,
+      "no_tool": 0,
+      "skill_view": 1
     }
   },
   "per_class": {
@@ -82,7 +97,7 @@
       "precision": 1.0,
       "recall": 1.0,
       "f1": 1.0,
-      "support": 3
+      "support": 2
     },
     "content_status_update": {
       "precision": 1.0,
@@ -101,12 +116,18 @@
       "recall": 1.0,
       "f1": 1.0,
       "support": 1
+    },
+    "skill_view": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 1
     }
   },
   "latency": {
-    "average_seconds": 9.094,
-    "max_seconds": 16.636,
-    "total_seconds": 90.937
+    "average_seconds": 8.742,
+    "max_seconds": 12.599,
+    "total_seconds": 87.419
   },
   "results": [
     {
@@ -134,7 +155,7 @@
       "extra_tool_count": 0,
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 6.945
+      "latency_seconds": 7.307
     },
     {
       "id": "save_url",
@@ -161,7 +182,7 @@
       "extra_tool_count": 0,
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 7.03
+      "latency_seconds": 7.058
     },
     {
       "id": "mark_item_done",
@@ -205,7 +226,7 @@
       "extra_tool_count": 0,
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 8.595
+      "latency_seconds": 8.477
     },
     {
       "id": "correct_saved_metadata",
@@ -244,79 +265,42 @@
       "extra_tool_count": 0,
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 11.242
+      "latency_seconds": 11.714
     },
     {
       "id": "recommend_time_boxed_reading",
       "passed": true,
       "tool_pass": true,
       "argument_pass": true,
-      "expected_tool": "content_list",
-      "actual_tool": "content_list",
-      "first_tool": "content_list",
-      "first_arguments": "{\"max_estimated_time_minutes\":20,\"status\":[\"unread\", \"started\"]}",
+      "expected_tool": "skill_view",
+      "actual_tool": "skill_view",
+      "first_tool": "skill_view",
+      "first_arguments": "{\"name\":\"scratchpad-recommendation\"}",
       "parsed_arguments": {
-        "max_estimated_time_minutes": 20,
-        "status": [
-          "unread",
-          "started"
-        ]
+        "name": "scratchpad-recommendation"
       },
       "effective_arguments": {
-        "max_estimated_time_minutes": 20,
-        "status": [
-          "unread",
-          "started"
-        ]
+        "name": "scratchpad-recommendation"
       },
       "argument_checks": [
         {
           "type": "must_equal",
-          "field": "max_estimated_time_minutes",
-          "expected": 20,
-          "actual": 20,
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": "scratchpad-recommendation",
           "passed": true
-        },
-        {
-          "type": "must_include",
-          "field": "status",
-          "expected": [
-            "unread",
-            "started"
-          ],
-          "actual": [
-            "unread",
-            "started"
-          ],
-          "passed": true,
-          "missing": []
-        },
-        {
-          "type": "must_not_include",
-          "field": "status",
-          "forbidden": [
-            "done",
-            "archived",
-            "abandoned"
-          ],
-          "actual": [
-            "unread",
-            "started"
-          ],
-          "passed": true,
-          "present": []
         }
       ],
       "argument_json_valid": true,
       "argument_parse_error": null,
       "used_tool_defaults": false,
       "called_tools": [
-        "content_list"
+        "skill_view"
       ],
       "extra_tool_count": 0,
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 8.559
+      "latency_seconds": 7.055
     },
     {
       "id": "explain_general_concept_no_tool",
@@ -336,8 +320,8 @@
       "called_tools": [],
       "extra_tool_count": 0,
       "finish_reason": "stop",
-      "assistant_content": "Local-first software is an architecture where your data is primarily stored on your personal device (your \"local\" machine), but you can also access and sync that same data from other devices when you're online.\n\nUnlike purely **offline** apps (which only work on one device) or purely **cloud** apps (where everything lives on a server), local-first apps ensure:\n1.  **You always have your data**: Even if your internet goes down, the app works with your full dataset locally.\n2.  **Automatic syncing**: When you go back online, changes are automatically synchronized to all other devices where you're logged in.\n\nCommon examples include Obsidian, Joplin, and Notion (in its local-first mode).",
-      "latency_seconds": 16.636
+      "assistant_content": "Local-first software is an architecture where your data is primarily stored on your personal device (your \"local\" machine), but you can also access and sync that same data from any other device you connect to.\n\nUnlike traditional \"cloud-first\" apps that require an internet connection and store everything on remote servers, local-first apps let you work offline with full functionality. When you're online again, your changes automatically sync across all your devices. This gives you privacy, control over your data, and resilience against server outages.",
+      "latency_seconds": 12.599
     },
     {
       "id": "list_saved_agent_items",
@@ -347,12 +331,12 @@
       "expected_tool": "content_list",
       "actual_tool": "content_list",
       "first_tool": "content_list",
-      "first_arguments": "{\"query\":\"AI agents\"}",
+      "first_arguments": "{\"subject\":\"AI agents\"}",
       "parsed_arguments": {
-        "query": "AI agents"
+        "subject": "AI agents"
       },
       "effective_arguments": {
-        "query": "AI agents",
+        "subject": "AI agents",
         "status": [
           "unread",
           "started"
@@ -398,7 +382,7 @@
       "extra_tool_count": 0,
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 6.611
+      "latency_seconds": 6.702
     },
     {
       "id": "mark_item_started",
@@ -442,7 +426,7 @@
       "extra_tool_count": 0,
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 8.321
+      "latency_seconds": 8.32
     },
     {
       "id": "archive_saved_url",
@@ -486,7 +470,7 @@
       "extra_tool_count": 0,
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 8.223
+      "latency_seconds": 8.742
     },
     {
       "id": "recommend_deep_eval_material",
@@ -564,7 +548,7 @@
       "extra_tool_count": 0,
       "finish_reason": "tool_calls",
       "assistant_content": "",
-      "latency_seconds": 8.775
+      "latency_seconds": 9.445
     }
   ]
 }

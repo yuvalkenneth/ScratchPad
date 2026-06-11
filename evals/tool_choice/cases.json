@@ -28,16 +28,10 @@
   {
     "id": "recommend_time_boxed_reading",
     "user": "What should I read in 20 minutes?",
-    "expected_tool": "content_list",
+    "expected_tool": "skill_view",
     "expected_arguments": {
       "must_equal": {
-        "max_estimated_time_minutes": 20
-      },
-      "must_include": {
-        "status": ["unread", "started"]
-      },
-      "must_not_include": {
-        "status": ["done", "archived", "abandoned"]
+        "name": "scratchpad-recommendation"
       }
     }
   },

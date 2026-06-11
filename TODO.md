@@ -21,6 +21,7 @@
 * Tool-choice evals can score required argument constraints such as status updates and recommendation time/status filters
 * Tool-choice evals report first-tool multiclass classification metrics, per-class precision/recall/F1, confusion matrix, default reliance, and latency
 * Current local time is injected into the system prompt instead of exposed through a separate tool
+* `scratchpad-recommendation` skill exists and is loaded before recommendation requests
 
 ## Priority 1: Content-Profile Evaluation Calibration
 
@@ -44,14 +45,14 @@
 
 ## Priority 2: Recommendation Skill
 
-* Add a `scratchpad-recommendation` skill that teaches the assistant how to answer "what should I read/learn now?"
-* Require the skill to call `content_list` before recommending saved items
+* DONE: Add a `scratchpad-recommendation` skill that teaches the assistant how to answer "what should I read/learn now?"
+* DONE: Require the skill to call `content_list` before recommending saved items
 * Prefer `unread` and `started` items; exclude `done`, `archived`, and `abandoned` unless explicitly requested
 * Treat available time as a hard constraint by default, with explicit "stretch" alternatives only when useful
 * Recommend 1-3 items and explain each recommendation using concrete metadata: title, subject, categories, depth, estimated time, status, and match reason
 * If the user chooses an item, use `content_status_update` to mark it `started`
 * If time, topic, or goal is missing and materially affects the recommendation, ask one short clarification instead of guessing
-* Use the skill as the first recommendation policy before hardcoding ranking behavior into `content_recommend`
+* DONE: Use the skill as the first recommendation policy before hardcoding ranking behavior into `content_recommend`
 
 ## Priority 3: Recommendation Tool Primitives
 
