@@ -25,6 +25,7 @@
 * Deterministic workflow evals cover save, time-boxed library querying, and status-update state transitions
 * Editable user profile support exists at `library/user/profile.md` through `user_profile_get`
 * `content_list` exposes transparent query-policy metadata and stays on frontmatter/body scanning without SQLite or embeddings
+* Default LLM-facing tool surface hides local dev tools such as `list_files`, `run_shell`, and `run_python`
 
 ## Priority 1: Content-Profile Evaluation Calibration
 

@@ -14,8 +14,10 @@ def test_executor_tools_are_hidden_by_default(monkeypatch) -> None:
 
     assert "run_shell" not in names
     assert "run_python" not in names
+    assert "list_files" not in names
     assert "run_shell" not in prompt_text
     assert "run_python" not in prompt_text
+    assert "list_files" not in prompt_text
 
 
 def test_default_tool_surface_hides_low_level_analysis_and_save_tools(monkeypatch) -> None:
@@ -30,13 +32,17 @@ def test_default_tool_surface_hides_low_level_analysis_and_save_tools(monkeypatc
     assert "content_update" in names
     assert "content_status_update" in names
     assert "user_profile_get" in names
+    assert "skills_list" in names
+    assert "skill_view" in names
     assert "url_analyze" not in names
     assert "youtube_analyze" not in names
     assert "content_save" not in names
+    assert "list_files" not in names
     assert "- analyze_source:" in prompt_text
     assert "- url_analyze:" not in prompt_text
     assert "- youtube_analyze:" not in prompt_text
     assert "- content_save:" not in prompt_text
+    assert "- list_files:" not in prompt_text
 
 
 def test_executor_tools_can_be_enabled_for_dev_mode(monkeypatch) -> None:
@@ -47,11 +53,13 @@ def test_executor_tools_can_be_enabled_for_dev_mode(monkeypatch) -> None:
 
     assert "run_shell" in names
     assert "run_python" in names
+    assert "list_files" in names
     assert "url_analyze" not in names
     assert "youtube_analyze" not in names
     assert "content_save" not in names
     assert "run_shell" in prompt_text
     assert "run_python" in prompt_text
+    assert "list_files" in prompt_text
 
 
 def test_youtube_skill_routes_url_only_inputs_to_youtube_analyze() -> None:

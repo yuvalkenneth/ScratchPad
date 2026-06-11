@@ -38,7 +38,7 @@ from app.tools.user_profile_tool import USER_PROFILE_GET_SCHEMA, user_profile_ge
 
 ToolHandler = Callable[[dict[str, Any]], str]
 EXECUTOR = Executor()
-EXECUTOR_TOOL_NAMES = {"run_shell", "run_python"}
+DEV_TOOL_NAMES = {"list_files", "run_shell", "run_python"}
 INTERNAL_TOOL_NAMES = {"url_analyze", "youtube_analyze", "content_save"}
 
 
@@ -248,7 +248,7 @@ def executor_tools_enabled() -> bool:
 def visible_tools() -> dict[str, dict[str, Any]]:
     hidden = set(INTERNAL_TOOL_NAMES)
     if not executor_tools_enabled():
-        hidden.update(EXECUTOR_TOOL_NAMES)
+        hidden.update(DEV_TOOL_NAMES)
     return {name: tool for name, tool in TOOLS.items() if name not in hidden}
 
 
@@ -259,7 +259,6 @@ def get_tool_definitions() -> list[dict[str, Any]]:
 def get_tools_prompt_text() -> str:
     lines = [
         "Available tools:",
-        "- list_files: List files in a local directory.",
         "- analyze_source: Analyze a URL or YouTube video into a normalized content profile without saving it.",
         "- content_add: Analyze a URL and save the normalized content_profile into the local Markdown library in one step.",
         "- content_list: List saved Markdown library items by subject, category, depth, status, time, or free-text query. Defaults to status=[unread, started] when status is omitted.",
@@ -272,6 +271,7 @@ def get_tools_prompt_text() -> str:
     if executor_tools_enabled():
         lines.extend(
             [
+                "- list_files: List files in a local directory.",
                 "- run_shell: Run a shell command in the workspace; may return denied or needs_approval.",
                 "- run_python: Run Python code in the workspace; may return denied or needs_approval.",
             ]

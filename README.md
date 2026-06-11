@@ -417,7 +417,7 @@ It currently supports:
 * stdout/stderr truncation
 * a stripped environment allowlist to avoid leaking secrets
 
-These executor tools are not exposed to the app LLM by default. Enable them only for development/debugging:
+These executor and local filesystem inspection tools are not exposed to the app LLM by default. Enable them only for development/debugging:
 
 ```bash
 SCRATCHPAD_ENABLE_EXECUTOR_TOOLS=1
