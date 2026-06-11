@@ -76,7 +76,13 @@ def test_recommendation_intent_loads_skill_then_uses_content_list(monkeypatch) -
     def fake_run_tool(name: str, args: dict[str, object]) -> str:
         calls.append((name, args))
         if name == "skill_view":
-            return '{"content":"Call content_list before recommending saved items."}'
+            return '{"content":"Call user_profile_get, then content_list before recommending saved items."}'
+        if name == "user_profile_get":
+            return (
+                '{"status":"completed","profile":{"current_goals":["learn LLM deployment"],'
+                '"interests":["local LLMs"],"avoided_topics":[],"preferences":'
+                '{"preferred_session_minutes":"20"}}}'
+            )
         if name == "content_list":
             return (
                 '{"status":"completed","items":[{"title":"LLM endpoint deployment",'
@@ -97,6 +103,18 @@ def test_recommendation_intent_loads_skill_then_uses_content_list(monkeypatch) -
                             "skill_view",
                             '{"name":"scratchpad-recommendation"}',
                             call_id="call_skill",
+                        )
+                    ],
+                )
+            ),
+            make_response(
+                SimpleNamespace(
+                    content="",
+                    tool_calls=[
+                        make_tool_call(
+                            "user_profile_get",
+                            '{}',
+                            call_id="call_profile",
                         )
                     ],
                 )
@@ -130,6 +148,7 @@ def test_recommendation_intent_loads_skill_then_uses_content_list(monkeypatch) -
     assert response == "Pick LLM endpoint deployment: unread, 5 minutes, light."
     assert calls == [
         ("skill_view", {"name": "scratchpad-recommendation"}),
+        ("user_profile_get", {}),
         (
             "content_list",
             {

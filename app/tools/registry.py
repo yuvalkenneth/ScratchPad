@@ -33,6 +33,7 @@ from app.tools.content_library_tool import (
     content_status_update_json,
     content_update_json,
 )
+from app.tools.user_profile_tool import USER_PROFILE_GET_SCHEMA, user_profile_get_json
 
 
 ToolHandler = Callable[[dict[str, Any]], str]
@@ -211,6 +212,13 @@ TOOLS: dict[str, dict[str, Any]] = {
         },
         "handler": content_update_json,
     },
+    "user_profile_get": {
+        "definition": {
+            "type": "function",
+            "function": USER_PROFILE_GET_SCHEMA,
+        },
+        "handler": user_profile_get_json,
+    },
     "skills_list": {
         "definition": {
             "type": "function",
@@ -257,6 +265,7 @@ def get_tools_prompt_text() -> str:
         "- content_list: List saved Markdown library items by subject, category, depth, status, time, or free-text query. Defaults to status=[unread, started] when status is omitted.",
         "- content_update: Correct saved content metadata/profile fields such as title, summary, subject, categories, depth, time, confidence, metadata, or notes.",
         "- content_status_update: Update a saved Markdown library item's reading status or notes by id, URL, or source identity. Status values: unread, started, done, archived, abandoned.",
+        "- user_profile_get: Read the editable user profile at library/user/profile.md for explicit goals, interests, avoided topics, preferred depth, and preferred session length.",
         "- skills_list: List available skills with compact metadata.",
         "- skill_view: Load the full content of a skill or one of its linked files.",
     ]
@@ -277,6 +286,7 @@ def get_tools_prompt_text() -> str:
         "When the user asks to correct saved item details such as title, summary, subject, categories, depth, time, confidence, or metadata, use content_update.",
         "When the user says they started, finished, archived, or abandoned an item, use content_status_update.",
         "When the user asks what to read, watch, learn, study, revisit, or pick next from saved material, first load skill_view with name=\"scratchpad-recommendation\", then follow that skill and call content_list before answering.",
+        "Do not call user_profile_get as the first tool for recommendation requests; the recommendation skill decides when to use it.",
         "For recommendation/listing requests, if the user did not ask for done, archived, or abandoned items, rely on the content_list default unread/started status filter or pass status=[\"unread\", \"started\"].",
     ])
     if executor_tools_enabled():

@@ -18,17 +18,19 @@ with clear reasons.
 
 ## Required Workflow
 
-1. Call `content_list` before recommending saved items.
-2. If the user gives a time budget, pass it as `max_estimated_time_minutes`.
-3. If the user gives a topic, goal, or free-text intent, pass it as `query`
+1. Call `user_profile_get` to load explicit goals, interests, avoided topics,
+   preferred depth, and preferred session length from `library/user/profile.md`.
+2. Call `content_list` before recommending saved items.
+3. If the user gives a time budget, pass it as `max_estimated_time_minutes`.
+4. If the user gives a topic, goal, or free-text intent, pass it as `query`
    unless a narrower structured filter is clearly better.
-4. Prefer unread and started items. If the user does not explicitly ask for
+5. Prefer unread and started items. If the user does not explicitly ask for
    done, archived, or abandoned items, rely on the default status filter or pass
    `status=["unread","started"]`.
-5. Recommend 1-3 items from the returned results.
-6. Explain each recommendation using concrete returned metadata: title, subject,
+6. Recommend 1-3 items from the returned results.
+7. Explain each recommendation using concrete returned metadata: title, subject,
    categories, depth, estimated time, status, and match reasons when available.
-7. If the user chooses an item, call `content_status_update` with
+8. If the user chooses an item, call `content_status_update` with
    `status="started"` unless it is already started.
 
 ## Recommendation Rules
@@ -43,6 +45,10 @@ with clear reasons.
 - Prefer practical/light items when the user asks for quick or low-effort work.
 - Prefer deep items when the user asks for depth, study, research, or a serious
   learning session.
+- Use explicit profile interests/goals to break ties, but do not override hard
+  user constraints such as time budget, requested topic, or excluded statuses.
+- If profile data is only the default template, treat it as weak context and say
+  recommendations are mainly based on the saved item metadata.
 - If time, topic, or goal is missing and materially changes the answer, ask one
   short clarification instead of guessing.
 
@@ -71,7 +77,7 @@ Two alternatives:
 ## Guardrails
 
 - Do not invent saved items.
-- Do not infer private user preferences that are not in the request or future
+- Do not infer private user preferences that are not in the request or explicit
   user profile data.
 - Do not claim an item is a perfect fit if the match reasons are weak.
 - If `content_list` returns no items, do not answer from memory; explain that no

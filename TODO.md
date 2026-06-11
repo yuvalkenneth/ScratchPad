@@ -23,6 +23,7 @@
 * Current local time is injected into the system prompt instead of exposed through a separate tool
 * `scratchpad-recommendation` skill exists and is loaded before recommendation requests
 * Deterministic workflow evals cover save, time-boxed library querying, and status-update state transitions
+* Editable user profile support exists at `library/user/profile.md` through `user_profile_get`
 
 ## Priority 1: Content-Profile Evaluation Calibration
 
@@ -64,11 +65,11 @@
 
 ## Priority 4: User Context
 
-* Add a lightweight editable user profile at `library/user/profile.md`
-* Store explicit preferences such as interests, avoided topics, preferred depth, preferred session length, and current goals
+* DONE: Add a lightweight editable user profile at `library/user/profile.md`
+* DONE: Store explicit preferences such as interests, avoided topics, preferred depth, preferred session length, and current goals
 * Keep behavioral signals separate from the human-editable profile, likely as append-only `library/user/signals.jsonl`
 * Record useful events such as saved, recommended, started, done, abandoned, and accepted recommendation
-* Use user context as transparent recommendation input, not hidden personalization magic
+* DONE: Use user context as transparent recommendation input, not hidden personalization magic
 * Add tests showing explicit user goals can influence recommendation queries without overriding hard constraints like status and available time
 
 ## Priority 5: Recommendation Scoring

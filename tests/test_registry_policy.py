@@ -29,6 +29,7 @@ def test_default_tool_surface_hides_low_level_analysis_and_save_tools(monkeypatc
     assert "content_list" in names
     assert "content_update" in names
     assert "content_status_update" in names
+    assert "user_profile_get" in names
     assert "url_analyze" not in names
     assert "youtube_analyze" not in names
     assert "content_save" not in names
@@ -63,6 +64,7 @@ def test_youtube_skill_routes_url_only_inputs_to_youtube_analyze() -> None:
 def test_recommendation_skill_requires_content_list() -> None:
     content = skill_view("scratchpad-recommendation")["content"]
 
+    assert "Call `user_profile_get`" in content
     assert "Call `content_list` before recommending saved items" in content
     assert "status=[\"unread\",\"started\"]" in content
     assert "content_status_update" in content
@@ -107,3 +109,11 @@ def test_recommendation_requests_load_recommendation_skill() -> None:
 
     assert 'name="scratchpad-recommendation"' in prompt_text
     assert "then follow that skill and call content_list before answering" in prompt_text
+
+
+def test_user_profile_tool_is_described() -> None:
+    prompt_text = get_tools_prompt_text()
+
+    assert "- user_profile_get:" in prompt_text
+    assert "library/user/profile.md" in prompt_text
+    assert "Do not call user_profile_get as the first tool for recommendation requests" in prompt_text

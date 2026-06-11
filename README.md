@@ -136,6 +136,7 @@ Already implemented foundation:
 * a normalized `ContentProfile` / `ContentItem` contract in code
 * content add, list, update, and status-update tools
 * a `scratchpad-recommendation` skill that requires querying saved items before recommending
+* a local editable user profile at `library/user/profile.md` exposed through `user_profile_get`
 * basic metadata and free-text query over Markdown frontmatter/body
 * separate Git history for personal library mutations
 * deterministic pytest coverage for analyzers, tool policy, executor safety, library behavior, and eval scoring
@@ -365,7 +366,7 @@ These are the main improvement ideas after rereading the repo against the projec
 ### Product and Recommendation
 
 * Build the recommendation policy before adding heavy ranking infrastructure. The first version uses a `scratchpad-recommendation` skill plus `content_list`; add a `content_recommend` tool only when repeated behavior shows the policy is stable.
-* Add a lightweight user profile earlier than embeddings. A readable `library/user/profile.md` plus append-only behavioral signals would make recommendations meaningfully personal without hidden magic.
+* Add behavioral signals after the explicit profile. The readable `library/user/profile.md` now provides transparent context; append-only signals can later record saved, recommended, started, done, and accepted events.
 * Keep recommendation output explainable. Recommendations should show why each item fits: time, status, depth, topic match, preference match, and whether it is a stretch.
 * Decide how to model topic multiplicity. A singular `subject` keeps v1 simple, but real recommendations likely need multi-topic support or weighted tags.
 * Treat semantic search as an optional later layer, not the core design. For a small library, transparent Markdown scanning and simple scoring are easier to debug and better for local-model evals.
