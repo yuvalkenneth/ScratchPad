@@ -15,6 +15,7 @@ if str(REPO_ROOT) not in sys.path:
 from app.llm.config import LLMConfig
 from app.llm.openai_compatible import create_completion_with_retries
 from app.llm.prompting import build_system_prompt
+from app.llm.profiles import config_from_profile
 from app.llm.runtime import ensure_provider_ready
 from app.tools.content_library_tool import apply_content_list_defaults
 from app.tools.registry import get_tool_definitions
@@ -25,6 +26,17 @@ NO_TOOL_LABEL = "no_tool"
 
 
 def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
+    profile_name = args.profile or os.getenv("EVAL_PROFILE")
+    if profile_name:
+        return config_from_profile(
+            profile_name,
+            provider=args.provider or os.getenv("EVAL_PROVIDER"),
+            model=args.model or os.getenv("EVAL_MODEL"),
+            base_url=args.base_url or os.getenv("EVAL_BASE_URL"),
+            api_key=args.api_key or os.getenv("EVAL_API_KEY"),
+            start_script=args.start_script or os.getenv("EVAL_START_SCRIPT"),
+        )
+
     default = LLMConfig.from_env()
     provider = args.provider or os.getenv("EVAL_PROVIDER") or default.provider
     explicit_base_url = args.base_url or os.getenv("EVAL_BASE_URL")
@@ -238,7 +250,13 @@ def classify_failure_types(
     return failures
 
 
-def build_report(results: list[dict[str, Any]], *, model: str, provider: str) -> dict[str, Any]:
+def build_report(
+    results: list[dict[str, Any]],
+    *,
+    model: str,
+    provider: str,
+    profile: str | None = None,
+) -> dict[str, Any]:
     labels = sorted(
         {
             result["expected_tool"]
@@ -295,6 +313,7 @@ def build_report(results: list[dict[str, Any]], *, model: str, provider: str) ->
             failure_type_counts[failure_type] = failure_type_counts.get(failure_type, 0) + 1
     return {
         "type": "tool_choice_report",
+        "profile": profile,
         "provider": provider,
         "model": model,
         "total_cases": total,
@@ -350,6 +369,7 @@ def run(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--cases", type=Path, default=DEFAULT_CASES_PATH)
     parser.add_argument("--case", dest="case_id")
+    parser.add_argument("--profile", help="Named model profile from config/models.json or config/models.local.json.")
     parser.add_argument("--provider", help="Provider for the model under test. Defaults to EVAL_PROVIDER or LLM_PROVIDER.")
     parser.add_argument("--model", help="Model id for the model under test. Defaults to EVAL_MODEL or LLM_MODEL.")
     parser.add_argument("--base-url", help="OpenAI-compatible base URL for the model under test.")
@@ -399,7 +419,12 @@ def run(argv: list[str] | None = None) -> int:
             if result["finish_reason"]:
                 print(f"  finish_reason: {result['finish_reason']}")
 
-    report = build_report(results, model=config.model_name, provider=config.provider)
+    report = build_report(
+        results,
+        model=config.model_name,
+        provider=config.provider,
+        profile=args.profile or os.getenv("EVAL_PROFILE"),
+    )
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(json.dumps(report, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")

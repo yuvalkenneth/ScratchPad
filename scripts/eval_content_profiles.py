@@ -16,6 +16,7 @@ if str(REPO_ROOT) not in sys.path:
 from app.fetchers.common import estimate_time_minutes
 from app.llm.config import LLMConfig
 from app.llm.openai_compatible import complete_text
+from app.llm.profiles import config_from_profile
 from app.llm.runtime import ensure_provider_ready
 from app.content import build_content_profile_payload
 import app.tools.url_analyze_tool as url_analyze_tool
@@ -48,7 +49,20 @@ JUDGE_RESULT_KEYS = {
     "overall_useful",
     "notes",
 }
+
+
 def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
+    profile_name = args.profile or os.getenv("EVAL_PROFILE")
+    if profile_name:
+        return config_from_profile(
+            profile_name,
+            provider=args.provider or os.getenv("EVAL_PROVIDER"),
+            model=args.model or os.getenv("EVAL_MODEL"),
+            base_url=args.base_url or os.getenv("EVAL_BASE_URL"),
+            api_key=args.api_key or os.getenv("EVAL_API_KEY"),
+            start_script=args.start_script or os.getenv("EVAL_START_SCRIPT"),
+        )
+
     default = LLMConfig.from_env()
     provider = args.provider or os.getenv("EVAL_PROVIDER") or default.provider
     explicit_base_url = args.base_url or os.getenv("EVAL_BASE_URL")
@@ -78,12 +92,26 @@ class JudgeConfig:
 
     @classmethod
     def from_args(cls, args: argparse.Namespace, default: LLMConfig) -> "JudgeConfig":
-        provider = args.judge_provider or os.getenv("EVAL_JUDGE_PROVIDER") or default.provider
-        model_name = args.judge_model or os.getenv("EVAL_JUDGE_MODEL") or default.model_name
-        gemini_base_url = os.getenv("GEMINI_BASE_URL") if model_name.startswith("gemini") else None
-        gemini_api_key = os.getenv("GEMINI_API_KEY") if model_name.startswith("gemini") else None
-        base_url = args.judge_base_url or os.getenv("EVAL_JUDGE_BASE_URL") or gemini_base_url or default.base_url
-        api_key = args.judge_api_key or os.getenv("EVAL_JUDGE_API_KEY") or gemini_api_key or default.api_key or "local"
+        profile_name = args.judge_profile or os.getenv("EVAL_JUDGE_PROFILE")
+        if profile_name:
+            profile_config = config_from_profile(
+                profile_name,
+                provider=args.judge_provider or os.getenv("EVAL_JUDGE_PROVIDER"),
+                model=args.judge_model or os.getenv("EVAL_JUDGE_MODEL"),
+                base_url=args.judge_base_url or os.getenv("EVAL_JUDGE_BASE_URL"),
+                api_key=args.judge_api_key or os.getenv("EVAL_JUDGE_API_KEY"),
+            )
+            provider = profile_config.provider
+            model_name = profile_config.model_name
+            base_url = profile_config.base_url
+            api_key = profile_config.api_key
+        else:
+            provider = args.judge_provider or os.getenv("EVAL_JUDGE_PROVIDER") or default.provider
+            model_name = args.judge_model or os.getenv("EVAL_JUDGE_MODEL") or default.model_name
+            gemini_base_url = os.getenv("GEMINI_BASE_URL") if model_name.startswith("gemini") else None
+            gemini_api_key = os.getenv("GEMINI_API_KEY") if model_name.startswith("gemini") else None
+            base_url = args.judge_base_url or os.getenv("EVAL_JUDGE_BASE_URL") or gemini_base_url or default.base_url
+            api_key = args.judge_api_key or os.getenv("EVAL_JUDGE_API_KEY") or gemini_api_key or default.api_key or "local"
         temperature = float(
             args.judge_temperature
             if args.judge_temperature is not None
@@ -528,6 +556,7 @@ def run(argv: list[str] | None = None) -> int:
     parser.add_argument("--fixtures", type=Path, default=DEFAULT_FIXTURE_PATH)
     parser.add_argument("--case", dest="case_id")
     parser.add_argument("--limit", type=int, help="Evaluate only the first N loaded cases.")
+    parser.add_argument("--profile", help="Named model profile from config/models.json or config/models.local.json.")
     parser.add_argument("--provider", help="Provider for the model under test. Defaults to EVAL_PROVIDER or LLM_PROVIDER.")
     parser.add_argument("--model", help="Model id for the model under test. Defaults to EVAL_MODEL or LLM_MODEL.")
     parser.add_argument("--base-url", help="OpenAI-compatible base URL for the model under test.")
@@ -539,6 +568,7 @@ def run(argv: list[str] | None = None) -> int:
         help="Do not auto-start llama.cpp even when provider is llama_cpp.",
     )
     parser.add_argument("--judge", action="store_true", help="Use the configured LLM as a qualitative judge.")
+    parser.add_argument("--judge-profile", help="Named model profile for the qualitative judge.")
     parser.add_argument("--judge-provider", help="Judge provider. Defaults to EVAL_JUDGE_PROVIDER or LLM_PROVIDER.")
     parser.add_argument("--judge-model", help="Judge model id. Defaults to EVAL_JUDGE_MODEL or LLM_MODEL.")
     parser.add_argument("--judge-base-url", help="Judge OpenAI-compatible base URL.")
@@ -547,6 +577,8 @@ def run(argv: list[str] | None = None) -> int:
     parser.add_argument("--judge-top-p", type=float, help="Judge top_p. Defaults to 1.0.")
     parser.add_argument("--json", action="store_true", help="Emit JSONL results instead of text.")
     args = parser.parse_args(argv)
+    eval_profile = args.profile or os.getenv("EVAL_PROFILE")
+    judge_profile = args.judge_profile or os.getenv("EVAL_JUDGE_PROFILE")
     eval_config = prepare_eval_provider(eval_config_from_args(args), auto_start=not args.no_auto_start)
     judge_config = JudgeConfig.from_args(args, eval_config) if args.judge else None
 
@@ -587,6 +619,7 @@ def run(argv: list[str] | None = None) -> int:
                 "profile": profile,
                 "analysis_error": analysis_error,
                 "eval_config": {
+                    "profile": eval_profile,
                     "provider": eval_config.provider,
                     "model": eval_config.model_name,
                     "base_url": eval_config.base_url,
@@ -628,6 +661,7 @@ def run(argv: list[str] | None = None) -> int:
             "checks": evaluation["checks"],
             "profile": profile,
             "eval_config": {
+                "profile": eval_profile,
                 "provider": eval_config.provider,
                 "model": eval_config.model_name,
                 "base_url": eval_config.base_url,
@@ -642,6 +676,7 @@ def run(argv: list[str] | None = None) -> int:
         }
         if judge_config is not None:
             result["judge_config"] = {
+                "profile": judge_profile,
                 "provider": judge_config.provider,
                 "model": judge_config.model_name,
                 "base_url": judge_config.base_url,
@@ -686,6 +721,8 @@ def run(argv: list[str] | None = None) -> int:
         total_latency_seconds=total_latency_seconds,
         eval_config=eval_config,
         judge_config=judge_config,
+        eval_profile=eval_profile,
+        judge_profile=judge_profile,
     )
     if args.json:
         print(json.dumps(summary, ensure_ascii=True))
@@ -707,6 +744,8 @@ def build_run_summary(
     total_latency_seconds: float,
     eval_config: LLMConfig,
     judge_config: JudgeConfig | None,
+    eval_profile: str | None = None,
+    judge_profile: str | None = None,
 ) -> dict[str, Any]:
     total_cases = len(results)
     passed_cases = sum(1 for result in results if result["passed"])
@@ -738,11 +777,13 @@ def build_run_summary(
             else None,
         },
         "eval_config": {
+            "profile": eval_profile,
             "provider": eval_config.provider,
             "model": eval_config.model_name,
             "base_url": eval_config.base_url,
         },
         "judge_config": {
+            "profile": judge_profile,
             "provider": judge_config.provider,
             "model": judge_config.model_name,
             "base_url": judge_config.base_url,

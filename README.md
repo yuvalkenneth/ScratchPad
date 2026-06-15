@@ -101,6 +101,27 @@ The evaluation ladder is:
 
 The project should avoid treating a green eval as a vague "model is good" claim. Each eval should name the behavior it measures and preserve enough output to compare local models over time.
 
+### Model profiles
+
+Model selection is intentionally profile-based. Committed defaults live in
+`config/models.json`; personal overrides such as local start scripts or
+machine-specific endpoints should live in ignored `config/models.local.json`.
+
+Profiles describe the model identity and connection details, while eval scripts
+still allow one-off overrides:
+
+```bash
+uv run python scripts/models.py list
+uv run python scripts/models.py show gemini-flash
+uv run python scripts/eval_tool_choice.py --profile qwen-local
+uv run python scripts/run_benchmark.py --profile gemini-flash --label gemini-smoke
+```
+
+Scratchpad does not require owning server lifecycle. By default, profiles are
+`user_managed`: the user starts the local or remote server, and Scratchpad checks
+the endpoint. A local override can add a `start_script`, and evals can opt into
+auto-start behavior for known llama.cpp setups.
+
 ### Failure taxonomy
 
 Local-model failures should be tracked in product terms, not just pass/fail:

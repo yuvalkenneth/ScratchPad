@@ -11,6 +11,11 @@ from typing import Any
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from app.llm.profiles import config_from_profile, resolved_config_metadata
+
 DEFAULT_REPORTS_DIR = REPO_ROOT / "evals" / "runs"
 
 
@@ -41,14 +46,11 @@ def build_commands(args: argparse.Namespace) -> list[BenchmarkCommand]:
     tool_command = [
         sys.executable,
         "scripts/eval_tool_choice.py",
-        "--provider",
-        args.provider,
-        "--model",
-        args.model,
         "--report",
         str(tool_report),
         "--json",
     ]
+    append_model_args(tool_command, args)
     if args.base_url:
         tool_command.extend(["--base-url", args.base_url])
     if args.api_key:
@@ -60,12 +62,9 @@ def build_commands(args: argparse.Namespace) -> list[BenchmarkCommand]:
     content_command = [
         sys.executable,
         "scripts/eval_content_profiles.py",
-        "--provider",
-        args.provider,
-        "--model",
-        args.model,
         "--json",
     ]
+    append_model_args(content_command, args)
     if args.base_url:
         content_command.extend(["--base-url", args.base_url])
     if args.api_key:
@@ -76,6 +75,19 @@ def build_commands(args: argparse.Namespace) -> list[BenchmarkCommand]:
         content_command.extend(["--limit", str(args.content_limit)])
     commands.append(BenchmarkCommand("content_profiles", content_command))
     return commands
+
+
+def append_model_args(command: list[str], args: argparse.Namespace) -> None:
+    if args.profile:
+        command.extend(["--profile", args.profile])
+    if args.provider:
+        command.extend(["--provider", args.provider])
+    if args.model:
+        command.extend(["--model", args.model])
+    if not args.profile and not args.provider:
+        command.extend(["--provider", "llama_cpp"])
+    if not args.profile and not args.model:
+        command.extend(["--model", "qwen"])
 
 
 def run_command(command: BenchmarkCommand) -> dict[str, Any]:
@@ -103,8 +115,9 @@ def run(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--label", default=time.strftime("%Y%m%d-%H%M%S"))
     parser.add_argument("--reports-dir", type=Path, default=DEFAULT_REPORTS_DIR)
-    parser.add_argument("--provider", default="llama_cpp")
-    parser.add_argument("--model", default="qwen")
+    parser.add_argument("--profile", help="Named model profile from config/models.json or config/models.local.json.")
+    parser.add_argument("--provider")
+    parser.add_argument("--model")
     parser.add_argument("--base-url")
     parser.add_argument("--api-key")
     parser.add_argument("--start-script")
@@ -116,12 +129,22 @@ def run(argv: list[str] | None = None) -> int:
     args.reports_dir.mkdir(parents=True, exist_ok=True)
     commands = build_commands(args)
     manifest_path = args.reports_dir / f"{args.label}-benchmark-manifest.json"
+    resolved_config = config_from_profile(
+        args.profile,
+        provider=args.provider,
+        model=args.model,
+        base_url=args.base_url,
+        api_key=args.api_key,
+        start_script=args.start_script,
+    )
+    model_config = resolved_config_metadata(resolved_config, profile=args.profile)
 
     if args.dry_run:
         manifest = {
             "type": "scratchpad_benchmark_manifest",
             "label": args.label,
             "dry_run": True,
+            "model_config": model_config,
             "commands": [asdict(command) | {"report_path": str(command.report_path) if command.report_path else None} for command in commands],
         }
         manifest_path.write_text(json.dumps(manifest, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
@@ -133,6 +156,7 @@ def run(argv: list[str] | None = None) -> int:
         "type": "scratchpad_benchmark_manifest",
         "label": args.label,
         "dry_run": False,
+        "model_config": model_config,
         "passed": all(result["returncode"] == 0 for result in results),
         "results": results,
     }

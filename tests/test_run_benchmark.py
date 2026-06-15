@@ -10,6 +10,7 @@ def test_build_commands_can_skip_model_evals(tmp_path: Path) -> None:
             reports_dir=tmp_path,
             label="test",
             skip_model_evals=True,
+            profile=None,
             provider="llama_cpp",
             model="qwen",
             base_url=None,
@@ -28,6 +29,7 @@ def test_build_commands_adds_model_eval_reports(tmp_path: Path) -> None:
             reports_dir=tmp_path,
             label="qwen4b",
             skip_model_evals=False,
+            profile=None,
             provider="llama_cpp",
             model="Qwen3.5-4B-BF16",
             base_url="http://localhost:8080/v1",
@@ -45,6 +47,27 @@ def test_build_commands_adds_model_eval_reports(tmp_path: Path) -> None:
     ]
     assert commands[2].report_path == tmp_path / "qwen4b-tool-choice.json"
     assert "--limit" in commands[3].command
+
+
+def test_build_commands_can_use_model_profile(tmp_path: Path) -> None:
+    commands = build_commands(
+        Namespace(
+            reports_dir=tmp_path,
+            label="profiled",
+            skip_model_evals=False,
+            profile="gemini-flash",
+            provider=None,
+            model=None,
+            base_url=None,
+            api_key=None,
+            start_script=None,
+            content_limit=1,
+        )
+    )
+
+    assert "--profile" in commands[2].command
+    assert "gemini-flash" in commands[2].command
+    assert "--provider" not in commands[2].command
 
 
 def test_benchmark_dry_run_writes_manifest(tmp_path: Path) -> None:

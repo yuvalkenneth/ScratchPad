@@ -1,0 +1,20 @@
+{
+  "profiles": {
+    "qwen-local": {
+      "provider": "llama_cpp",
+      "model": "qwen",
+      "base_url": "http://127.0.0.1:8080/v1",
+      "api_key": "local",
+      "server_mode": "user_managed",
+      "description": "Default local llama.cpp-compatible profile. Start the server yourself unless a local override adds a start_script."
+    },
+    "gemini-flash": {
+      "provider": "gemini",
+      "model": "gemini-3.5-flash",
+      "base_url_env": "GEMINI_BASE_URL",
+      "api_key_env": "GEMINI_API_KEY",
+      "server_mode": "user_managed",
+      "description": "Gemini through an OpenAI-compatible endpoint. Credentials stay in environment variables."
+    }
+  }
+}
