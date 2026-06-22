@@ -1,0 +1,49 @@
+from scripts.eval_tool_choice import load_cases
+from scripts.generate_tool_choice_cases import generate_cases
+
+
+def test_generated_tool_choice_cases_are_large_and_cover_all_tools() -> None:
+    cases = generate_cases()
+    expected_tools = {case["expected_tool"] for case in cases}
+
+    assert len(cases) >= 100
+    assert expected_tools == {
+        "analyze_source",
+        "content_add",
+        "content_status_update",
+        "content_update",
+        "skill_view",
+        "content_list",
+        "no_tool",
+    }
+
+
+def test_generated_tool_choice_case_ids_are_unique() -> None:
+    cases = generate_cases()
+    ids = [case["id"] for case in cases]
+
+    assert len(ids) == len(set(ids))
+
+
+def test_generated_tool_choice_cases_match_eval_schema(tmp_path) -> None:
+    path = tmp_path / "cases.json"
+    cases = generate_cases()
+    path.write_text(__import__("json").dumps(cases), encoding="utf-8")
+
+    loaded_cases = load_cases(path)
+
+    assert len(loaded_cases) == len(cases)
+
+
+def test_generated_url_action_cases_include_url_argument_expectations() -> None:
+    cases = generate_cases()
+    url_action_cases = [
+        case
+        for case in cases
+        if case["expected_tool"] in {"analyze_source", "content_add"}
+    ]
+
+    assert url_action_cases
+    for case in url_action_cases:
+        expected_arguments = case.get("expected_arguments") or {}
+        assert "url" in expected_arguments.get("must_equal", {})

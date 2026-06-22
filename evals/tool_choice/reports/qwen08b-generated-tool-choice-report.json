@@ -1,0 +1,5239 @@
+{
+  "type": "tool_choice_report",
+  "profile": "qwen-local",
+  "provider": "llama_cpp",
+  "model": "qwen",
+  "total_cases": 125,
+  "passed_cases": 73,
+  "tool_selection_accuracy": 0.792,
+  "argument_accuracy": 0.5859,
+  "overall_accuracy": 0.584,
+  "argument_json_validity_rate": 1.0,
+  "call_rate": 0.88,
+  "expected_call_rate": 0.872,
+  "wrong_tool_rate": 0.208,
+  "no_tool_false_negative_rate": 0.0,
+  "tool_false_positive_rate": 0.008,
+  "extra_tool_rate": 0.0,
+  "default_reliance_rate": 0.056,
+  "failure_type_counts": {
+    "wrong_tool": 25,
+    "argument_mismatch": 41,
+    "tool_false_positive": 1
+  },
+  "confusion_matrix": {
+    "analyze_source": {
+      "analyze_source": 24,
+      "content_add": 0,
+      "content_list": 0,
+      "content_status_update": 0,
+      "content_update": 0,
+      "no_tool": 0,
+      "skill_view": 0,
+      "skills_list": 0,
+      "user_profile_get": 0
+    },
+    "content_add": {
+      "analyze_source": 5,
+      "content_add": 19,
+      "content_list": 0,
+      "content_status_update": 0,
+      "content_update": 0,
+      "no_tool": 0,
+      "skill_view": 0,
+      "skills_list": 0,
+      "user_profile_get": 0
+    },
+    "content_list": {
+      "analyze_source": 0,
+      "content_add": 0,
+      "content_list": 15,
+      "content_status_update": 0,
+      "content_update": 0,
+      "no_tool": 0,
+      "skill_view": 0,
+      "skills_list": 0,
+      "user_profile_get": 0
+    },
+    "content_status_update": {
+      "analyze_source": 0,
+      "content_add": 0,
+      "content_list": 0,
+      "content_status_update": 20,
+      "content_update": 0,
+      "no_tool": 0,
+      "skill_view": 0,
+      "skills_list": 0,
+      "user_profile_get": 0
+    },
+    "content_update": {
+      "analyze_source": 1,
+      "content_add": 4,
+      "content_list": 0,
+      "content_status_update": 0,
+      "content_update": 5,
+      "no_tool": 0,
+      "skill_view": 0,
+      "skills_list": 0,
+      "user_profile_get": 0
+    },
+    "no_tool": {
+      "analyze_source": 0,
+      "content_add": 0,
+      "content_list": 0,
+      "content_status_update": 0,
+      "content_update": 0,
+      "no_tool": 15,
+      "skill_view": 1,
+      "skills_list": 0,
+      "user_profile_get": 0
+    },
+    "skill_view": {
+      "analyze_source": 0,
+      "content_add": 0,
+      "content_list": 7,
+      "content_status_update": 0,
+      "content_update": 0,
+      "no_tool": 0,
+      "skill_view": 1,
+      "skills_list": 4,
+      "user_profile_get": 4
+    },
+    "skills_list": {
+      "analyze_source": 0,
+      "content_add": 0,
+      "content_list": 0,
+      "content_status_update": 0,
+      "content_update": 0,
+      "no_tool": 0,
+      "skill_view": 0,
+      "skills_list": 0,
+      "user_profile_get": 0
+    },
+    "user_profile_get": {
+      "analyze_source": 0,
+      "content_add": 0,
+      "content_list": 0,
+      "content_status_update": 0,
+      "content_update": 0,
+      "no_tool": 0,
+      "skill_view": 0,
+      "skills_list": 0,
+      "user_profile_get": 0
+    }
+  },
+  "per_class": {
+    "analyze_source": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.8889,
+      "support": 24
+    },
+    "content_add": {
+      "precision": 0.8261,
+      "recall": 0.7917,
+      "f1": 0.8085,
+      "support": 24
+    },
+    "content_list": {
+      "precision": 0.6818,
+      "recall": 1.0,
+      "f1": 0.8108,
+      "support": 15
+    },
+    "content_status_update": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 20
+    },
+    "content_update": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6667,
+      "support": 10
+    },
+    "no_tool": {
+      "precision": 1.0,
+      "recall": 0.9375,
+      "f1": 0.9677,
+      "support": 16
+    },
+    "skill_view": {
+      "precision": 0.5,
+      "recall": 0.0625,
+      "f1": 0.1111,
+      "support": 16
+    },
+    "skills_list": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "user_profile_get": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    }
+  },
+  "latency": {
+    "average_seconds": 2.021,
+    "max_seconds": 5.829,
+    "total_seconds": 252.594
+  },
+  "results": [
+    {
+      "id": "inspect_0_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://example.com/article\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/article"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/article"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/article",
+          "actual": "https://example.com/article",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.87
+    },
+    {
+      "id": "inspect_0_1",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://example.com/article\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/article"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/article"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/article",
+          "actual": "https://example.com/article",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.526
+    },
+    {
+      "id": "inspect_0_2",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://example.com/article\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/article"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/article"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/article",
+          "actual": "https://example.com/article",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.554
+    },
+    {
+      "id": "inspect_0_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://example.com/article\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/article"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/article"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/article",
+          "actual": "https://example.com/article",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.53
+    },
+    {
+      "id": "inspect_1_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://builders.ramp.com/post/stack-benchmarking\"}",
+      "parsed_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "effective_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://builders.ramp.com/post/stack-benchmarking",
+          "actual": "https://builders.ramp.com/post/stack-benchmarking",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.662
+    },
+    {
+      "id": "inspect_1_1",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://builders.ramp.com/post/stack-benchmarking\"}",
+      "parsed_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "effective_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://builders.ramp.com/post/stack-benchmarking",
+          "actual": "https://builders.ramp.com/post/stack-benchmarking",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.704
+    },
+    {
+      "id": "inspect_1_2",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://builders.ramp.com/post/stack-benchmarking\"}",
+      "parsed_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "effective_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://builders.ramp.com/post/stack-benchmarking",
+          "actual": "https://builders.ramp.com/post/stack-benchmarking",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.68
+    },
+    {
+      "id": "inspect_1_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://builders.ramp.com/post/stack-benchmarking\"}",
+      "parsed_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "effective_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://builders.ramp.com/post/stack-benchmarking",
+          "actual": "https://builders.ramp.com/post/stack-benchmarking",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.693
+    },
+    {
+      "id": "inspect_2_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\"}",
+      "parsed_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "effective_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "actual": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 2.125
+    },
+    {
+      "id": "inspect_2_1",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\"}",
+      "parsed_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "effective_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "actual": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.996
+    },
+    {
+      "id": "inspect_2_2",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\"}",
+      "parsed_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "effective_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "actual": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.988
+    },
+    {
+      "id": "inspect_2_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\"}",
+      "parsed_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "effective_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "actual": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.988
+    },
+    {
+      "id": "inspect_3_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://www.youtube.com/watch?v=l6DKRf-fAAM\"}",
+      "parsed_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "effective_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "actual": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.73
+    },
+    {
+      "id": "inspect_3_1",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://www.youtube.com/watch?v=l6DKRf-fAAM\"}",
+      "parsed_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "effective_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "actual": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.725
+    },
+    {
+      "id": "inspect_3_2",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://www.youtube.com/watch?v=l6DKRf-fAAM\"}",
+      "parsed_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "effective_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "actual": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.744
+    },
+    {
+      "id": "inspect_3_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://www.youtube.com/watch?v=l6DKRf-fAAM\"}",
+      "parsed_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "effective_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "actual": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.644
+    },
+    {
+      "id": "inspect_4_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://github.com/ggml-org/llama.cpp\"}",
+      "parsed_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "effective_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://github.com/ggml-org/llama.cpp",
+          "actual": "https://github.com/ggml-org/llama.cpp",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.675
+    },
+    {
+      "id": "inspect_4_1",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://github.com/ggml-org/llama.cpp\"}",
+      "parsed_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "effective_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://github.com/ggml-org/llama.cpp",
+          "actual": "https://github.com/ggml-org/llama.cpp",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "I'll analyze the GitHub URL to understand what llama.cpp is about without saving it to your library.\n\n",
+      "latency_seconds": 2.17
+    },
+    {
+      "id": "inspect_4_2",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://github.com/ggml-org/llama.cpp\"}",
+      "parsed_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "effective_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://github.com/ggml-org/llama.cpp",
+          "actual": "https://github.com/ggml-org/llama.cpp",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.664
+    },
+    {
+      "id": "inspect_4_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://github.com/ggml-org/llama.cpp\"}",
+      "parsed_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "effective_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://github.com/ggml-org/llama.cpp",
+          "actual": "https://github.com/ggml-org/llama.cpp",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.772
+    },
+    {
+      "id": "inspect_5_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://example.com/old-rag-post\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/old-rag-post",
+          "actual": "https://example.com/old-rag-post",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.566
+    },
+    {
+      "id": "inspect_5_1",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://example.com/old-rag-post\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/old-rag-post",
+          "actual": "https://example.com/old-rag-post",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.682
+    },
+    {
+      "id": "inspect_5_2",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://example.com/old-rag-post\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/old-rag-post",
+          "actual": "https://example.com/old-rag-post",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.715
+    },
+    {
+      "id": "inspect_5_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "analyze_source",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://example.com/old-rag-post\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/old-rag-post",
+          "actual": "https://example.com/old-rag-post",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.626
+    },
+    {
+      "id": "save_0_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://example.com/article\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/article"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/article"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/article",
+          "actual": "https://example.com/article",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.626
+    },
+    {
+      "id": "save_0_1",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://example.com/article\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/article"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/article"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/article",
+          "actual": "https://example.com/article",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.52
+    },
+    {
+      "id": "save_0_2",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://example.com/article\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/article"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/article"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/article",
+          "actual": "https://example.com/article",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.489
+    },
+    {
+      "id": "save_0_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://example.com/article\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/article"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/article"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/article",
+          "actual": "https://example.com/article",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.609
+    },
+    {
+      "id": "save_1_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://builders.ramp.com/post/stack-benchmarking\"}",
+      "parsed_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "effective_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://builders.ramp.com/post/stack-benchmarking",
+          "actual": "https://builders.ramp.com/post/stack-benchmarking",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.708
+    },
+    {
+      "id": "save_1_1",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://builders.ramp.com/post/stack-benchmarking\"}",
+      "parsed_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "effective_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://builders.ramp.com/post/stack-benchmarking",
+          "actual": "https://builders.ramp.com/post/stack-benchmarking",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.807
+    },
+    {
+      "id": "save_1_2",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://builders.ramp.com/post/stack-benchmarking\"}",
+      "parsed_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "effective_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://builders.ramp.com/post/stack-benchmarking",
+          "actual": "https://builders.ramp.com/post/stack-benchmarking",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.607
+    },
+    {
+      "id": "save_1_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://builders.ramp.com/post/stack-benchmarking\"}",
+      "parsed_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "effective_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://builders.ramp.com/post/stack-benchmarking",
+          "actual": "https://builders.ramp.com/post/stack-benchmarking",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.585
+    },
+    {
+      "id": "save_2_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\"}",
+      "parsed_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "effective_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "actual": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 2.078
+    },
+    {
+      "id": "save_2_1",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\"}",
+      "parsed_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "effective_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "actual": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.99
+    },
+    {
+      "id": "save_2_2",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\"}",
+      "parsed_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "effective_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "actual": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "I'll analyze the OWASP LLM Prompt Injection Prevention Cheat Sheet to remember it for you.\n\n",
+      "latency_seconds": 2.275
+    },
+    {
+      "id": "save_2_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\"}",
+      "parsed_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "effective_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "actual": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.911
+    },
+    {
+      "id": "save_3_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://www.youtube.com/watch?v=l6DKRf-fAAM\"}",
+      "parsed_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "effective_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "actual": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.668
+    },
+    {
+      "id": "save_3_1",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://www.youtube.com/watch?v=l6DKRf-fAAM\"}",
+      "parsed_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "effective_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "actual": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.69
+    },
+    {
+      "id": "save_3_2",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://www.youtube.com/watch?v=l6DKRf-fAAM\"}",
+      "parsed_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "effective_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "actual": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.67
+    },
+    {
+      "id": "save_3_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://www.youtube.com/watch?v=l6DKRf-fAAM\"}",
+      "parsed_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "effective_arguments": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "actual": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.687
+    },
+    {
+      "id": "save_4_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://github.com/ggml-org/llama.cpp\"}",
+      "parsed_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "effective_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://github.com/ggml-org/llama.cpp",
+          "actual": "https://github.com/ggml-org/llama.cpp",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.603
+    },
+    {
+      "id": "save_4_1",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://github.com/ggml-org/llama.cpp\"}",
+      "parsed_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "effective_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://github.com/ggml-org/llama.cpp",
+          "actual": "https://github.com/ggml-org/llama.cpp",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.61
+    },
+    {
+      "id": "save_4_2",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://github.com/ggml-org/llama.cpp\"}",
+      "parsed_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "effective_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://github.com/ggml-org/llama.cpp",
+          "actual": "https://github.com/ggml-org/llama.cpp",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.611
+    },
+    {
+      "id": "save_4_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://github.com/ggml-org/llama.cpp\"}",
+      "parsed_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "effective_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://github.com/ggml-org/llama.cpp",
+          "actual": "https://github.com/ggml-org/llama.cpp",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.604
+    },
+    {
+      "id": "save_5_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://example.com/old-rag-post\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/old-rag-post",
+          "actual": "https://example.com/old-rag-post",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.56
+    },
+    {
+      "id": "save_5_1",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://example.com/old-rag-post\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/old-rag-post",
+          "actual": "https://example.com/old-rag-post",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.554
+    },
+    {
+      "id": "save_5_2",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://example.com/old-rag-post\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/old-rag-post",
+          "actual": "https://example.com/old-rag-post",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.554
+    },
+    {
+      "id": "save_5_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_add",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://example.com/old-rag-post\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/old-rag-post"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/old-rag-post",
+          "actual": "https://example.com/old-rag-post",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.558
+    },
+    {
+      "id": "status_unread_0",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"1234567890\",\"status\":\"unread\"}",
+      "parsed_arguments": {
+        "id": "1234567890",
+        "status": "unread"
+      },
+      "effective_arguments": {
+        "id": "1234567890",
+        "status": "unread"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/article",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "unread",
+          "actual": "unread",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.795
+    },
+    {
+      "id": "status_unread_1",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"1234567890\",\"status\":\"unread\"}",
+      "parsed_arguments": {
+        "id": "1234567890",
+        "status": "unread"
+      },
+      "effective_arguments": {
+        "id": "1234567890",
+        "status": "unread"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://builders.ramp.com/post/stack-benchmarking",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "unread",
+          "actual": "unread",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.79
+    },
+    {
+      "id": "status_unread_2",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"1234567890\",\"status\":\"unread\"}",
+      "parsed_arguments": {
+        "id": "1234567890",
+        "status": "unread"
+      },
+      "effective_arguments": {
+        "id": "1234567890",
+        "status": "unread"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "unread",
+          "actual": "unread",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.821
+    },
+    {
+      "id": "status_unread_3",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"l6DKRf-fAAM\",\"status\":\"unread\"}",
+      "parsed_arguments": {
+        "id": "l6DKRf-fAAM",
+        "status": "unread"
+      },
+      "effective_arguments": {
+        "id": "l6DKRf-fAAM",
+        "status": "unread"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "unread",
+          "actual": "unread",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.749
+    },
+    {
+      "id": "status_started_0",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"1234567890\",\"status\":\"started\"}",
+      "parsed_arguments": {
+        "id": "1234567890",
+        "status": "started"
+      },
+      "effective_arguments": {
+        "id": "1234567890",
+        "status": "started"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/article",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "started",
+          "actual": "started",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.82
+    },
+    {
+      "id": "status_started_1",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"1234567890\",\"status\":\"started\"}",
+      "parsed_arguments": {
+        "id": "1234567890",
+        "status": "started"
+      },
+      "effective_arguments": {
+        "id": "1234567890",
+        "status": "started"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://builders.ramp.com/post/stack-benchmarking",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "started",
+          "actual": "started",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.814
+    },
+    {
+      "id": "status_started_2",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"1234567890\",\"status\":\"started\"}",
+      "parsed_arguments": {
+        "id": "1234567890",
+        "status": "started"
+      },
+      "effective_arguments": {
+        "id": "1234567890",
+        "status": "started"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "started",
+          "actual": "started",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.873
+    },
+    {
+      "id": "status_started_3",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"l6DKRf-fAAM\",\"status\":\"started\"}",
+      "parsed_arguments": {
+        "id": "l6DKRf-fAAM",
+        "status": "started"
+      },
+      "effective_arguments": {
+        "id": "l6DKRf-fAAM",
+        "status": "started"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "started",
+          "actual": "started",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.804
+    },
+    {
+      "id": "status_done_0",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"1234567890\",\"status\":\"done\"}",
+      "parsed_arguments": {
+        "id": "1234567890",
+        "status": "done"
+      },
+      "effective_arguments": {
+        "id": "1234567890",
+        "status": "done"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/article",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "done",
+          "actual": "done",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.786
+    },
+    {
+      "id": "status_done_1",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"1234567890\",\"status\":\"done\"}",
+      "parsed_arguments": {
+        "id": "1234567890",
+        "status": "done"
+      },
+      "effective_arguments": {
+        "id": "1234567890",
+        "status": "done"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://builders.ramp.com/post/stack-benchmarking",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "done",
+          "actual": "done",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.8
+    },
+    {
+      "id": "status_done_2",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"1234567890\",\"status\":\"done\"}",
+      "parsed_arguments": {
+        "id": "1234567890",
+        "status": "done"
+      },
+      "effective_arguments": {
+        "id": "1234567890",
+        "status": "done"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "done",
+          "actual": "done",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.783
+    },
+    {
+      "id": "status_done_3",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"l6DKRf-fAAM\",\"status\":\"done\"}",
+      "parsed_arguments": {
+        "id": "l6DKRf-fAAM",
+        "status": "done"
+      },
+      "effective_arguments": {
+        "id": "l6DKRf-fAAM",
+        "status": "done"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "done",
+          "actual": "done",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.785
+    },
+    {
+      "id": "status_archived_0",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"1234567890\",\"status\":\"archived\"}",
+      "parsed_arguments": {
+        "id": "1234567890",
+        "status": "archived"
+      },
+      "effective_arguments": {
+        "id": "1234567890",
+        "status": "archived"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/article",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "archived",
+          "actual": "archived",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.811
+    },
+    {
+      "id": "status_archived_1",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"12345678901234567890\",\"status\":\"archived\"}",
+      "parsed_arguments": {
+        "id": "12345678901234567890",
+        "status": "archived"
+      },
+      "effective_arguments": {
+        "id": "12345678901234567890",
+        "status": "archived"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://builders.ramp.com/post/stack-benchmarking",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "archived",
+          "actual": "archived",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 2.112
+    },
+    {
+      "id": "status_archived_2",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"1234567890\",\"status\":\"archived\"}",
+      "parsed_arguments": {
+        "id": "1234567890",
+        "status": "archived"
+      },
+      "effective_arguments": {
+        "id": "1234567890",
+        "status": "archived"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "archived",
+          "actual": "archived",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.865
+    },
+    {
+      "id": "status_archived_3",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"l6DKRf-fAAM\",\"status\":\"archived\"}",
+      "parsed_arguments": {
+        "id": "l6DKRf-fAAM",
+        "status": "archived"
+      },
+      "effective_arguments": {
+        "id": "l6DKRf-fAAM",
+        "status": "archived"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "archived",
+          "actual": "archived",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.764
+    },
+    {
+      "id": "status_abandoned_0",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"1234567890\",\"status\":\"abandoned\"}",
+      "parsed_arguments": {
+        "id": "1234567890",
+        "status": "abandoned"
+      },
+      "effective_arguments": {
+        "id": "1234567890",
+        "status": "abandoned"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://example.com/article",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "abandoned",
+          "actual": "abandoned",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.843
+    },
+    {
+      "id": "status_abandoned_1",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"1234567890\",\"status\":\"abandoned\"}",
+      "parsed_arguments": {
+        "id": "1234567890",
+        "status": "abandoned"
+      },
+      "effective_arguments": {
+        "id": "1234567890",
+        "status": "abandoned"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://builders.ramp.com/post/stack-benchmarking",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "abandoned",
+          "actual": "abandoned",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.793
+    },
+    {
+      "id": "status_abandoned_2",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"status\":\"abandoned\",\"url\":\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\"}",
+      "parsed_arguments": {
+        "status": "abandoned",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "effective_arguments": {
+        "status": "abandoned",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "actual": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+          "passed": true
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "abandoned",
+          "actual": "abandoned",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 2.127
+    },
+    {
+      "id": "status_abandoned_3",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_status_update",
+      "actual_tool": "content_status_update",
+      "first_tool": "content_status_update",
+      "first_arguments": "{\"id\":\"l6DKRf-fAAM\",\"status\":\"abandoned\"}",
+      "parsed_arguments": {
+        "id": "l6DKRf-fAAM",
+        "status": "abandoned"
+      },
+      "effective_arguments": {
+        "id": "l6DKRf-fAAM",
+        "status": "abandoned"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "url",
+          "expected": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+          "actual": null,
+          "passed": false
+        },
+        {
+          "type": "must_equal",
+          "field": "status",
+          "expected": "abandoned",
+          "actual": "abandoned",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_status_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.795
+    },
+    {
+      "id": "update_title",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_update",
+      "actual_tool": "content_update",
+      "first_tool": "content_update",
+      "first_arguments": "{\"id\":\"1234567890\",\"title\":\"Better Local LLM Evals\"}",
+      "parsed_arguments": {
+        "id": "1234567890",
+        "title": "Better Local LLM Evals"
+      },
+      "effective_arguments": {
+        "id": "1234567890",
+        "title": "Better Local LLM Evals"
+      },
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.843
+    },
+    {
+      "id": "update_summary",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": true,
+      "expected_tool": "content_update",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://builders.ramp.com/post/stack-benchmarking\"}",
+      "parsed_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "effective_arguments": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      },
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.601
+    },
+    {
+      "id": "update_categories",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_update",
+      "actual_tool": "content_update",
+      "first_tool": "content_update",
+      "first_arguments": "{\"id\":\"l6DKRf-fAAM\",\"categories\":[\"AI coding tools\", \"interviews\"]}",
+      "parsed_arguments": {
+        "id": "l6DKRf-fAAM",
+        "categories": [
+          "AI coding tools",
+          "interviews"
+        ]
+      },
+      "effective_arguments": {
+        "id": "l6DKRf-fAAM",
+        "categories": [
+          "AI coding tools",
+          "interviews"
+        ]
+      },
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.913
+    },
+    {
+      "id": "update_time",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_update",
+      "actual_tool": "content_update",
+      "first_tool": "content_update",
+      "first_arguments": "{\"id\":\"article_001\",\"estimated_time_minutes\":12}",
+      "parsed_arguments": {
+        "id": "article_001",
+        "estimated_time_minutes": 12
+      },
+      "effective_arguments": {
+        "id": "article_001",
+        "estimated_time_minutes": 12
+      },
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.728
+    },
+    {
+      "id": "update_notes",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": true,
+      "expected_tool": "content_update",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://github.com/ggml-org/llama.cpp\",\"status\":\"unread\",\"notes\":\"GGUF serving experiments may be useful for llama.cpp.\"}",
+      "parsed_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp",
+        "status": "unread",
+        "notes": "GGUF serving experiments may be useful for llama.cpp."
+      },
+      "effective_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp",
+        "status": "unread",
+        "notes": "GGUF serving experiments may be useful for llama.cpp."
+      },
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 2.186
+    },
+    {
+      "id": "update_subject",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": true,
+      "expected_tool": "content_update",
+      "actual_tool": "analyze_source",
+      "first_tool": "analyze_source",
+      "first_arguments": "{\"url\":\"https://example.com/article\"}",
+      "parsed_arguments": {
+        "url": "https://example.com/article"
+      },
+      "effective_arguments": {
+        "url": "https://example.com/article"
+      },
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "analyze_source"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.471
+    },
+    {
+      "id": "update_depth",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": true,
+      "expected_tool": "content_update",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\",\"status\":\"unread\"}",
+      "parsed_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+        "status": "unread"
+      },
+      "effective_arguments": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+        "status": "unread"
+      },
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 2.08
+    },
+    {
+      "id": "update_confidence",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_update",
+      "actual_tool": "content_update",
+      "first_tool": "content_update",
+      "first_arguments": "{\"url\":\"https://example.com/article\",\"confidence\":0.7}",
+      "parsed_arguments": {
+        "url": "https://example.com/article",
+        "confidence": 0.7
+      },
+      "effective_arguments": {
+        "url": "https://example.com/article",
+        "confidence": 0.7
+      },
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.794
+    },
+    {
+      "id": "update_learning_effort",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": true,
+      "expected_tool": "content_update",
+      "actual_tool": "content_add",
+      "first_tool": "content_add",
+      "first_arguments": "{\"url\":\"https://github.com/ggml-org/llama.cpp\",\"status\":\"unread\",\"notes\":\"LLaMA.cpp is a popular open-source machine learning framework for deep learning. It's used by many AI research groups and companies to build large language models, neural networks, and other machine learning applications. The project includes various libraries like llama.cpp, which provides efficient implementations of LLMs and related components.\"}",
+      "parsed_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp",
+        "status": "unread",
+        "notes": "LLaMA.cpp is a popular open-source machine learning framework for deep learning. It's used by many AI research groups and companies to build large language models, neural networks, and other machine learning applications. The project includes various libraries like llama.cpp, which provides efficient implementations of LLMs and related components."
+      },
+      "effective_arguments": {
+        "url": "https://github.com/ggml-org/llama.cpp",
+        "status": "unread",
+        "notes": "LLaMA.cpp is a popular open-source machine learning framework for deep learning. It's used by many AI research groups and companies to build large language models, neural networks, and other machine learning applications. The project includes various libraries like llama.cpp, which provides efficient implementations of LLMs and related components."
+      },
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_add"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 3.089
+    },
+    {
+      "id": "update_youtube_title",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_update",
+      "actual_tool": "content_update",
+      "first_tool": "content_update",
+      "first_arguments": "{\"id\":\"ILdE7FaAjVA\",\"title\":\"Practical AI Agents Talk\"}",
+      "parsed_arguments": {
+        "id": "ILdE7FaAjVA",
+        "title": "Practical AI Agents Talk"
+      },
+      "effective_arguments": {
+        "id": "ILdE7FaAjVA",
+        "title": "Practical AI Agents Talk"
+      },
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_update"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.767
+    },
+    {
+      "id": "recommend_time_10_0",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{}",
+      "parsed_arguments": {},
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": true,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "I can't recommend specific videos for you right now since I don't have access to your library or preferences. Let me check what saved content is available in your library first.\n\n",
+      "latency_seconds": 1.855
+    },
+    {
+      "id": "recommend_time_10_1",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "user_profile_get",
+      "first_tool": "user_profile_get",
+      "first_arguments": "{}",
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "user_profile_get"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.206
+    },
+    {
+      "id": "recommend_time_10_2",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "skills_list",
+      "first_tool": "skills_list",
+      "first_arguments": "{}",
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "skills_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.206
+    },
+    {
+      "id": "recommend_time_10_3",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "I can help you find something to watch or read with just 10 minutes! Let me first check your saved library items and then recommend what's available.\n\n",
+      "latency_seconds": 2.076
+    },
+    {
+      "id": "recommend_time_20_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "skill_view",
+      "actual_tool": "skill_view",
+      "first_tool": "skill_view",
+      "first_arguments": "{\"name\":\"scratchpad-recommendation\"}",
+      "parsed_arguments": {
+        "name": "scratchpad-recommendation"
+      },
+      "effective_arguments": {
+        "name": "scratchpad-recommendation"
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": "scratchpad-recommendation",
+          "passed": true
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "skill_view"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "I can't recommend specific videos for reading right now because I don't have a skill that provides recommendations based on time constraints or other criteria. The recommendation system requires me to first load the `scratchpad-recommendation` skill, which then uses content_list results and metadata-based explanations to determine what to read next.\n\nLet me first load that skill so I can see what's available in your library and provide you with recommendations based on time constraints.\n\n",
+      "latency_seconds": 3.143
+    },
+    {
+      "id": "recommend_time_20_1",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "user_profile_get",
+      "first_tool": "user_profile_get",
+      "first_arguments": "{}",
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "user_profile_get"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.213
+    },
+    {
+      "id": "recommend_time_20_2",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "skills_list",
+      "first_tool": "skills_list",
+      "first_arguments": "{}",
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "skills_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.205
+    },
+    {
+      "id": "recommend_time_20_3",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "I can help you find something to watch or read with just 20 minutes! Let me first check your saved library items and then recommend what's available.\n\n",
+      "latency_seconds": 2.067
+    },
+    {
+      "id": "recommend_time_30_0",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "I can help you find what to read in 30 minutes! Let me first check your saved library items to see what's available.\n\n",
+      "latency_seconds": 2.024
+    },
+    {
+      "id": "recommend_time_30_1",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "user_profile_get",
+      "first_tool": "user_profile_get",
+      "first_arguments": "{}",
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "user_profile_get"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.216
+    },
+    {
+      "id": "recommend_time_30_2",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "skills_list",
+      "first_tool": "skills_list",
+      "first_arguments": "{}",
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "skills_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.211
+    },
+    {
+      "id": "recommend_time_30_3",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "I can help you find what to watch or read with your current time constraint! Let me first check your saved library items to see what's available.\n\n",
+      "latency_seconds": 2.046
+    },
+    {
+      "id": "recommend_time_45_0",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "I can help you find what to read in 45 minutes! Let me first check your saved library items to see what's available.\n\n",
+      "latency_seconds": 2.082
+    },
+    {
+      "id": "recommend_time_45_1",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "user_profile_get",
+      "first_tool": "user_profile_get",
+      "first_arguments": "{}",
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "user_profile_get"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.21
+    },
+    {
+      "id": "recommend_time_45_2",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "skills_list",
+      "first_tool": "skills_list",
+      "first_arguments": "{}",
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "skills_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.213
+    },
+    {
+      "id": "recommend_time_45_3",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": false,
+      "expected_tool": "skill_view",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_equal",
+          "field": "name",
+          "expected": "scratchpad-recommendation",
+          "actual": null,
+          "passed": false
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "wrong_tool",
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "I can help you find what to watch or read with your current time constraint! Let me first check your saved library items to see what's available.\n\n",
+      "latency_seconds": 2.089
+    },
+    {
+      "id": "list_topic_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"subject\":\"AI agents\"}",
+      "parsed_arguments": {
+        "subject": "AI agents"
+      },
+      "effective_arguments": {
+        "subject": "AI agents",
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread",
+            "started"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": true,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.6
+    },
+    {
+      "id": "recommend_topic_0",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_include",
+          "field": "depth_level",
+          "expected": [
+            "deep"
+          ],
+          "actual": null,
+          "passed": false,
+          "missing": [
+            "deep"
+          ]
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.573
+    },
+    {
+      "id": "list_topic_1",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"subject\":\"evals\"}",
+      "parsed_arguments": {
+        "subject": "evals"
+      },
+      "effective_arguments": {
+        "subject": "evals",
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread",
+            "started"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": true,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.893
+    },
+    {
+      "id": "recommend_topic_1",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_include",
+          "field": "depth_level",
+          "expected": [
+            "deep"
+          ],
+          "actual": null,
+          "passed": false,
+          "missing": [
+            "deep"
+          ]
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.673
+    },
+    {
+      "id": "list_topic_2",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"subject\":\"LLM\"}",
+      "parsed_arguments": {
+        "subject": "LLM"
+      },
+      "effective_arguments": {
+        "subject": "LLM",
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread",
+            "started"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": true,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.616
+    },
+    {
+      "id": "recommend_topic_2",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_include",
+          "field": "depth_level",
+          "expected": [
+            "deep"
+          ],
+          "actual": null,
+          "passed": false,
+          "missing": [
+            "deep"
+          ]
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.707
+    },
+    {
+      "id": "list_topic_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"subject\":\"RL\"}",
+      "parsed_arguments": {
+        "subject": "RL"
+      },
+      "effective_arguments": {
+        "subject": "RL",
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread",
+            "started"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": true,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.496
+    },
+    {
+      "id": "recommend_topic_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"],\"depth_level\":[\"deep\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ],
+        "depth_level": [
+          "deep"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ],
+        "depth_level": [
+          "deep"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_include",
+          "field": "depth_level",
+          "expected": [
+            "deep"
+          ],
+          "actual": [
+            "deep"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.763
+    },
+    {
+      "id": "list_topic_4",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"subject\":\"security\"}",
+      "parsed_arguments": {
+        "subject": "security"
+      },
+      "effective_arguments": {
+        "subject": "security",
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread",
+            "started"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": true,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.417
+    },
+    {
+      "id": "recommend_topic_4",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"],\"depth_level\":[\"deep\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ],
+        "depth_level": [
+          "deep"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ],
+        "depth_level": [
+          "deep"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_include",
+          "field": "depth_level",
+          "expected": [
+            "deep"
+          ],
+          "actual": [
+            "deep"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.801
+    },
+    {
+      "id": "list_topic_5",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"subject\":\"coding agents\"}",
+      "parsed_arguments": {
+        "subject": "coding agents"
+      },
+      "effective_arguments": {
+        "subject": "coding agents",
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread",
+            "started"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": true,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.452
+    },
+    {
+      "id": "recommend_topic_5",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_include",
+          "field": "depth_level",
+          "expected": [
+            "deep"
+          ],
+          "actual": null,
+          "passed": false,
+          "missing": [
+            "deep"
+          ]
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.713
+    },
+    {
+      "id": "list_depth_light",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_include",
+          "field": "depth_level",
+          "expected": [
+            "light"
+          ],
+          "actual": null,
+          "passed": false,
+          "missing": [
+            "light"
+          ]
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.845
+    },
+    {
+      "id": "list_depth_medium",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_include",
+          "field": "depth_level",
+          "expected": [
+            "medium"
+          ],
+          "actual": null,
+          "passed": false,
+          "missing": [
+            "medium"
+          ]
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.503
+    },
+    {
+      "id": "list_depth_deep",
+      "passed": false,
+      "tool_pass": true,
+      "argument_pass": false,
+      "expected_tool": "content_list",
+      "actual_tool": "content_list",
+      "first_tool": "content_list",
+      "first_arguments": "{\"status\":[\"unread\", \"started\"]}",
+      "parsed_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "effective_arguments": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "argument_checks": [
+        {
+          "type": "must_include",
+          "field": "status",
+          "expected": [
+            "unread"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "missing": []
+        },
+        {
+          "type": "must_include",
+          "field": "depth_level",
+          "expected": [
+            "deep"
+          ],
+          "actual": null,
+          "passed": false,
+          "missing": [
+            "deep"
+          ]
+        },
+        {
+          "type": "must_not_include",
+          "field": "status",
+          "forbidden": [
+            "done",
+            "archived",
+            "abandoned"
+          ],
+          "actual": [
+            "unread",
+            "started"
+          ],
+          "passed": true,
+          "present": []
+        }
+      ],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "content_list"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "argument_mismatch"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "",
+      "latency_seconds": 1.504
+    },
+    {
+      "id": "no_tool_0",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "stop",
+      "assistant_content": "Local-first software refers to software that runs on the user's local machine rather than being hosted on remote servers. This means it doesn't require internet connectivity for installation and operation - you can install, configure, and run it directly on your computer without needing a server or network infrastructure.",
+      "latency_seconds": 2.009
+    },
+    {
+      "id": "no_tool_1",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "stop",
+      "assistant_content": "SFT stands for \"Supervised Fine-Tuning,\" a machine learning technique where models are trained on large datasets of labeled examples to improve their performance on specific tasks. It involves training a model on a small subset of data and then fine-tuning it on a much larger, unlabeled dataset while keeping the original weights from the initial training phase. This approach allows the model to learn from existing knowledge while adapting to new patterns in unseen data, making it particularly useful for tasks like language modeling, image classification, and other domains where large-scale labeled datasets are expensive or unavailable.",
+      "latency_seconds": 3.02
+    },
+    {
+      "id": "no_tool_2",
+      "passed": false,
+      "tool_pass": false,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "skill_view",
+      "first_tool": "skill_view",
+      "first_arguments": "{\"name\":\"scratchpad-recommendation\"}",
+      "parsed_arguments": {
+        "name": "scratchpad-recommendation"
+      },
+      "effective_arguments": {
+        "name": "scratchpad-recommendation"
+      },
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [
+        "skill_view"
+      ],
+      "extra_tool_count": 0,
+      "failure_types": [
+        "tool_false_positive"
+      ],
+      "finish_reason": "tool_calls",
+      "assistant_content": "I can explain the difference between LoRA and full fine-tuning using the available skills. Let me load the recommendation skill first to provide you with a clear comparison.\n\n",
+      "latency_seconds": 2.082
+    },
+    {
+      "id": "no_tool_3",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "length",
+      "assistant_content": "Evaluations (evals) are useful for local LLM projects because they provide:\n\n1. **Performance metrics** - Quantitative measures of model accuracy, latency, memory usage, and other key performance indicators that help compare models across different use cases.\n\n2. **Data-driven decisions** - They allow you to make informed choices about which models to adopt, train on, or deploy based on actual results rather than assumptions.\n\n3. **Troubleshooting** - When issues arise, evals can quickly identify what's causing problems and help isolate the root cause.\n\n4. **Benchmarking** - They enable fair comparison of different approaches, architectures, or techniques in a controlled environment.\n\n5. **Cost optimization** - Evaluations can reveal hidden costs (like compute time, storage, or API calls) that aren't immediately apparent from usage metrics alone.\n\n6. **Continuous improvement** - Regular evaluation cycles help identify and fix problems before they become widespread issues.\n\n7. **Debugging efficiency** - They provide a quick way to verify whether a model is working as expected without needing to run the full pipeline again.\n\nFor local LLM projects, evals are particularly valuable because:\n- You can test models in isolated environments (like Docker",
+      "latency_seconds": 5.829
+    },
+    {
+      "id": "no_tool_4",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "stop",
+      "assistant_content": "I don't have a specific tool to retrieve information about \"small models\" or their usefulness in general knowledge. The available tools are for analyzing URLs, saving content to a Markdown library, and using skills like `scratchpad-recommendation` which is designed for recommending saved library items.\n\nTo help you find reasons why small models can still be useful, I would need:\n1. A specific URL or video you'd like me to analyze (for YouTube)\n2. Information about a particular model type you're interested in\n3. Details about your use case or learning goals\n\nCould you provide one of these so I can give you accurate information?",
+      "latency_seconds": 3.396
+    },
+    {
+      "id": "no_tool_5",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "stop",
+      "assistant_content": "GGUF stands for **Generative AI Frameworks Unified Graph** - it's an open-source framework that allows you to run generative AI models (like LLMs) locally on your own hardware without needing expensive cloud infrastructure.\n\nAt a high level:\n- It enables you to train and deploy generative AI models directly on your local machine\n- You can use the same model weights as if they were in the cloud, but with full control over your data and compute resources\n- It's designed for developers who want to build their own AI applications without relying on third-party providers\n\nThis is particularly useful for:\n- Developers who want to experiment with different models locally\n- Teams that need to deploy models to specific environments (like edge devices)\n- Organizations that want to reduce cloud costs while maintaining model flexibility",
+      "latency_seconds": 3.988
+    },
+    {
+      "id": "no_tool_6",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "stop",
+      "assistant_content": "I don't have access to external tools that can explain the differences between training and evaluation datasets in detail. However, I can help you understand these concepts by analyzing YouTube videos or other sources!\n\nTo get accurate information about what makes one type of dataset different from another, I'd recommend:\n\n1. **Analyzing a video** - Use `analyze_source` to see if it's a training set (likely with more diverse data) vs an eval set (often smaller and focused on specific evaluation metrics).\n2. **Looking at saved library items** - Check the content_list results for both types of datasets to see their characteristics.\n\nWould you like me to analyze a YouTube video or look at your saved Markdown library items to help clarify these concepts?",
+      "latency_seconds": 3.752
+    },
+    {
+      "id": "no_tool_7",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "stop",
+      "assistant_content": "Overfitting is dangerous because it occurs when a model learns the training data too closely, including noise and outliers, rather than generalizing to new, unseen data. This leads to poor performance on real-world scenarios where the model may fail catastrophically due to overfitting, making it unreliable for prediction or decision-making in practice.",
+      "latency_seconds": 2.204
+    },
+    {
+      "id": "no_tool_8",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "stop",
+      "assistant_content": "In model evaluation, \"heldout\" refers to a specific subset of the data used for validation or testing that is **not** included in the training set. \n\nThe key characteristics are:\n- **Holdout**: The term comes from \"hold out\" meaning to leave aside\n- It's typically created by splitting the dataset into two parts:\n  - Training set (used to train the model)\n  - Test/Validation set (used to evaluate performance)\n\nThis approach helps prevent overfitting by allowing the model to learn from the training data while evaluating on unseen data. The test set is often used for final evaluation and may be split further into train/test splits or heldout sets depending on the evaluation strategy.",
+      "latency_seconds": 3.67
+    },
+    {
+      "id": "no_tool_9",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "stop",
+      "assistant_content": "DPO stands for **Direct Preference Optimization**. It's a reinforcement learning technique used in reinforcement learning to align an agent's behavior with human preferences by directly optimizing the reward function based on the agent's own actions, rather than relying on indirect methods like policy gradient methods.\n\nKey characteristics:\n- **Direct preference**: The agent optimizes its own rewards (actions) to maximize what it wants, not just maximizing expected returns\n- **No external data needed**: Unlike traditional RL where you need to provide a reward function and target state-action pairs, DPO works directly with the agent's preferences\n- **Learning from experience**: It can learn from both human preferences and the agent's own actions over time\n\nDPO is particularly useful when:\n- You have limited or no data on what the agent wants\n- The agent has strong preferences but doesn't know them well\n- You want to optimize for specific goals without needing a reward function\n\nWould you like me to explain it more in detail, or would you like to see how it's implemented in some of the available skills?",
+      "latency_seconds": 4.84
+    },
+    {
+      "id": "no_tool_10",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "stop",
+      "assistant_content": "A quantized model is a machine learning model that has been compressed by reducing the number of parameters (weights and biases) while maintaining similar performance to its original version. This compression can be achieved through techniques like:\n\n1. **Quantization**: Converting floating-point numbers to integers or other integer types\n2. **Pruning**: Removing unnecessary weights or connections in neural networks\n3. **Fusing**: Combining multiple layers into a single layer for efficiency\n\nThe goal is to reduce model size and memory usage while maintaining accuracy, which is particularly important for:\n- Mobile devices (phones, tablets)\n- Edge computing systems\n- Low-resource environments\n- Hardware constraints\n\nThis is commonly used in deep learning applications where computational resources are limited.",
+      "latency_seconds": 3.682
+    },
+    {
+      "id": "no_tool_11",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "length",
+      "assistant_content": "A 350M model is worth testing for several key reasons:\n\n1. **Computational Efficiency**: It's significantly faster than larger models like Llama-3-8B or Mistral-7B, making it ideal for:\n   - Real-time applications (chatbots, real-time analytics)\n   - Low-resource environments (fewer GPUs needed)\n   - Edge devices and IoT systems\n\n2. **Cost-Effectiveness**: Running on fewer resources reduces infrastructure costs while maintaining performance.\n\n3. **Scalability**: It can handle larger datasets or more concurrent users than smaller models.\n\n4. **Specialized Use Cases**: Many applications benefit from its specific capabilities:\n   - Video generation and editing\n   - Complex reasoning tasks\n   - Multi-modal processing (text + image)\n\n5. **Research & Development**: For prototyping, research, and experimentation where speed is critical.\n\n6. **Cost Reduction**: Running on fewer GPUs reduces electricity costs and hardware expenses.\n\n7. **Performance Gains**: It often provides better accuracy for specific tasks while being more efficient than larger models.\n\nThe trade-off is typically in cost (fewer GPUs), but the performance gains can be substantial, especially for applications that benefit from",
+      "latency_seconds": 5.501
+    },
+    {
+      "id": "no_tool_12",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "length",
+      "assistant_content": "I'm glad you asked that! Let me explain how tools work for you:\n\n## How Tools Work (Simple Analogy)\n\nThink of tools like different **tools in a toolbox** - each has its own purpose and way of working. Here's how they work for you:\n\n### 1. **Tool Calling = Asking the Tool to Do Something**\nWhen you say \"What does this tool do?\", it tells me what that tool is about. When you say \"Call this tool with these parameters\", it executes that action on your data.\n\n### 2. **The Workflow (Like a Recipe)**\nMost tools follow a simple pattern:\n- **Step 1**: You ask the tool to analyze something (like asking a chef to prepare food)\n- **Step 2**: The tool processes your input and returns results\n- **Step 3**: You can use those results for whatever you need\n\n### 3. **Example in Action**\nImagine you want to know what a YouTube video is about:\n1. You ask the tool: \"What does this URL analyze?\" \u2192 It tells you it's an analysis task\n2. You call it with the URL: `analyze_source(\"https://youtube.com/watch?v=abc",
+      "latency_seconds": 5.542
+    },
+    {
+      "id": "no_tool_13",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "stop",
+      "assistant_content": "A validation split is a technique used in distributed computing to ensure that multiple processes or threads can safely access shared resources (like locks, mutexes, or file handles) without causing race conditions. It works by:\n\n1. **Splitting the resource**: The shared resource is divided into smaller, independent units\n2. **Sequential execution**: Each process executes its unit sequentially before moving to the next\n3. **Atomic operations**: Operations within each unit are atomic (committed or rolled back together)\n4. **Consistency guarantees**: Even if one process fails, the others can still complete successfully\n\nThis is particularly important in multi-threaded applications where:\n- Multiple threads might access the same resource simultaneously\n- Race conditions could occur if threads try to modify shared data without proper synchronization\n- The system needs to ensure thread safety and consistency\n\nThe concept was introduced by Martin Fowler as a solution to the \"race condition\" problem in distributed systems.",
+      "latency_seconds": 4.328
+    },
+    {
+      "id": "no_tool_14",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "length",
+      "assistant_content": "Local vs. Cloud LLMs:\n\n**Local LLMs (on your machine):**\n- **Pros:**\n  - Zero latency, no data transfer overhead\n  - No server costs or bandwidth usage\n  - Immediate results without waiting for cloud processing\n  - Full control over model parameters and training\n  - Privacy protection (no data sent to external servers)\n  \n- **Cons:**\n  - Slower inference speeds compared to cloud models\n  - Higher computational cost per token\n  - Limited access to advanced features (fine-tuning, quantization, etc.)\n  - No automatic caching or model optimization\n\n**Cloud LLMs:**\n- **Pros:**\n  - Fast inference and massive model scale\n  - Access to advanced features (quantization, fine-tuning, multilingual support)\n  - Automatic caching and model optimization\n  - Cost-effective for large-scale tasks\n  - Global access to diverse models\n\n**Tradeoff Summary:**\nLocal LLMs are better for:\n- Small-to-medium projects requiring immediate results\n- Privacy-sensitive applications\n- High-performance scenarios where latency matters\n- When you need fine-tuning or specialized capabilities\n\nCloud LLMs are better for:\n- Large-scale tasks (",
+      "latency_seconds": 5.459
+    },
+    {
+      "id": "no_tool_15",
+      "passed": true,
+      "tool_pass": true,
+      "argument_pass": true,
+      "expected_tool": "no_tool",
+      "actual_tool": "no_tool",
+      "first_tool": null,
+      "first_arguments": null,
+      "parsed_arguments": {},
+      "effective_arguments": {},
+      "argument_checks": [],
+      "argument_json_valid": true,
+      "argument_parse_error": null,
+      "used_tool_defaults": false,
+      "called_tools": [],
+      "extra_tool_count": 0,
+      "failure_types": [],
+      "finish_reason": "stop",
+      "assistant_content": "A model profile is a normalized content profile that represents the key information about a source (like a YouTube video or URL) without saving it to the local Markdown library. It includes metadata such as title, summary, subject, categories, depth level, estimated time, confidence score, and notes. This allows you to quickly understand what a source is about before deciding whether to read, watch, or save it.\n\nTo get this information, I can call `analyze_source` on a URL or YouTube video.",
+      "latency_seconds": 2.869
+    }
+  ]
+}

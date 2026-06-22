@@ -1,0 +1,1310 @@
+[
+  {
+    "id": "inspect_0_0",
+    "user": "Inspect https://example.com/article and tell me if it is worth reading. Do not save it.",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/article"
+      }
+    }
+  },
+  {
+    "id": "inspect_0_1",
+    "user": "What is https://example.com/article about? Don't add it to my library yet.",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/article"
+      }
+    }
+  },
+  {
+    "id": "inspect_0_2",
+    "user": "Analyze this source without saving: https://example.com/article",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/article"
+      }
+    }
+  },
+  {
+    "id": "inspect_0_3",
+    "user": "Can you preview https://example.com/article before I decide whether to keep it?",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/article"
+      }
+    }
+  },
+  {
+    "id": "inspect_1_0",
+    "user": "Inspect https://builders.ramp.com/post/stack-benchmarking and tell me if it is worth reading. Do not save it.",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      }
+    }
+  },
+  {
+    "id": "inspect_1_1",
+    "user": "What is https://builders.ramp.com/post/stack-benchmarking about? Don't add it to my library yet.",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      }
+    }
+  },
+  {
+    "id": "inspect_1_2",
+    "user": "Analyze this source without saving: https://builders.ramp.com/post/stack-benchmarking",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      }
+    }
+  },
+  {
+    "id": "inspect_1_3",
+    "user": "Can you preview https://builders.ramp.com/post/stack-benchmarking before I decide whether to keep it?",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      }
+    }
+  },
+  {
+    "id": "inspect_2_0",
+    "user": "Inspect https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html and tell me if it is worth reading. Do not save it.",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      }
+    }
+  },
+  {
+    "id": "inspect_2_1",
+    "user": "What is https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html about? Don't add it to my library yet.",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      }
+    }
+  },
+  {
+    "id": "inspect_2_2",
+    "user": "Analyze this source without saving: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      }
+    }
+  },
+  {
+    "id": "inspect_2_3",
+    "user": "Can you preview https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html before I decide whether to keep it?",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      }
+    }
+  },
+  {
+    "id": "inspect_3_0",
+    "user": "Inspect https://www.youtube.com/watch?v=l6DKRf-fAAM and tell me if it is worth reading. Do not save it.",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      }
+    }
+  },
+  {
+    "id": "inspect_3_1",
+    "user": "What is https://www.youtube.com/watch?v=l6DKRf-fAAM about? Don't add it to my library yet.",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      }
+    }
+  },
+  {
+    "id": "inspect_3_2",
+    "user": "Analyze this source without saving: https://www.youtube.com/watch?v=l6DKRf-fAAM",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      }
+    }
+  },
+  {
+    "id": "inspect_3_3",
+    "user": "Can you preview https://www.youtube.com/watch?v=l6DKRf-fAAM before I decide whether to keep it?",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      }
+    }
+  },
+  {
+    "id": "inspect_4_0",
+    "user": "Inspect https://github.com/ggml-org/llama.cpp and tell me if it is worth reading. Do not save it.",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      }
+    }
+  },
+  {
+    "id": "inspect_4_1",
+    "user": "What is https://github.com/ggml-org/llama.cpp about? Don't add it to my library yet.",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      }
+    }
+  },
+  {
+    "id": "inspect_4_2",
+    "user": "Analyze this source without saving: https://github.com/ggml-org/llama.cpp",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      }
+    }
+  },
+  {
+    "id": "inspect_4_3",
+    "user": "Can you preview https://github.com/ggml-org/llama.cpp before I decide whether to keep it?",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      }
+    }
+  },
+  {
+    "id": "inspect_5_0",
+    "user": "Inspect https://example.com/old-rag-post and tell me if it is worth reading. Do not save it.",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/old-rag-post"
+      }
+    }
+  },
+  {
+    "id": "inspect_5_1",
+    "user": "What is https://example.com/old-rag-post about? Don't add it to my library yet.",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/old-rag-post"
+      }
+    }
+  },
+  {
+    "id": "inspect_5_2",
+    "user": "Analyze this source without saving: https://example.com/old-rag-post",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/old-rag-post"
+      }
+    }
+  },
+  {
+    "id": "inspect_5_3",
+    "user": "Can you preview https://example.com/old-rag-post before I decide whether to keep it?",
+    "expected_tool": "analyze_source",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/old-rag-post"
+      }
+    }
+  },
+  {
+    "id": "save_0_0",
+    "user": "Save https://example.com/article to my library.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/article"
+      }
+    }
+  },
+  {
+    "id": "save_0_1",
+    "user": "Add this to Scratchpad: https://example.com/article",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/article"
+      }
+    }
+  },
+  {
+    "id": "save_0_2",
+    "user": "Remember https://example.com/article for later.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/article"
+      }
+    }
+  },
+  {
+    "id": "save_0_3",
+    "user": "Put https://example.com/article in my reading list.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/article"
+      }
+    }
+  },
+  {
+    "id": "save_1_0",
+    "user": "Save https://builders.ramp.com/post/stack-benchmarking to my library.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      }
+    }
+  },
+  {
+    "id": "save_1_1",
+    "user": "Add this to Scratchpad: https://builders.ramp.com/post/stack-benchmarking",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      }
+    }
+  },
+  {
+    "id": "save_1_2",
+    "user": "Remember https://builders.ramp.com/post/stack-benchmarking for later.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      }
+    }
+  },
+  {
+    "id": "save_1_3",
+    "user": "Put https://builders.ramp.com/post/stack-benchmarking in my reading list.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      }
+    }
+  },
+  {
+    "id": "save_2_0",
+    "user": "Save https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html to my library.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      }
+    }
+  },
+  {
+    "id": "save_2_1",
+    "user": "Add this to Scratchpad: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      }
+    }
+  },
+  {
+    "id": "save_2_2",
+    "user": "Remember https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html for later.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      }
+    }
+  },
+  {
+    "id": "save_2_3",
+    "user": "Put https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html in my reading list.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      }
+    }
+  },
+  {
+    "id": "save_3_0",
+    "user": "Save https://www.youtube.com/watch?v=l6DKRf-fAAM to my library.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      }
+    }
+  },
+  {
+    "id": "save_3_1",
+    "user": "Add this to Scratchpad: https://www.youtube.com/watch?v=l6DKRf-fAAM",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      }
+    }
+  },
+  {
+    "id": "save_3_2",
+    "user": "Remember https://www.youtube.com/watch?v=l6DKRf-fAAM for later.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      }
+    }
+  },
+  {
+    "id": "save_3_3",
+    "user": "Put https://www.youtube.com/watch?v=l6DKRf-fAAM in my reading list.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
+      }
+    }
+  },
+  {
+    "id": "save_4_0",
+    "user": "Save https://github.com/ggml-org/llama.cpp to my library.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      }
+    }
+  },
+  {
+    "id": "save_4_1",
+    "user": "Add this to Scratchpad: https://github.com/ggml-org/llama.cpp",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      }
+    }
+  },
+  {
+    "id": "save_4_2",
+    "user": "Remember https://github.com/ggml-org/llama.cpp for later.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      }
+    }
+  },
+  {
+    "id": "save_4_3",
+    "user": "Put https://github.com/ggml-org/llama.cpp in my reading list.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://github.com/ggml-org/llama.cpp"
+      }
+    }
+  },
+  {
+    "id": "save_5_0",
+    "user": "Save https://example.com/old-rag-post to my library.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/old-rag-post"
+      }
+    }
+  },
+  {
+    "id": "save_5_1",
+    "user": "Add this to Scratchpad: https://example.com/old-rag-post",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/old-rag-post"
+      }
+    }
+  },
+  {
+    "id": "save_5_2",
+    "user": "Remember https://example.com/old-rag-post for later.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/old-rag-post"
+      }
+    }
+  },
+  {
+    "id": "save_5_3",
+    "user": "Put https://example.com/old-rag-post in my reading list.",
+    "expected_tool": "content_add",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/old-rag-post"
+      }
+    }
+  },
+  {
+    "id": "status_unread_0",
+    "user": "Mark https://example.com/article as unread.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/article",
+        "status": "unread"
+      }
+    }
+  },
+  {
+    "id": "status_unread_1",
+    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as unread.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking",
+        "status": "unread"
+      }
+    }
+  },
+  {
+    "id": "status_unread_2",
+    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as unread.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+        "status": "unread"
+      }
+    }
+  },
+  {
+    "id": "status_unread_3",
+    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as unread.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+        "status": "unread"
+      }
+    }
+  },
+  {
+    "id": "status_started_0",
+    "user": "Mark https://example.com/article as started.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/article",
+        "status": "started"
+      }
+    }
+  },
+  {
+    "id": "status_started_1",
+    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as started.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking",
+        "status": "started"
+      }
+    }
+  },
+  {
+    "id": "status_started_2",
+    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as started.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+        "status": "started"
+      }
+    }
+  },
+  {
+    "id": "status_started_3",
+    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as started.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+        "status": "started"
+      }
+    }
+  },
+  {
+    "id": "status_done_0",
+    "user": "Mark https://example.com/article as done.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/article",
+        "status": "done"
+      }
+    }
+  },
+  {
+    "id": "status_done_1",
+    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as done.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking",
+        "status": "done"
+      }
+    }
+  },
+  {
+    "id": "status_done_2",
+    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as done.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+        "status": "done"
+      }
+    }
+  },
+  {
+    "id": "status_done_3",
+    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as done.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+        "status": "done"
+      }
+    }
+  },
+  {
+    "id": "status_archived_0",
+    "user": "Mark https://example.com/article as archived.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/article",
+        "status": "archived"
+      }
+    }
+  },
+  {
+    "id": "status_archived_1",
+    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as archived.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking",
+        "status": "archived"
+      }
+    }
+  },
+  {
+    "id": "status_archived_2",
+    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as archived.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+        "status": "archived"
+      }
+    }
+  },
+  {
+    "id": "status_archived_3",
+    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as archived.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+        "status": "archived"
+      }
+    }
+  },
+  {
+    "id": "status_abandoned_0",
+    "user": "Mark https://example.com/article as abandoned.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://example.com/article",
+        "status": "abandoned"
+      }
+    }
+  },
+  {
+    "id": "status_abandoned_1",
+    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as abandoned.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking",
+        "status": "abandoned"
+      }
+    }
+  },
+  {
+    "id": "status_abandoned_2",
+    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as abandoned.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+        "status": "abandoned"
+      }
+    }
+  },
+  {
+    "id": "status_abandoned_3",
+    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as abandoned.",
+    "expected_tool": "content_status_update",
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
+        "status": "abandoned"
+      }
+    }
+  },
+  {
+    "id": "update_title",
+    "user": "Correct the saved item for https://example.com/article: set the title to Better Local LLM Evals.",
+    "expected_tool": "content_update"
+  },
+  {
+    "id": "update_summary",
+    "user": "Update the summary for https://builders.ramp.com/post/stack-benchmarking to mention stack benchmarking and engineering tradeoffs.",
+    "expected_tool": "content_update"
+  },
+  {
+    "id": "update_categories",
+    "user": "For the saved YouTube item with source_id l6DKRf-fAAM, set categories to AI coding tools and interviews.",
+    "expected_tool": "content_update"
+  },
+  {
+    "id": "update_time",
+    "user": "Change the estimated time for https://example.com/article to 12 minutes.",
+    "expected_tool": "content_update"
+  },
+  {
+    "id": "update_notes",
+    "user": "Add a note to https://github.com/ggml-org/llama.cpp that it may be useful for GGUF serving experiments.",
+    "expected_tool": "content_update"
+  },
+  {
+    "id": "update_subject",
+    "user": "For https://example.com/article, change the subject to local model evaluation.",
+    "expected_tool": "content_update"
+  },
+  {
+    "id": "update_depth",
+    "user": "Update https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html so its depth is deep.",
+    "expected_tool": "content_update"
+  },
+  {
+    "id": "update_confidence",
+    "user": "Set confidence for https://example.com/article to 0.7.",
+    "expected_tool": "content_update"
+  },
+  {
+    "id": "update_learning_effort",
+    "user": "For https://github.com/ggml-org/llama.cpp, set learning effort to 90 minutes.",
+    "expected_tool": "content_update"
+  },
+  {
+    "id": "update_youtube_title",
+    "user": "Fix the saved YouTube item with source_id ILdE7FaAjVA: title should be Practical AI Agents Talk.",
+    "expected_tool": "content_update"
+  },
+  {
+    "id": "recommend_time_10_0",
+    "user": "What should I read in 10 minutes?",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_10_1",
+    "user": "I have 10 minutes, pick something useful from my library.",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_10_2",
+    "user": "Recommend something I can learn from in under 10 minutes.",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_10_3",
+    "user": "What should I watch or read now if I only have 10 minutes?",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_20_0",
+    "user": "What should I read in 20 minutes?",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_20_1",
+    "user": "I have 20 minutes, pick something useful from my library.",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_20_2",
+    "user": "Recommend something I can learn from in under 20 minutes.",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_20_3",
+    "user": "What should I watch or read now if I only have 20 minutes?",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_30_0",
+    "user": "What should I read in 30 minutes?",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_30_1",
+    "user": "I have 30 minutes, pick something useful from my library.",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_30_2",
+    "user": "Recommend something I can learn from in under 30 minutes.",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_30_3",
+    "user": "What should I watch or read now if I only have 30 minutes?",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_45_0",
+    "user": "What should I read in 45 minutes?",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_45_1",
+    "user": "I have 45 minutes, pick something useful from my library.",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_45_2",
+    "user": "Recommend something I can learn from in under 45 minutes.",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "recommend_time_45_3",
+    "user": "What should I watch or read now if I only have 45 minutes?",
+    "expected_tool": "skill_view",
+    "expected_arguments": {
+      "must_equal": {
+        "name": "scratchpad-recommendation"
+      }
+    }
+  },
+  {
+    "id": "list_topic_0",
+    "user": "Show me saved items about AI agents.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "recommend_topic_0",
+    "user": "Find me unread deep dives about AI agents from my library.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread"
+        ],
+        "depth_level": [
+          "deep"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "list_topic_1",
+    "user": "Show me saved items about evals.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "recommend_topic_1",
+    "user": "Find me unread deep dives about evals from my library.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread"
+        ],
+        "depth_level": [
+          "deep"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "list_topic_2",
+    "user": "Show me saved items about local LLMs.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "recommend_topic_2",
+    "user": "Find me unread deep dives about local LLMs from my library.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread"
+        ],
+        "depth_level": [
+          "deep"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "list_topic_3",
+    "user": "Show me saved items about RL.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "recommend_topic_3",
+    "user": "Find me unread deep dives about RL from my library.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread"
+        ],
+        "depth_level": [
+          "deep"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "list_topic_4",
+    "user": "Show me saved items about security.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "recommend_topic_4",
+    "user": "Find me unread deep dives about security from my library.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread"
+        ],
+        "depth_level": [
+          "deep"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "list_topic_5",
+    "user": "Show me saved items about coding agents.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread",
+          "started"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "recommend_topic_5",
+    "user": "Find me unread deep dives about coding agents from my library.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread"
+        ],
+        "depth_level": [
+          "deep"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "list_depth_light",
+    "user": "Show me light unread items from my library.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread"
+        ],
+        "depth_level": [
+          "light"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "list_depth_medium",
+    "user": "Show me medium unread items from my library.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread"
+        ],
+        "depth_level": [
+          "medium"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "list_depth_deep",
+    "user": "Show me deep unread items from my library.",
+    "expected_tool": "content_list",
+    "expected_arguments": {
+      "must_include": {
+        "status": [
+          "unread"
+        ],
+        "depth_level": [
+          "deep"
+        ]
+      },
+      "must_not_include": {
+        "status": [
+          "done",
+          "archived",
+          "abandoned"
+        ]
+      }
+    }
+  },
+  {
+    "id": "no_tool_0",
+    "user": "What is local-first software? Give me a short explanation, don't inspect or save anything.",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_1",
+    "user": "Explain what SFT means in one paragraph.",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_2",
+    "user": "What is the difference between LoRA and full fine-tuning?",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_3",
+    "user": "Why are evals useful for local LLM projects?",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_4",
+    "user": "Give me three reasons small models can still be useful.",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_5",
+    "user": "What does GGUF mean at a high level?",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_6",
+    "user": "What is the difference between a training dataset and an eval dataset?",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_7",
+    "user": "Explain why overfitting is dangerous in one paragraph.",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_8",
+    "user": "What does heldout mean in model evaluation?",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_9",
+    "user": "Give me a high-level explanation of DPO.",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_10",
+    "user": "What is a quantized model?",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_11",
+    "user": "Why might a 350M model still be worth testing?",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_12",
+    "user": "Explain tool calling as if I am new to agents.",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_13",
+    "user": "What is the purpose of a validation split?",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_14",
+    "user": "Tell me the tradeoff between local and cloud LLMs.",
+    "expected_tool": "no_tool"
+  },
+  {
+    "id": "no_tool_15",
+    "user": "What is a model profile?",
+    "expected_tool": "no_tool"
+  }
+]

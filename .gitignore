@@ -5,3 +5,7 @@ __pycache__/
 launch.json
 /library/
 /config/models.local.json
+/models/
+!/training/datasets/
+/training/datasets/*
+!/training/datasets/README.md

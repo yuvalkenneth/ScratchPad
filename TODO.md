@@ -52,7 +52,26 @@
 * Add a few real frozen fixtures from valuable URLs once candidate links are collected
 * Keep eval scripts separate from unit tests so normal tests remain deterministic and fast
 
-## Priority 2: Recommendation Skill
+## Priority 2: Tiny-Model Training Lessons
+
+* Treat Scratchpad as a small-model training curriculum, not a one-off fine-tune
+* Start with 1-5 SLMs, including at least one under 0.6B and one around 0.8-1B
+* Run baseline evals before training: tool-choice accuracy, argument accuracy, JSON validity, latency, and failure-type counts
+* DONE: Add a first lesson outline under `training/README.md`
+* DONE: Add `scripts/export_sft_tool_choice.py` to export tool-choice cases as chat-style SFT JSONL
+* DONE: Add `scripts/generate_tool_choice_cases.py` for a larger deterministic tool-choice SFT starter dataset
+* DONE: Download a first local starter set: SmolLM2-135M-Instruct, SmolLM2-360M-Instruct, Qwen3.5-0.8B, Qwen3-0.6B, LiquidAI/LFM2.5-350M, and LiquidAI/LFM2.5-1.2B-Instruct
+* DONE: Make tool-choice SFT export template-aware: OpenAI-style `messages`/`tool_calls` by default, optional tokenizer-rendered `text`
+* Inspect the exported SFT rows before training so tool targets and prompt text are understandable
+* DONE: Add train/validation/held-out splits before using the data for real training
+* Add an eval path for tokenizer-rendered native tool-call formats so Qwen-style SFT is evaluated in the same format it is trained on
+* Use Unsloth for the first LoRA/QLoRA SFT run once the dataset format is stable
+* Compare base versus SFT model with the existing tool-choice eval before moving to harder tasks
+* Add a second SFT lesson for content-profile JSON only after tool routing improves measurably
+* Add preference-pair data for recommendations before attempting RL
+* Keep RL narrow and inspectable at first: valid JSON, correct tool, required args, and no extra tool calls
+
+## Priority 3: Recommendation Skill
 
 * DONE: Add a `scratchpad-recommendation` skill that teaches the assistant how to answer "what should I read/learn now?"
 * DONE: Require the skill to call `content_list` before recommending saved items
@@ -63,14 +82,14 @@
 * If time, topic, or goal is missing and materially affects the recommendation, ask one short clarification instead of guessing
 * DONE: Use the skill as the first recommendation policy before hardcoding ranking behavior into `content_recommend`
 
-## Priority 3: Recommendation Tool Primitives
+## Priority 4: Recommendation Tool Primitives
 
 * DONE: Keep the in-memory Markdown query layer simple and transparent; do not add SQLite until file scanning becomes painful
 * Keep tool output compact enough for small local models while preserving fields needed for recommendation
 * Tune relevance scoring as real saved libraries expose weak ranking behavior
 * Add agent behavior tests that verify recommendation requests load the skill, call `content_list`, obey status/time constraints, and use returned metadata in the answer
 
-## Priority 4: User Context
+## Priority 5: User Context
 
 * DONE: Add a lightweight editable user profile at `library/user/profile.md`
 * DONE: Store explicit preferences such as interests, avoided topics, preferred depth, preferred session length, and current goals
@@ -79,7 +98,7 @@
 * DONE: Use user context as transparent recommendation input, not hidden personalization magic
 * Add tests showing explicit user goals can influence recommendation queries without overriding hard constraints like status and available time
 
-## Priority 5: Recommendation Scoring
+## Priority 6: Recommendation Scoring
 
 * Add ranking logic for "what should I read now?" using time, depth, status, topic/query match, explicit preferences, and current goals
 * Start with simple transparent scoring over Markdown frontmatter and body text before adding embeddings
