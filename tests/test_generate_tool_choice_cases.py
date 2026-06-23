@@ -1,5 +1,5 @@
 from scripts.eval_tool_choice import load_cases
-from scripts.generate_tool_choice_cases import generate_cases
+from scripts.generate_tool_choice_cases import SPLITS, generate_cases, split_for_case_id
 
 
 def test_generated_tool_choice_cases_are_large_and_cover_all_tools() -> None:
@@ -56,6 +56,15 @@ def test_generated_cases_include_experiment_metadata() -> None:
         assert case["intent"]
         assert case["category"]
         assert case["difficulty"] in {"basic", "targeted"}
+        assert case["split"] in SPLITS
+
+
+def test_generated_case_splits_are_stable_and_cover_all_splits() -> None:
+    cases = generate_cases()
+
+    assert {case["split"] for case in cases} == set(SPLITS)
+    for case in cases:
+        assert case["split"] == split_for_case_id(case["id"])
 
 
 def test_generated_cases_target_qwen_08b_failures() -> None:

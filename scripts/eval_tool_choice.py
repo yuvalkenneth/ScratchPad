@@ -23,6 +23,7 @@ from app.tools.registry import get_tool_definitions
 
 DEFAULT_CASES_PATH = REPO_ROOT / "evals" / "tool_choice" / "cases.json"
 NO_TOOL_LABEL = "no_tool"
+SPLIT_LABELS = ("train", "validation", "heldout")
 
 
 def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
@@ -72,9 +73,23 @@ def validate_case(case: dict[str, Any]) -> None:
     expected_arguments = case.get("expected_arguments")
     if expected_arguments is not None and not isinstance(expected_arguments, dict):
         raise ValueError(f"Tool-choice case {case['id']} expected_arguments must be an object.")
-    for key in ("intent", "category", "difficulty", "retention_kind"):
+    for key in ("intent", "category", "difficulty", "retention_kind", "split"):
         if key in case and not str(case[key]).strip():
             raise ValueError(f"Tool-choice case {case['id']} has empty metadata field: {key}")
+    if "split" in case and case["split"] not in SPLIT_LABELS:
+        raise ValueError(
+            f"Tool-choice case {case['id']} has invalid split {case['split']!r}; "
+            f"expected one of {', '.join(SPLIT_LABELS)}."
+        )
+
+
+def filter_cases_by_split(cases: list[dict[str, Any]], split: str | None) -> list[dict[str, Any]]:
+    if split is None:
+        return cases
+    filtered = [case for case in cases if case.get("split") == split]
+    if not filtered:
+        raise ValueError(f"No tool-choice eval cases found for split: {split}")
+    return filtered
 
 
 def parse_tool_arguments(raw_arguments: str | None) -> dict[str, Any]:
@@ -259,6 +274,7 @@ def build_report(
     model: str,
     provider: str,
     profile: str | None = None,
+    split: str | None = None,
 ) -> dict[str, Any]:
     labels = sorted(
         {
@@ -319,6 +335,7 @@ def build_report(
         "profile": profile,
         "provider": provider,
         "model": model,
+        "split": split,
         "total_cases": total,
         "passed_cases": sum(1 for result in results if result["passed"]),
         "tool_selection_accuracy": round(
@@ -372,6 +389,11 @@ def run(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--cases", type=Path, default=DEFAULT_CASES_PATH)
     parser.add_argument("--case", dest="case_id")
+    parser.add_argument(
+        "--split",
+        choices=SPLIT_LABELS,
+        help="Evaluate only cases assigned to this canonical split.",
+    )
     parser.add_argument("--profile", help="Named model profile from config/models.json or config/models.local.json.")
     parser.add_argument("--provider", help="Provider for the model under test. Defaults to EVAL_PROVIDER or LLM_PROVIDER.")
     parser.add_argument("--model", help="Model id for the model under test. Defaults to EVAL_MODEL or LLM_MODEL.")
@@ -391,6 +413,7 @@ def run(argv: list[str] | None = None) -> int:
 
     config = prepare_eval_provider(eval_config_from_args(args), auto_start=not args.no_auto_start)
     cases = load_cases(args.cases)
+    cases = filter_cases_by_split(cases, args.split)
     if args.case_id:
         cases = [case for case in cases if case["id"] == args.case_id]
         if not cases:
@@ -427,6 +450,7 @@ def run(argv: list[str] | None = None) -> int:
         model=config.model_name,
         provider=config.provider,
         profile=args.profile or os.getenv("EVAL_PROFILE"),
+        split=args.split,
     )
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)

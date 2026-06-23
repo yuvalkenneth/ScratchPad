@@ -37,16 +37,18 @@ Canonical tool-choice data stays model-agnostic: user request plus expected
 Scratchpad action. The SFT export writes OpenAI-style `messages` with
 `tool_calls`, or tokenizer-rendered `text` for model-specific training.
 
-Use the deterministic split:
+Each generated case carries an explicit deterministic `split` field based on a
+stable hash of the case id:
 
 ```text
-train: index % 5 in {0, 1, 2}
-validation: index % 5 == 3
-heldout: index % 5 == 4
+train: hash bucket 4-9
+validation: hash bucket 0-1
+heldout: hash bucket 2-3
 ```
 
 Training can iterate on `train` and `validation`. Do not tune against `heldout`;
-use it only for final before/after comparison.
+use it only for final before/after comparison. Adding new cases should not move
+existing cases between splits.
 
 ## Reproduce Data
 
@@ -87,6 +89,7 @@ Tool-choice eval:
 ```bash
 uv run python scripts/eval_tool_choice.py \
   --cases evals/tool_choice/generated_cases.json \
+  --split heldout \
   --profile qwen-local \
   --temperature 0 \
   --report experiments/tool_choice_sft_v1/reports/base-tool-choice.json

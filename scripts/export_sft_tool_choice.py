@@ -13,7 +13,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from app.llm.prompting import DEFAULT_SYSTEM_PROMPT
 from app.tools.registry import get_tool_definitions
-from scripts.eval_tool_choice import DEFAULT_CASES_PATH, NO_TOOL_LABEL, load_cases
+from scripts.eval_tool_choice import DEFAULT_CASES_PATH, NO_TOOL_LABEL, SPLIT_LABELS, load_cases
 
 
 DEFAULT_OUTPUT_PATH = REPO_ROOT / "training" / "datasets" / "tool_choice" / "sft.jsonl"
@@ -163,7 +163,7 @@ def sft_row_from_case(
             "native_tools": True,
         },
     }
-    for metadata_key in ("intent", "category", "difficulty", "retention_kind"):
+    for metadata_key in ("intent", "category", "difficulty", "retention_kind", "split"):
         if metadata_key in case:
             row["metadata"][metadata_key] = case[metadata_key]
     if output_format == "messages":
@@ -198,9 +198,12 @@ def build_sft_rows(
 
 
 def split_rows(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
-    splits = {"train": [], "validation": [], "heldout": []}
+    splits = {split: [] for split in SPLIT_LABELS}
     for index, row in enumerate(rows):
-        if index % 5 == 3:
+        explicit_split = row.get("metadata", {}).get("split")
+        if explicit_split:
+            splits[explicit_split].append(row)
+        elif index % 5 == 3:
             splits["validation"].append(row)
         elif index % 5 == 4:
             splits["heldout"].append(row)

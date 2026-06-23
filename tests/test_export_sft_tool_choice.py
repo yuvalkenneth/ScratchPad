@@ -236,6 +236,20 @@ def test_split_rows_is_deterministic_and_keeps_heldout() -> None:
     assert [row["id"] for row in splits["heldout"]] == ["4", "9"]
 
 
+def test_split_rows_prefers_explicit_case_split_metadata() -> None:
+    rows = [
+        {"id": "a", "metadata": {"split": "heldout"}},
+        {"id": "b", "metadata": {"split": "validation"}},
+        {"id": "c", "metadata": {"split": "train"}},
+    ]
+
+    splits = split_rows(rows)
+
+    assert [row["id"] for row in splits["train"]] == ["c"]
+    assert [row["id"] for row in splits["validation"]] == ["b"]
+    assert [row["id"] for row in splits["heldout"]] == ["a"]
+
+
 def test_export_split_rows_writes_three_files(tmp_path: Path) -> None:
     cases_path = tmp_path / "cases.json"
     output_dir = tmp_path / "dataset"

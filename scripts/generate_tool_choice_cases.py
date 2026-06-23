@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -21,6 +22,16 @@ URLS = [
 TOPICS = ["AI agents", "evals", "local LLMs", "RL", "security", "coding agents"]
 STATUSES = ["unread", "started", "done", "archived", "abandoned"]
 DEPTHS = ["light", "medium", "deep"]
+SPLITS = ("train", "validation", "heldout")
+
+
+def split_for_case_id(case_id: str) -> str:
+    bucket = int(hashlib.sha256(case_id.encode("utf-8")).hexdigest(), 16) % 10
+    if bucket < 2:
+        return "validation"
+    if bucket < 4:
+        return "heldout"
+    return "train"
 
 
 def case(
@@ -403,6 +414,8 @@ def generate_cases() -> list[dict[str, Any]]:
             )
         )
 
+    for generated_case in cases:
+        generated_case["split"] = split_for_case_id(generated_case["id"])
     return cases
 
 

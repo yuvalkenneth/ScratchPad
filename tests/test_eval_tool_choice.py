@@ -3,6 +3,7 @@ from scripts.eval_tool_choice import (
     classify_failure_types,
     effective_tool_arguments,
     evaluate_arguments,
+    filter_cases_by_split,
     parse_tool_arguments,
 )
 
@@ -46,6 +47,21 @@ def test_argument_eval_reports_failures() -> None:
 
     assert not result["passed"]
     assert [check["passed"] for check in result["checks"]] == [False, False]
+
+
+def test_filter_cases_by_split_keeps_only_requested_split() -> None:
+    cases = [
+        {"id": "train_case", "user": "Save https://example.com", "expected_tool": "content_add", "split": "train"},
+        {
+            "id": "heldout_case",
+            "user": "Inspect https://example.com",
+            "expected_tool": "analyze_source",
+            "split": "heldout",
+        },
+    ]
+
+    assert [case["id"] for case in filter_cases_by_split(cases, "heldout")] == ["heldout_case"]
+    assert filter_cases_by_split(cases, None) == cases
 
 
 def test_build_report_scores_tool_selection_as_multiclass_classification() -> None:
@@ -96,8 +112,10 @@ def test_build_report_scores_tool_selection_as_multiclass_classification() -> No
         ],
         provider="llama_cpp",
         model="test-model",
+        split="heldout",
     )
 
+    assert report["split"] == "heldout"
     assert report["tool_selection_accuracy"] == 0.6667
     assert report["argument_accuracy"] == 1.0
     assert report["default_reliance_rate"] == 0.3333
