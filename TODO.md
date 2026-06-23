@@ -62,6 +62,10 @@
 * DONE: Add `scripts/generate_tool_choice_cases.py` for a larger deterministic tool-choice SFT starter dataset
 * DONE: Download a first local starter set: SmolLM2-135M-Instruct, SmolLM2-360M-Instruct, Qwen3.5-0.8B, Qwen3-0.6B, LiquidAI/LFM2.5-350M, and LiquidAI/LFM2.5-1.2B-Instruct
 * DONE: Make tool-choice SFT export template-aware: OpenAI-style `messages`/`tool_calls` by default, optional tokenizer-rendered `text`
+* DONE: Add Experiment 1 spec under `experiments/tool_choice_sft_v1/`
+* DONE: Expand generated tool-choice cases with metadata and Qwen 0.8B failure-targeted examples
+* DONE: Add a retention smoke eval for catastrophic-forgetting checks
+* DONE: Add a base-vs-SFT comparison scorecard script
 * Inspect the exported SFT rows before training so tool targets and prompt text are understandable
 * DONE: Add train/validation/held-out splits before using the data for real training
 * Add an eval path for tokenizer-rendered native tool-call formats so Qwen-style SFT is evaluated in the same format it is trained on

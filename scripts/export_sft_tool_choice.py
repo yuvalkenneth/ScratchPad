@@ -78,7 +78,13 @@ def messages_from_case(
         {"role": "user", "content": case["user"]},
     ]
     if case["expected_tool"] == NO_TOOL_LABEL:
-        messages.append({"role": "assistant", "content": "No tool call is needed."})
+        messages.append(
+            {
+                "role": "assistant",
+                "content": case.get("assistant_response")
+                or "I can answer this directly from general knowledge without using a Scratchpad tool.",
+            }
+        )
     else:
         messages.append(
             {
@@ -157,6 +163,9 @@ def sft_row_from_case(
             "native_tools": True,
         },
     }
+    for metadata_key in ("intent", "category", "difficulty", "retention_kind"):
+        if metadata_key in case:
+            row["metadata"][metadata_key] = case[metadata_key]
     if output_format == "messages":
         row["messages"] = messages
     elif output_format == "text":

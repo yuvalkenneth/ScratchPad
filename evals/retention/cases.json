@@ -1,0 +1,231 @@
+[
+  {
+    "id": "concept_overfitting",
+    "retention_kind": "conceptual",
+    "user": "Explain overfitting in one short paragraph. Do not use tools.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["training", "generalize", "unseen", "memorize"]
+    }
+  },
+  {
+    "id": "concept_lora",
+    "retention_kind": "conceptual",
+    "user": "What is LoRA in fine-tuning? Answer in two sentences.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["adapter", "low-rank", "fine-tuning", "weights"]
+    }
+  },
+  {
+    "id": "concept_validation_split",
+    "retention_kind": "conceptual",
+    "user": "What is a validation split in model training?",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["validation", "training", "held", "overfitting"]
+    }
+  },
+  {
+    "id": "concept_quantization",
+    "retention_kind": "conceptual",
+    "user": "Explain model quantization at a high level.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["precision", "bits", "memory", "smaller"]
+    }
+  },
+  {
+    "id": "concept_dpo",
+    "retention_kind": "conceptual",
+    "user": "What is DPO in LLM alignment?",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["preference", "chosen", "rejected", "alignment"]
+    }
+  },
+  {
+    "id": "instruction_three_bullets",
+    "retention_kind": "instruction_following",
+    "user": "Give exactly three short bullet points about why evals matter. Do not use tools.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["eval", "test", "measure"],
+      "max_lines": 5
+    }
+  },
+  {
+    "id": "instruction_one_sentence",
+    "retention_kind": "instruction_following",
+    "user": "In one sentence, explain why small models are worth testing.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["fast", "cheap", "local", "specific"],
+      "max_sentences": 2
+    }
+  },
+  {
+    "id": "instruction_table",
+    "retention_kind": "instruction_following",
+    "user": "Make a tiny Markdown table comparing local and cloud LLMs with two rows.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_all": ["|", "local", "cloud"]
+    }
+  },
+  {
+    "id": "instruction_json",
+    "retention_kind": "instruction_following",
+    "user": "Return JSON only: {\"task\":\"eval\",\"status\":\"planned\"}",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_all": ["\"task\"", "\"eval\"", "\"status\"", "\"planned\""],
+      "max_lines": 3
+    }
+  },
+  {
+    "id": "instruction_concise",
+    "retention_kind": "instruction_following",
+    "user": "Define SFT in under 20 words.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["supervised", "fine-tuning", "examples"],
+      "max_words": 30
+    }
+  },
+  {
+    "id": "url_abstain_example",
+    "retention_kind": "url_abstention",
+    "user": "What does the URL https://example.com usually represent? Do not inspect it.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["example", "placeholder", "domain"]
+    }
+  },
+  {
+    "id": "url_abstain_wikipedia",
+    "retention_kind": "url_abstention",
+    "user": "Explain what a Wikipedia URL is generally, without opening https://en.wikipedia.org/wiki/Train%E2%80%93test_split.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["Wikipedia", "article", "encyclopedia", "URL"]
+    }
+  },
+  {
+    "id": "url_abstain_course",
+    "retention_kind": "url_abstention",
+    "user": "I saw https://www.deeplearning.ai/short-courses/fine-tuning-large-language-models-with-lora/. Explain what a short course link probably is; don't analyze the page.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["course", "link", "page", "probably"]
+    }
+  },
+  {
+    "id": "url_abstain_gguf",
+    "retention_kind": "url_abstention",
+    "user": "Do not open any links. At a high level, what is GGUF?",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["format", "model", "llama.cpp", "weights"]
+    }
+  },
+  {
+    "id": "url_abstain_no_save",
+    "retention_kind": "url_abstention",
+    "user": "If I paste a URL in chat, does that always mean you should save it? Answer generally, no tools.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["no", "intent", "ask", "context"]
+    }
+  },
+  {
+    "id": "coding_reverse_string",
+    "retention_kind": "simple_coding_math",
+    "user": "Write a Python function named reverse_text that reverses a string. No tools.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_all": ["def reverse_text", "[::-1]"]
+    }
+  },
+  {
+    "id": "math_reading_time",
+    "retention_kind": "simple_coding_math",
+    "user": "If I read 12 pages per hour, how many hours for 30 pages?",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["2.5", "2 and a half", "two and a half"]
+    }
+  },
+  {
+    "id": "math_tokens",
+    "retention_kind": "simple_coding_math",
+    "user": "A model processes 50 tokens per second. How long for 1000 tokens?",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["20", "seconds"]
+    }
+  },
+  {
+    "id": "coding_list_comprehension",
+    "retention_kind": "simple_coding_math",
+    "user": "Show a Python list comprehension that squares numbers 1 through 3.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["[x * x", "[x**2", "for x in"]
+    }
+  },
+  {
+    "id": "math_percentage",
+    "retention_kind": "simple_coding_math",
+    "user": "What is a 25% improvement from 40?",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["50"]
+    }
+  },
+  {
+    "id": "general_chat_help",
+    "retention_kind": "general_assistant",
+    "user": "Help me think through whether to study SFT or evals first. No tools.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["eval", "SFT", "first", "before"]
+    }
+  },
+  {
+    "id": "general_explain_tradeoff",
+    "retention_kind": "general_assistant",
+    "user": "Explain the tradeoff between speed and accuracy in small models.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["speed", "accuracy", "tradeoff", "small"]
+    }
+  },
+  {
+    "id": "general_brainstorm",
+    "retention_kind": "general_assistant",
+    "user": "Brainstorm two names for a small-model experiment log.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["1", "2", "-", "*"]
+    }
+  },
+  {
+    "id": "general_clarify",
+    "retention_kind": "general_assistant",
+    "user": "What information would you need before recommending a fine-tuning dataset size?",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["model", "task", "data", "budget"]
+    }
+  },
+  {
+    "id": "general_short_answer",
+    "retention_kind": "general_assistant",
+    "user": "Should every experiment have a heldout set? Answer briefly.",
+    "expectations": {
+      "forbid_tools": true,
+      "must_contain_any": ["yes", "heldout", "generalization"]
+    }
+  }
+]

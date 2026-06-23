@@ -47,3 +47,23 @@ def test_generated_url_action_cases_include_url_argument_expectations() -> None:
     for case in url_action_cases:
         expected_arguments = case.get("expected_arguments") or {}
         assert "url" in expected_arguments.get("must_equal", {})
+
+
+def test_generated_cases_include_experiment_metadata() -> None:
+    cases = generate_cases()
+
+    for case in cases:
+        assert case["intent"]
+        assert case["category"]
+        assert case["difficulty"] in {"basic", "targeted"}
+
+
+def test_generated_cases_target_qwen_08b_failures() -> None:
+    cases = generate_cases()
+    categories = {case["category"] for case in cases}
+
+    assert "known_failure_url_vs_id" in categories
+    assert "known_failure_content_add_vs_analyze" in categories
+    assert "known_failure_content_update_vs_add" in categories
+    assert "known_failure_recommendation_skill_routing" in categories
+    assert "known_failure_depth_status_filters" in categories

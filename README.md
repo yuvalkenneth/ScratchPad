@@ -72,6 +72,7 @@ It is used to explore:
 * local vs cloud tradeoffs
 * model switching, latency, output quality, and failure modes
 * whether small models can reliably classify, save, retrieve, and recommend useful learning material
+* whether narrow SFT can improve small-model tool use without catastrophic forgetting
 
 The learning-inbox product provides a realistic and bounded setting for these experiments. Instead of testing models on isolated prompts, Scratchpad tests whether they can complete a real workflow: ingest a source, produce a useful profile, store it, and later retrieve or recommend it in context.
 
@@ -98,8 +99,21 @@ The evaluation ladder is:
 * content-profile evals for whether a model produces useful, faithful, normalized metadata from frozen source text
 * deterministic workflow evals for whether save, query, recommendation constraints, and status updates compose correctly
 * deterministic recommendation evals with fake libraries, fake user profiles, user requests, and expected ranking constraints
+* retention evals for whether a fine-tuned small model still answers ordinary no-tool requests
 
 The project should avoid treating a green eval as a vague "model is good" claim. Each eval should name the behavior it measures and preserve enough output to compare local models over time.
+
+### Training experiments
+
+Scratchpad includes a first learning-first SFT experiment for `Qwen3.5-0.8B`:
+
+```text
+experiments/tool_choice_sft_v1/
+```
+
+The experiment asks whether a sub-1B model can improve on Scratchpad tool routing
+after narrow SFT while preserving normal assistant behavior. It compares base vs
+SFT on tool-choice metrics, retention checks, failure-type deltas, and latency.
 
 ### Model profiles
 
@@ -320,6 +334,22 @@ This eval does not execute tools. It only inspects the first tool call selected 
 Use `--report <path>` to write aggregate classification metrics, including first-tool accuracy, argument accuracy, confusion matrix, per-class precision/recall/F1, default reliance rate, and latency.
 Reports also include failure-type counts such as wrong tool, missing tool, tool
 false positive, invalid tool arguments, argument mismatch, and extra tool call.
+
+Run the retention eval manually to check catastrophic-forgetting smoke cases:
+
+```bash
+uv run python scripts/eval_retention.py
+```
+
+Retention fixtures live in:
+
+```text
+evals/retention/cases.json
+```
+
+Retention reports label cases as `pass`, `degraded`, or `fail`, and track
+whether the model incorrectly called Scratchpad tools for ordinary assistant
+requests.
 
 Run deterministic product workflow evals to check whether library operations compose into useful flows:
 

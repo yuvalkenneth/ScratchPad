@@ -25,6 +25,12 @@ Secondary candidates:
 Measure tool accuracy, argument accuracy, JSON validity, latency, and failure
 types before any tuning.
 
+The first concrete experiment is documented in:
+
+```text
+experiments/tool_choice_sft_v1/
+```
+
 ## Lesson 2: SFT Tool Routing
 
 First supervised task:
@@ -83,7 +89,7 @@ uv run --with transformers --with jinja2 python scripts/validate_chat_template.p
   --cases evals/tool_choice/generated_cases.json \
   --tokenizer models/hf/unsloth--Qwen3.5-0.8B \
   --family qwen \
-  --limit 125
+  --limit 240
 ```
 
 If the training environment has Unsloth installed and we intentionally want one
@@ -97,6 +103,28 @@ Keep two evaluation lanes separate:
 
 For Qwen, the primary lane should render a `<tools>...</tools>` block and
 assistant calls such as `<tool_call><function=content_add>...`.
+
+Also run a retention smoke eval before and after SFT so tool-routing gains do
+not hide catastrophic forgetting:
+
+```bash
+uv run python scripts/eval_retention.py \
+  --cases evals/retention/cases.json \
+  --profile qwen-local \
+  --temperature 0 \
+  --report experiments/tool_choice_sft_v1/reports/base-retention.json
+```
+
+Compare base and SFT runs with:
+
+```bash
+uv run python scripts/compare_experiment_reports.py \
+  --base-tool-report experiments/tool_choice_sft_v1/reports/base-tool-choice.json \
+  --sft-tool-report experiments/tool_choice_sft_v1/reports/sft-tool-choice.json \
+  --base-retention-report experiments/tool_choice_sft_v1/reports/base-retention.json \
+  --sft-retention-report experiments/tool_choice_sft_v1/reports/sft-retention.json \
+  --output experiments/tool_choice_sft_v1/reports/scorecard.json
+```
 
 ## Lesson 3: SFT Content Profiles
 

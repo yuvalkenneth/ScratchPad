@@ -163,6 +163,42 @@ def test_openai_tools_row_uses_tool_call_message_and_tools() -> None:
     assert row["metadata"]["native_tools"] is True
 
 
+def test_row_metadata_preserves_experiment_fields() -> None:
+    row = sft_row_from_case(
+        {
+            "id": "save_url",
+            "user": "Save https://example.com",
+            "expected_tool": "content_add",
+            "intent": "save_source",
+            "category": "library_write",
+            "difficulty": "targeted",
+        },
+        system_prompt="system",
+        source="cases.json",
+    )
+
+    assert row["metadata"]["intent"] == "save_source"
+    assert row["metadata"]["category"] == "library_write"
+    assert row["metadata"]["difficulty"] == "targeted"
+
+
+def test_no_tool_rows_use_normal_assistant_text() -> None:
+    messages = messages_from_case(
+        {
+            "id": "no_tool",
+            "user": "Explain SFT.",
+            "expected_tool": "no_tool",
+        },
+        system_prompt="system",
+    )
+
+    assistant = messages[-1]
+    assert assistant["role"] == "assistant"
+    assert "tool_calls" not in assistant
+    assert "No tool call is needed" not in assistant["content"]
+    assert "general knowledge" in assistant["content"]
+
+
 def test_openai_tools_text_row_passes_tools_to_tokenizer() -> None:
     row = sft_row_from_case(
         {

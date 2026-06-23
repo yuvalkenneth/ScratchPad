@@ -72,6 +72,9 @@ def validate_case(case: dict[str, Any]) -> None:
     expected_arguments = case.get("expected_arguments")
     if expected_arguments is not None and not isinstance(expected_arguments, dict):
         raise ValueError(f"Tool-choice case {case['id']} expected_arguments must be an object.")
+    for key in ("intent", "category", "difficulty", "retention_kind"):
+        if key in case and not str(case[key]).strip():
+            raise ValueError(f"Tool-choice case {case['id']} has empty metadata field: {key}")
 
 
 def parse_tool_arguments(raw_arguments: str | None) -> dict[str, Any]:
