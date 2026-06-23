@@ -39,15 +39,87 @@ def extract_rss_mib(report: dict[str, Any]) -> list[float]:
     return values
 
 
+def latest_snapshot(report: dict[str, Any]) -> dict[str, Any]:
+    snapshots = report.get("snapshots", [])
+    if not snapshots:
+        return {}
+    return snapshots[-1]
+
+
+def endpoint_summary(report: dict[str, Any]) -> dict[str, Any]:
+    snapshots = report.get("snapshots", [])
+    return {
+        "metrics_snapshots": sum(1 for snapshot in snapshots if snapshot.get("llama_metrics_raw")),
+        "slots_snapshots": sum(1 for snapshot in snapshots if snapshot.get("llama_slots") is not None),
+    }
+
+
+def render_rss_section(rss_values: list[float]) -> str:
+    if not rss_values:
+        return """
+  <section class="card warning">
+    <h2>Process RSS MiB</h2>
+    <p>No process RSS samples were collected. Pass <code>--pid</code> to
+    <code>collect_llm_runtime.py</code>, or update the launcher to write a PID
+    file. Without a PID this report can still show llama.cpp slot status, but
+    cannot plot OS process memory.</p>
+  </section>
+"""
+    path = point_path(rss_values)
+    return f"""
+  <section class="card">
+    <h2>Process RSS MiB</h2>
+    <svg viewBox="0 0 900 260" role="img" aria-label="RSS memory over snapshots">
+      <path d="{path}" fill="none" stroke="#2563eb" stroke-width="3" />
+    </svg>
+  </section>
+"""
+
+
+def render_slots_section(snapshot: dict[str, Any]) -> str:
+    slots = snapshot.get("llama_slots")
+    if slots is None:
+        return """
+  <section class="card warning">
+    <h2>Latest Slots</h2>
+    <p>No <code>/slots</code> payload was collected. The server may have been
+    down or the endpoint may not be available.</p>
+  </section>
+"""
+    rows = "\n".join(
+        "<tr>"
+        f"<td>{html.escape(str(slot.get('id', '')))}</td>"
+        f"<td>{html.escape(str(slot.get('n_ctx', '')))}</td>"
+        f"<td>{html.escape(str(slot.get('is_processing', '')))}</td>"
+        f"<td>{html.escape(str(slot.get('speculative', '')))}</td>"
+        "</tr>"
+        for slot in slots
+        if isinstance(slot, dict)
+    )
+    return f"""
+  <section class="card">
+    <h2>Latest Slots</h2>
+    <table>
+      <thead>
+        <tr><th>slot</th><th>n_ctx</th><th>processing</th><th>speculative</th></tr>
+      </thead>
+      <tbody>{rows}</tbody>
+    </table>
+  </section>
+"""
+
+
 def render_html(report: dict[str, Any]) -> str:
     rss_values = extract_rss_mib(report)
-    path = point_path(rss_values)
+    endpoints = endpoint_summary(report)
+    latest = latest_snapshot(report)
     summary = {
         "snapshots": len(report.get("snapshots", [])),
         "base_url": report.get("base_url"),
         "pid": report.get("pid"),
         "rss_min_mib": min(rss_values) if rss_values else None,
         "rss_max_mib": max(rss_values) if rss_values else None,
+        **endpoints,
     }
     rows = "\n".join(
         "<tr>"
@@ -66,7 +138,10 @@ def render_html(report: dict[str, Any]) -> str:
   <meta charset="utf-8">
   <title>Scratchpad LLM Runtime Report</title>
   <style>
-    body {{ font-family: ui-sans-serif, system-ui, sans-serif; margin: 32px; color: #18212f; }}
+    body {{ font-family: ui-sans-serif, system-ui, sans-serif; margin: 32px; color: #18212f; background: #f8fafc; }}
+    h1, h2 {{ margin: 0 0 12px; }}
+    .card {{ background: #fff; border: 1px solid #dbe3ed; border-radius: 12px; padding: 18px; margin: 18px 0; }}
+    .warning {{ border-color: #f2c36b; background: #fff8e8; }}
     pre {{ background: #f4f6f8; padding: 16px; border-radius: 8px; overflow: auto; }}
     svg {{ width: 100%; max-width: 960px; border: 1px solid #d6dde6; border-radius: 8px; background: #fbfcfd; }}
     table {{ border-collapse: collapse; width: 100%; margin-top: 24px; font-size: 14px; }}
@@ -75,17 +150,27 @@ def render_html(report: dict[str, Any]) -> str:
 </head>
 <body>
   <h1>Scratchpad LLM Runtime Report</h1>
-  <pre>{html.escape(json.dumps(summary, indent=2))}</pre>
-  <h2>Process RSS MiB</h2>
-  <svg viewBox="0 0 900 260" role="img" aria-label="RSS memory over snapshots">
-    <path d="{path}" fill="none" stroke="#2563eb" stroke-width="3" />
-  </svg>
-  <table>
-    <thead>
-      <tr><th>#</th><th>timestamp</th><th>rss_kib</th><th>cpu_percent</th><th>/metrics</th><th>/slots</th></tr>
-    </thead>
-    <tbody>{rows}</tbody>
-  </table>
+  <section class="card">
+    <h2>Summary</h2>
+    <pre>{html.escape(json.dumps(summary, indent=2))}</pre>
+  </section>
+  {render_rss_section(rss_values)}
+  <section class="card">
+    <h2>Endpoint Availability</h2>
+    <p><code>/slots</code> snapshots: {endpoints["slots_snapshots"]}</p>
+    <p><code>/metrics</code> snapshots: {endpoints["metrics_snapshots"]}</p>
+    <p>If <code>/metrics</code> is zero, start llama.cpp with metrics enabled.</p>
+  </section>
+  {render_slots_section(latest)}
+  <section class="card">
+    <h2>Raw Snapshot Table</h2>
+    <table>
+      <thead>
+        <tr><th>#</th><th>timestamp</th><th>rss_kib</th><th>cpu_percent</th><th>/metrics</th><th>/slots</th></tr>
+      </thead>
+      <tbody>{rows}</tbody>
+    </table>
+  </section>
 </body>
 </html>
 """
