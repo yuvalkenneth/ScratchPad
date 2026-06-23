@@ -6,6 +6,7 @@ from scripts.eval_tool_choice import (
     filter_cases_by_split,
     parse_tool_arguments,
     request_messages_from_case,
+    summarize_result_subset,
 )
 
 
@@ -87,6 +88,13 @@ def test_build_report_scores_tool_selection_as_multiclass_classification() -> No
         [
             {
                 "id": "a",
+                "case_metadata": {
+                    "difficulty": "easy",
+                    "context_kind": "stateless",
+                    "category": "content_list",
+                    "intent": "library_query",
+                    "split": "heldout",
+                },
                 "passed": True,
                 "tool_pass": True,
                 "argument_pass": True,
@@ -101,6 +109,13 @@ def test_build_report_scores_tool_selection_as_multiclass_classification() -> No
             },
             {
                 "id": "b",
+                "case_metadata": {
+                    "difficulty": "hard",
+                    "context_kind": "contextual",
+                    "category": "contextual_reference",
+                    "intent": "metadata_update",
+                    "split": "heldout",
+                },
                 "passed": False,
                 "tool_pass": False,
                 "argument_pass": True,
@@ -115,6 +130,13 @@ def test_build_report_scores_tool_selection_as_multiclass_classification() -> No
             },
             {
                 "id": "c",
+                "case_metadata": {
+                    "difficulty": "ambiguous",
+                    "context_kind": "stateless",
+                    "category": "ambiguous_no_tool",
+                    "intent": "clarify_missing_context",
+                    "split": "heldout",
+                },
                 "passed": True,
                 "tool_pass": True,
                 "argument_pass": True,
@@ -142,6 +164,31 @@ def test_build_report_scores_tool_selection_as_multiclass_classification() -> No
     assert report["per_class"]["content_update"]["recall"] == 0.0
     assert report["failure_type_counts"] == {"wrong_tool": 1}
     assert report["latency"]["average_seconds"] == 2.0
+    assert report["groups"]["difficulty"]["hard"]["overall_accuracy"] == 0.0
+    assert report["groups"]["context_kind"]["contextual"]["wrong_tool_rate"] == 1.0
+
+
+def test_summarize_result_subset_calculates_group_metrics() -> None:
+    summary = summarize_result_subset(
+        [
+            {
+                "passed": False,
+                "tool_pass": False,
+                "argument_pass": False,
+                "expected_tool": "no_tool",
+                "actual_tool": "content_list",
+                "argument_checks": [],
+                "argument_json_valid": True,
+                "extra_tool_count": 0,
+                "failure_types": ["tool_false_positive"],
+                "latency_seconds": 1.5,
+            }
+        ]
+    )
+
+    assert summary["overall_accuracy"] == 0.0
+    assert summary["tool_false_positive_rate"] == 1.0
+    assert summary["failure_type_counts"] == {"tool_false_positive": 1}
 
 
 def test_classify_failure_types_names_tool_and_argument_failures() -> None:

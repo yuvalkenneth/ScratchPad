@@ -71,7 +71,7 @@ uv run --with transformers --with jinja2 python scripts/validate_chat_template.p
   --cases evals/tool_choice/generated_cases.json \
   --tokenizer models/hf/unsloth--Qwen3.5-0.8B \
   --family qwen \
-  --limit 240
+  --limit 248
 ```
 
 Before training, inspect at least one rendered row for each target:
@@ -100,6 +100,11 @@ uv run python scripts/eval_tool_choice.py \
   --report experiments/tool_choice_sft_v1/reports/base-tool-choice.json
 ```
 
+The tool-choice report includes top-level metrics plus grouped metrics under
+`groups` for `split`, `difficulty`, `category`, `intent`, and `context_kind`.
+Use those groups to check whether SFT helps hard/contextual examples instead of
+only improving easy stateless routing.
+
 Retention eval:
 
 ```bash
@@ -112,6 +117,35 @@ uv run python scripts/eval_retention.py \
 
 After training, run the same commands against the served SFT checkpoint and
 write `sft-tool-choice.json` and `sft-retention.json`.
+
+Optional local MLflow tracking:
+
+```bash
+uv run --with mlflow python scripts/eval_tool_choice.py \
+  --cases evals/tool_choice/generated_cases.json \
+  --split heldout \
+  --profile qwen-local \
+  --temperature 0 \
+  --report experiments/tool_choice_sft_v1/reports/base-tool-choice.json \
+  --mlflow-experiment scratchpad-tool-choice-sft-v1 \
+  --mlflow-run-name qwen08b-base-heldout
+```
+
+Runtime memory/latency artifact:
+
+```bash
+uv run python scripts/collect_llm_runtime.py \
+  --base-url http://127.0.0.1:8080 \
+  --pid <LLAMA_SERVER_PID> \
+  --duration-seconds 30 \
+  --output experiments/tool_choice_sft_v1/reports/qwen08b-runtime.json
+uv run python scripts/render_runtime_report.py \
+  --input experiments/tool_choice_sft_v1/reports/qwen08b-runtime.json \
+  --output experiments/tool_choice_sft_v1/reports/qwen08b-runtime.html
+```
+
+Attach the runtime JSON/HTML to MLflow with repeated `--artifact` flags when
+running an eval with `--mlflow-experiment`.
 
 Comparison scorecard:
 
@@ -137,6 +171,7 @@ Primary tool metrics:
 * `extra_tool_rate`
 * per-tool F1
 * average latency
+* grouped metrics by difficulty, category, intent, split, and context kind
 
 Retention metrics:
 

@@ -19,12 +19,14 @@ from app.llm.profiles import config_from_profile
 from app.llm.runtime import ensure_provider_ready
 from app.tools.content_library_tool import apply_content_list_defaults
 from app.tools.registry import get_tool_definitions
+from scripts.experiment_tracking import mlflow_log_report
 
 
 DEFAULT_CASES_PATH = REPO_ROOT / "evals" / "tool_choice" / "cases.json"
 NO_TOOL_LABEL = "no_tool"
 SPLIT_LABELS = ("train", "validation", "heldout")
 DIFFICULTY_LABELS = ("easy", "medium", "hard", "ambiguous")
+GROUP_FIELDS = ("split", "difficulty", "category", "intent", "context_kind")
 
 
 def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
@@ -246,6 +248,11 @@ def run_case(
 
     return {
         "id": case["id"],
+        "case_metadata": {
+            field: case[field]
+            for field in GROUP_FIELDS
+            if field in case
+        },
         "passed": passed,
         "tool_pass": tool_pass,
         "argument_pass": argument_pass,
@@ -355,6 +362,10 @@ def build_report(
     for result in results:
         for failure_type in result.get("failure_types", []):
             failure_type_counts[failure_type] = failure_type_counts.get(failure_type, 0) + 1
+    groups = {
+        field: build_group_metrics(results, field)
+        for field in GROUP_FIELDS
+    }
     return {
         "type": "tool_choice_report",
         "profile": profile,
@@ -397,6 +408,7 @@ def build_report(
         else 0.0,
         "default_reliance_rate": round(default_reliance_count / total, 4) if total else 0.0,
         "failure_type_counts": failure_type_counts,
+        "groups": groups,
         "confusion_matrix": confusion_matrix,
         "per_class": per_class,
         "latency": {
@@ -405,6 +417,93 @@ def build_report(
             "total_seconds": round(sum(latencies), 3),
         },
         "results": results,
+    }
+
+
+def build_group_metrics(results: list[dict[str, Any]], field: str) -> dict[str, dict[str, Any]]:
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for result in results:
+        value = result.get("case_metadata", {}).get(field, "<missing>")
+        grouped.setdefault(str(value), []).append(result)
+    return {
+        value: summarize_result_subset(subset)
+        for value, subset in sorted(grouped.items())
+    }
+
+
+def summarize_result_subset(results: list[dict[str, Any]]) -> dict[str, Any]:
+    total = len(results)
+    constrained_results = [result for result in results if result["argument_checks"]]
+    latencies = [float(result["latency_seconds"]) for result in results]
+    failure_type_counts: dict[str, int] = {}
+    for result in results:
+        for failure_type in result.get("failure_types", []):
+            failure_type_counts[failure_type] = failure_type_counts.get(failure_type, 0) + 1
+    return {
+        "total_cases": total,
+        "passed_cases": sum(1 for result in results if result["passed"]),
+        "overall_accuracy": round(sum(1 for result in results if result["passed"]) / total, 4)
+        if total
+        else 0.0,
+        "tool_selection_accuracy": round(sum(1 for result in results if result["tool_pass"]) / total, 4)
+        if total
+        else 0.0,
+        "argument_accuracy": round(
+            sum(1 for result in constrained_results if result["argument_pass"]) / len(constrained_results),
+            4,
+        )
+        if constrained_results
+        else None,
+        "argument_json_validity_rate": round(
+            sum(1 for result in results if result["argument_json_valid"]) / total,
+            4,
+        )
+        if total
+        else 0.0,
+        "tool_false_positive_rate": round(
+            sum(
+                1
+                for result in results
+                if result["expected_tool"] == NO_TOOL_LABEL and result["actual_tool"] != NO_TOOL_LABEL
+            )
+            / total,
+            4,
+        )
+        if total
+        else 0.0,
+        "no_tool_false_negative_rate": round(
+            sum(
+                1
+                for result in results
+                if result["expected_tool"] != NO_TOOL_LABEL and result["actual_tool"] == NO_TOOL_LABEL
+            )
+            / total,
+            4,
+        )
+        if total
+        else 0.0,
+        "wrong_tool_rate": round(
+            sum(
+                1
+                for result in results
+                if not result["tool_pass"] and result["actual_tool"] != NO_TOOL_LABEL
+            )
+            / total,
+            4,
+        )
+        if total
+        else 0.0,
+        "extra_tool_rate": round(
+            sum(1 for result in results if result["extra_tool_count"] > 0) / total,
+            4,
+        )
+        if total
+        else 0.0,
+        "failure_type_counts": failure_type_counts,
+        "latency": {
+            "average_seconds": round(sum(latencies) / total, 3) if total else 0.0,
+            "max_seconds": round(max(latencies), 3) if latencies else 0.0,
+        },
     }
 
 
@@ -428,6 +527,15 @@ def run(argv: list[str] | None = None) -> int:
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--top-p", type=float)
     parser.add_argument("--report", type=Path, help="Write a JSON report with aggregate metrics.")
+    parser.add_argument("--mlflow-experiment", help="Optionally log this report to an MLflow experiment.")
+    parser.add_argument("--mlflow-run-name", help="Optional MLflow run name.")
+    parser.add_argument(
+        "--artifact",
+        action="append",
+        type=Path,
+        default=[],
+        help="Additional artifact path to attach when MLflow logging is enabled.",
+    )
     parser.add_argument(
         "--no-auto-start",
         action="store_true",
@@ -480,6 +588,21 @@ def run(argv: list[str] | None = None) -> int:
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(json.dumps(report, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+    if args.mlflow_experiment:
+        run_id = mlflow_log_report(
+            report,
+            experiment_name=args.mlflow_experiment,
+            run_name=args.mlflow_run_name,
+            report_path=args.report,
+            artifacts=args.artifact,
+            params={
+                "cases": str(args.cases),
+                "case": args.case_id,
+                "temperature": args.temperature,
+                "top_p": args.top_p,
+            },
+        )
+        print(f"Logged MLflow run: {run_id}", file=sys.stderr)
     if args.json:
         print(json.dumps({key: value for key, value in report.items() if key != "results"}, ensure_ascii=True))
     else:

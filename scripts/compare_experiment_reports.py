@@ -88,6 +88,41 @@ def compare_per_class_f1(
     }
 
 
+def compare_tool_groups(
+    base: dict[str, Any],
+    sft: dict[str, Any],
+) -> dict[str, dict[str, Any]]:
+    base_groups = base.get("groups", {})
+    sft_groups = sft.get("groups", {})
+    group_names = sorted(set(base_groups) | set(sft_groups))
+    return {
+        group_name: {
+            group_value: compare_metric_group(
+                base_groups.get(group_name, {}).get(group_value, {}),
+                sft_groups.get(group_name, {}).get(group_value, {}),
+                TOOL_METRICS,
+            )
+            | {
+                "total_cases": {
+                    "base": base_groups.get(group_name, {}).get(group_value, {}).get("total_cases", 0),
+                    "sft": sft_groups.get(group_name, {}).get(group_value, {}).get("total_cases", 0),
+                    "delta": int(sft_groups.get(group_name, {}).get(group_value, {}).get("total_cases", 0))
+                    - int(base_groups.get(group_name, {}).get(group_value, {}).get("total_cases", 0)),
+                },
+                "failure_type_counts": compare_failure_type_counts(
+                    base_groups.get(group_name, {}).get(group_value, {}),
+                    sft_groups.get(group_name, {}).get(group_value, {}),
+                ),
+            }
+            for group_value in sorted(
+                set(base_groups.get(group_name, {}))
+                | set(sft_groups.get(group_name, {}))
+            )
+        }
+        for group_name in group_names
+    }
+
+
 def compare_label_counts(
     base: dict[str, Any],
     sft: dict[str, Any],
@@ -122,6 +157,7 @@ def build_scorecard(
             "metrics": compare_metric_group(base_tool_report, sft_tool_report, TOOL_METRICS),
             "failure_type_counts": compare_failure_type_counts(base_tool_report, sft_tool_report),
             "per_class_f1": compare_per_class_f1(base_tool_report, sft_tool_report),
+            "groups": compare_tool_groups(base_tool_report, sft_tool_report),
             "latency": {
                 "average_seconds": {
                     "base": base_tool_report.get("latency", {}).get("average_seconds"),

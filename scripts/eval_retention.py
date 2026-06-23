@@ -19,6 +19,7 @@ from app.llm.prompting import build_system_prompt
 from app.llm.profiles import config_from_profile
 from app.llm.runtime import ensure_provider_ready
 from app.tools.registry import get_tool_definitions
+from scripts.experiment_tracking import mlflow_log_report
 
 
 DEFAULT_CASES_PATH = REPO_ROOT / "evals" / "retention" / "cases.json"
@@ -265,6 +266,15 @@ def run(argv: list[str] | None = None) -> int:
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--top-p", type=float)
     parser.add_argument("--report", type=Path, help="Write a JSON report with aggregate metrics.")
+    parser.add_argument("--mlflow-experiment", help="Optionally log this report to an MLflow experiment.")
+    parser.add_argument("--mlflow-run-name", help="Optional MLflow run name.")
+    parser.add_argument(
+        "--artifact",
+        action="append",
+        type=Path,
+        default=[],
+        help="Additional artifact path to attach when MLflow logging is enabled.",
+    )
     parser.add_argument(
         "--no-auto-start",
         action="store_true",
@@ -303,6 +313,21 @@ def run(argv: list[str] | None = None) -> int:
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(json.dumps(report, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+    if args.mlflow_experiment:
+        run_id = mlflow_log_report(
+            report,
+            experiment_name=args.mlflow_experiment,
+            run_name=args.mlflow_run_name,
+            report_path=args.report,
+            artifacts=args.artifact,
+            params={
+                "cases": str(args.cases),
+                "case": args.case_id,
+                "temperature": args.temperature,
+                "top_p": args.top_p,
+            },
+        )
+        print(f"Logged MLflow run: {run_id}", file=sys.stderr)
     if args.json:
         print(json.dumps({key: value for key, value in report.items() if key != "results"}, ensure_ascii=True))
     else:
