@@ -24,6 +24,7 @@ from app.tools.registry import get_tool_definitions
 DEFAULT_CASES_PATH = REPO_ROOT / "evals" / "tool_choice" / "cases.json"
 NO_TOOL_LABEL = "no_tool"
 SPLIT_LABELS = ("train", "validation", "heldout")
+DIFFICULTY_LABELS = ("easy", "medium", "hard", "ambiguous")
 
 
 def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
@@ -67,15 +68,33 @@ def load_cases(path: Path = DEFAULT_CASES_PATH) -> list[dict[str, Any]]:
 
 
 def validate_case(case: dict[str, Any]) -> None:
-    for key in ("id", "user", "expected_tool"):
+    for key in ("id", "expected_tool"):
         if not str(case.get(key) or "").strip():
             raise ValueError(f"Tool-choice case is missing required field: {key}")
+    has_user = bool(str(case.get("user") or "").strip())
+    messages = case.get("messages")
+    has_messages = isinstance(messages, list) and bool(messages)
+    if not has_user and not has_messages:
+        raise ValueError(f"Tool-choice case {case['id']} needs user or messages.")
+    if has_messages:
+        for index, message in enumerate(messages):
+            if not isinstance(message, dict):
+                raise ValueError(f"Tool-choice case {case['id']} message {index} must be an object.")
+            if message.get("role") not in {"user", "assistant", "tool"}:
+                raise ValueError(f"Tool-choice case {case['id']} message {index} has invalid role.")
+            if not str(message.get("content") or "").strip():
+                raise ValueError(f"Tool-choice case {case['id']} message {index} has empty content.")
     expected_arguments = case.get("expected_arguments")
     if expected_arguments is not None and not isinstance(expected_arguments, dict):
         raise ValueError(f"Tool-choice case {case['id']} expected_arguments must be an object.")
     for key in ("intent", "category", "difficulty", "retention_kind", "split"):
         if key in case and not str(case[key]).strip():
             raise ValueError(f"Tool-choice case {case['id']} has empty metadata field: {key}")
+    if "difficulty" in case and case["difficulty"] not in DIFFICULTY_LABELS:
+        raise ValueError(
+            f"Tool-choice case {case['id']} has invalid difficulty {case['difficulty']!r}; "
+            f"expected one of {', '.join(DIFFICULTY_LABELS)}."
+        )
     if "split" in case and case["split"] not in SPLIT_LABELS:
         raise ValueError(
             f"Tool-choice case {case['id']} has invalid split {case['split']!r}; "
@@ -163,6 +182,15 @@ def uses_tool_defaults(tool_name: str | None, parsed: dict[str, Any], effective:
     return tool_name == "content_list" and parsed != effective
 
 
+def request_messages_from_case(case: dict[str, Any]) -> list[dict[str, str]]:
+    messages: list[dict[str, str]] = [{"role": "system", "content": build_system_prompt()}]
+    if "messages" in case:
+        messages.extend(case["messages"])
+    else:
+        messages.append({"role": "user", "content": case["user"]})
+    return messages
+
+
 def run_case(
     case: dict[str, Any],
     *,
@@ -172,10 +200,7 @@ def run_case(
 ) -> dict[str, Any]:
     request_kwargs: dict[str, Any] = {
         "model": config.model_name,
-        "messages": [
-            {"role": "system", "content": build_system_prompt()},
-            {"role": "user", "content": case["user"]},
-        ],
+        "messages": request_messages_from_case(case),
         "temperature": temperature,
         "max_tokens": 256,
         "tools": get_tool_definitions(),

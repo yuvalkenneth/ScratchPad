@@ -5,6 +5,7 @@ from scripts.eval_tool_choice import (
     evaluate_arguments,
     filter_cases_by_split,
     parse_tool_arguments,
+    request_messages_from_case,
 )
 
 
@@ -62,6 +63,23 @@ def test_filter_cases_by_split_keeps_only_requested_split() -> None:
 
     assert [case["id"] for case in filter_cases_by_split(cases, "heldout")] == ["heldout_case"]
     assert filter_cases_by_split(cases, None) == cases
+
+
+def test_request_messages_from_case_supports_multi_turn_context() -> None:
+    messages = request_messages_from_case(
+        {
+            "id": "context",
+            "messages": [
+                {"role": "user", "content": "Here is https://example.com"},
+                {"role": "assistant", "content": "I can save it."},
+                {"role": "user", "content": "Save it."},
+            ],
+            "expected_tool": "content_add",
+        }
+    )
+
+    assert messages[0]["role"] == "system"
+    assert [message["role"] for message in messages[1:]] == ["user", "assistant", "user"]
 
 
 def test_build_report_scores_tool_selection_as_multiclass_classification() -> None:

@@ -1,11 +1,12 @@
 [
   {
     "id": "inspect_0_0",
-    "user": "Inspect https://example.com/article and tell me if it is worth reading. Do not save it.",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Inspect https://example.com/article and tell me if it is worth reading. Do not save it.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article"
@@ -15,11 +16,12 @@
   },
   {
     "id": "inspect_0_1",
-    "user": "What is https://example.com/article about? Don't add it to my library yet.",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What is https://example.com/article about? Don't add it to my library yet.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article"
@@ -29,11 +31,12 @@
   },
   {
     "id": "inspect_0_2",
-    "user": "Analyze this source without saving: https://example.com/article",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Analyze this source without saving: https://example.com/article",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article"
@@ -43,11 +46,12 @@
   },
   {
     "id": "inspect_0_3",
-    "user": "Can you preview https://example.com/article before I decide whether to keep it?",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Can you preview https://example.com/article before I decide whether to keep it?",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article"
@@ -57,11 +61,12 @@
   },
   {
     "id": "inspect_1_0",
-    "user": "Inspect https://builders.ramp.com/post/stack-benchmarking and tell me if it is worth reading. Do not save it.",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Inspect https://builders.ramp.com/post/stack-benchmarking and tell me if it is worth reading. Do not save it.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking"
@@ -71,11 +76,12 @@
   },
   {
     "id": "inspect_1_1",
-    "user": "What is https://builders.ramp.com/post/stack-benchmarking about? Don't add it to my library yet.",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What is https://builders.ramp.com/post/stack-benchmarking about? Don't add it to my library yet.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking"
@@ -85,11 +91,12 @@
   },
   {
     "id": "inspect_1_2",
-    "user": "Analyze this source without saving: https://builders.ramp.com/post/stack-benchmarking",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Analyze this source without saving: https://builders.ramp.com/post/stack-benchmarking",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking"
@@ -99,11 +106,12 @@
   },
   {
     "id": "inspect_1_3",
-    "user": "Can you preview https://builders.ramp.com/post/stack-benchmarking before I decide whether to keep it?",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Can you preview https://builders.ramp.com/post/stack-benchmarking before I decide whether to keep it?",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking"
@@ -113,11 +121,12 @@
   },
   {
     "id": "inspect_2_0",
-    "user": "Inspect https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html and tell me if it is worth reading. Do not save it.",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Inspect https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html and tell me if it is worth reading. Do not save it.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
@@ -127,11 +136,12 @@
   },
   {
     "id": "inspect_2_1",
-    "user": "What is https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html about? Don't add it to my library yet.",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What is https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html about? Don't add it to my library yet.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
@@ -141,11 +151,12 @@
   },
   {
     "id": "inspect_2_2",
-    "user": "Analyze this source without saving: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Analyze this source without saving: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
@@ -155,11 +166,12 @@
   },
   {
     "id": "inspect_2_3",
-    "user": "Can you preview https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html before I decide whether to keep it?",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Can you preview https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html before I decide whether to keep it?",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
@@ -169,11 +181,12 @@
   },
   {
     "id": "inspect_3_0",
-    "user": "Inspect https://www.youtube.com/watch?v=l6DKRf-fAAM and tell me if it is worth reading. Do not save it.",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Inspect https://www.youtube.com/watch?v=l6DKRf-fAAM and tell me if it is worth reading. Do not save it.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
@@ -183,11 +196,12 @@
   },
   {
     "id": "inspect_3_1",
-    "user": "What is https://www.youtube.com/watch?v=l6DKRf-fAAM about? Don't add it to my library yet.",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What is https://www.youtube.com/watch?v=l6DKRf-fAAM about? Don't add it to my library yet.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
@@ -197,11 +211,12 @@
   },
   {
     "id": "inspect_3_2",
-    "user": "Analyze this source without saving: https://www.youtube.com/watch?v=l6DKRf-fAAM",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Analyze this source without saving: https://www.youtube.com/watch?v=l6DKRf-fAAM",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
@@ -211,11 +226,12 @@
   },
   {
     "id": "inspect_3_3",
-    "user": "Can you preview https://www.youtube.com/watch?v=l6DKRf-fAAM before I decide whether to keep it?",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Can you preview https://www.youtube.com/watch?v=l6DKRf-fAAM before I decide whether to keep it?",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
@@ -225,11 +241,12 @@
   },
   {
     "id": "inspect_4_0",
-    "user": "Inspect https://github.com/ggml-org/llama.cpp and tell me if it is worth reading. Do not save it.",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Inspect https://github.com/ggml-org/llama.cpp and tell me if it is worth reading. Do not save it.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp"
@@ -239,11 +256,12 @@
   },
   {
     "id": "inspect_4_1",
-    "user": "What is https://github.com/ggml-org/llama.cpp about? Don't add it to my library yet.",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What is https://github.com/ggml-org/llama.cpp about? Don't add it to my library yet.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp"
@@ -253,11 +271,12 @@
   },
   {
     "id": "inspect_4_2",
-    "user": "Analyze this source without saving: https://github.com/ggml-org/llama.cpp",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Analyze this source without saving: https://github.com/ggml-org/llama.cpp",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp"
@@ -267,11 +286,12 @@
   },
   {
     "id": "inspect_4_3",
-    "user": "Can you preview https://github.com/ggml-org/llama.cpp before I decide whether to keep it?",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Can you preview https://github.com/ggml-org/llama.cpp before I decide whether to keep it?",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp"
@@ -281,11 +301,12 @@
   },
   {
     "id": "inspect_5_0",
-    "user": "Inspect https://example.com/old-rag-post and tell me if it is worth reading. Do not save it.",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Inspect https://example.com/old-rag-post and tell me if it is worth reading. Do not save it.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/old-rag-post"
@@ -295,11 +316,12 @@
   },
   {
     "id": "inspect_5_1",
-    "user": "What is https://example.com/old-rag-post about? Don't add it to my library yet.",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What is https://example.com/old-rag-post about? Don't add it to my library yet.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/old-rag-post"
@@ -309,11 +331,12 @@
   },
   {
     "id": "inspect_5_2",
-    "user": "Analyze this source without saving: https://example.com/old-rag-post",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Analyze this source without saving: https://example.com/old-rag-post",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/old-rag-post"
@@ -323,11 +346,12 @@
   },
   {
     "id": "inspect_5_3",
-    "user": "Can you preview https://example.com/old-rag-post before I decide whether to keep it?",
     "expected_tool": "analyze_source",
     "intent": "inspect_without_saving",
     "category": "source_analysis",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Can you preview https://example.com/old-rag-post before I decide whether to keep it?",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/old-rag-post"
@@ -337,11 +361,12 @@
   },
   {
     "id": "save_0_0",
-    "user": "Save https://example.com/article to my library.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Save https://example.com/article to my library.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article"
@@ -351,11 +376,12 @@
   },
   {
     "id": "save_0_1",
-    "user": "Add this to Scratchpad: https://example.com/article",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Add this to Scratchpad: https://example.com/article",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article"
@@ -365,11 +391,12 @@
   },
   {
     "id": "save_0_2",
-    "user": "Remember https://example.com/article for later.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Remember https://example.com/article for later.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article"
@@ -379,11 +406,12 @@
   },
   {
     "id": "save_0_3",
-    "user": "Put https://example.com/article in my reading list.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Put https://example.com/article in my reading list.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article"
@@ -393,11 +421,12 @@
   },
   {
     "id": "save_1_0",
-    "user": "Save https://builders.ramp.com/post/stack-benchmarking to my library.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Save https://builders.ramp.com/post/stack-benchmarking to my library.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking"
@@ -407,11 +436,12 @@
   },
   {
     "id": "save_1_1",
-    "user": "Add this to Scratchpad: https://builders.ramp.com/post/stack-benchmarking",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Add this to Scratchpad: https://builders.ramp.com/post/stack-benchmarking",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking"
@@ -421,11 +451,12 @@
   },
   {
     "id": "save_1_2",
-    "user": "Remember https://builders.ramp.com/post/stack-benchmarking for later.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Remember https://builders.ramp.com/post/stack-benchmarking for later.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking"
@@ -435,11 +466,12 @@
   },
   {
     "id": "save_1_3",
-    "user": "Put https://builders.ramp.com/post/stack-benchmarking in my reading list.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Put https://builders.ramp.com/post/stack-benchmarking in my reading list.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking"
@@ -449,11 +481,12 @@
   },
   {
     "id": "save_2_0",
-    "user": "Save https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html to my library.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Save https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html to my library.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
@@ -463,11 +496,12 @@
   },
   {
     "id": "save_2_1",
-    "user": "Add this to Scratchpad: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Add this to Scratchpad: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
@@ -477,11 +511,12 @@
   },
   {
     "id": "save_2_2",
-    "user": "Remember https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html for later.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Remember https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html for later.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
@@ -491,11 +526,12 @@
   },
   {
     "id": "save_2_3",
-    "user": "Put https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html in my reading list.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Put https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html in my reading list.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
@@ -505,11 +541,12 @@
   },
   {
     "id": "save_3_0",
-    "user": "Save https://www.youtube.com/watch?v=l6DKRf-fAAM to my library.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Save https://www.youtube.com/watch?v=l6DKRf-fAAM to my library.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
@@ -519,11 +556,12 @@
   },
   {
     "id": "save_3_1",
-    "user": "Add this to Scratchpad: https://www.youtube.com/watch?v=l6DKRf-fAAM",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Add this to Scratchpad: https://www.youtube.com/watch?v=l6DKRf-fAAM",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
@@ -533,11 +571,12 @@
   },
   {
     "id": "save_3_2",
-    "user": "Remember https://www.youtube.com/watch?v=l6DKRf-fAAM for later.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Remember https://www.youtube.com/watch?v=l6DKRf-fAAM for later.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
@@ -547,11 +586,12 @@
   },
   {
     "id": "save_3_3",
-    "user": "Put https://www.youtube.com/watch?v=l6DKRf-fAAM in my reading list.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Put https://www.youtube.com/watch?v=l6DKRf-fAAM in my reading list.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
@@ -561,11 +601,12 @@
   },
   {
     "id": "save_4_0",
-    "user": "Save https://github.com/ggml-org/llama.cpp to my library.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Save https://github.com/ggml-org/llama.cpp to my library.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp"
@@ -575,11 +616,12 @@
   },
   {
     "id": "save_4_1",
-    "user": "Add this to Scratchpad: https://github.com/ggml-org/llama.cpp",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Add this to Scratchpad: https://github.com/ggml-org/llama.cpp",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp"
@@ -589,11 +631,12 @@
   },
   {
     "id": "save_4_2",
-    "user": "Remember https://github.com/ggml-org/llama.cpp for later.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Remember https://github.com/ggml-org/llama.cpp for later.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp"
@@ -603,11 +646,12 @@
   },
   {
     "id": "save_4_3",
-    "user": "Put https://github.com/ggml-org/llama.cpp in my reading list.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Put https://github.com/ggml-org/llama.cpp in my reading list.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp"
@@ -617,11 +661,12 @@
   },
   {
     "id": "save_5_0",
-    "user": "Save https://example.com/old-rag-post to my library.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Save https://example.com/old-rag-post to my library.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/old-rag-post"
@@ -631,11 +676,12 @@
   },
   {
     "id": "save_5_1",
-    "user": "Add this to Scratchpad: https://example.com/old-rag-post",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Add this to Scratchpad: https://example.com/old-rag-post",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/old-rag-post"
@@ -645,11 +691,12 @@
   },
   {
     "id": "save_5_2",
-    "user": "Remember https://example.com/old-rag-post for later.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Remember https://example.com/old-rag-post for later.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/old-rag-post"
@@ -659,11 +706,12 @@
   },
   {
     "id": "save_5_3",
-    "user": "Put https://example.com/old-rag-post in my reading list.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "library_write",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Put https://example.com/old-rag-post in my reading list.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/old-rag-post"
@@ -673,11 +721,12 @@
   },
   {
     "id": "save_disambiguation_0_0",
-    "user": "Keep https://example.com/article in my library; don't just preview it.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Keep https://example.com/article in my library; don't just preview it.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article"
@@ -687,11 +736,12 @@
   },
   {
     "id": "save_disambiguation_0_1",
-    "user": "Save https://example.com/article; I already know I want it later.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Save https://example.com/article; I already know I want it later.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article"
@@ -701,11 +751,12 @@
   },
   {
     "id": "save_disambiguation_0_2",
-    "user": "Add https://example.com/article as a saved source, not just an analysis.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Add https://example.com/article as a saved source, not just an analysis.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article"
@@ -715,11 +766,12 @@
   },
   {
     "id": "save_disambiguation_0_3",
-    "user": "Store https://example.com/article in Scratchpad for future reading.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Store https://example.com/article in Scratchpad for future reading.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article"
@@ -729,11 +781,12 @@
   },
   {
     "id": "save_disambiguation_1_0",
-    "user": "Keep https://builders.ramp.com/post/stack-benchmarking in my library; don't just preview it.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Keep https://builders.ramp.com/post/stack-benchmarking in my library; don't just preview it.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking"
@@ -743,11 +796,12 @@
   },
   {
     "id": "save_disambiguation_1_1",
-    "user": "Save https://builders.ramp.com/post/stack-benchmarking; I already know I want it later.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Save https://builders.ramp.com/post/stack-benchmarking; I already know I want it later.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking"
@@ -757,11 +811,12 @@
   },
   {
     "id": "save_disambiguation_1_2",
-    "user": "Add https://builders.ramp.com/post/stack-benchmarking as a saved source, not just an analysis.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Add https://builders.ramp.com/post/stack-benchmarking as a saved source, not just an analysis.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking"
@@ -771,11 +826,12 @@
   },
   {
     "id": "save_disambiguation_1_3",
-    "user": "Store https://builders.ramp.com/post/stack-benchmarking in Scratchpad for future reading.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Store https://builders.ramp.com/post/stack-benchmarking in Scratchpad for future reading.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking"
@@ -785,11 +841,12 @@
   },
   {
     "id": "save_disambiguation_2_0",
-    "user": "Keep https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html in my library; don't just preview it.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Keep https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html in my library; don't just preview it.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
@@ -799,11 +856,12 @@
   },
   {
     "id": "save_disambiguation_2_1",
-    "user": "Save https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html; I already know I want it later.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Save https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html; I already know I want it later.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
@@ -813,11 +871,12 @@
   },
   {
     "id": "save_disambiguation_2_2",
-    "user": "Add https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as a saved source, not just an analysis.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Add https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as a saved source, not just an analysis.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
@@ -827,11 +886,12 @@
   },
   {
     "id": "save_disambiguation_2_3",
-    "user": "Store https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html in Scratchpad for future reading.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Store https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html in Scratchpad for future reading.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
@@ -841,11 +901,12 @@
   },
   {
     "id": "save_disambiguation_3_0",
-    "user": "Keep https://www.youtube.com/watch?v=l6DKRf-fAAM in my library; don't just preview it.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Keep https://www.youtube.com/watch?v=l6DKRf-fAAM in my library; don't just preview it.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
@@ -855,11 +916,12 @@
   },
   {
     "id": "save_disambiguation_3_1",
-    "user": "Save https://www.youtube.com/watch?v=l6DKRf-fAAM; I already know I want it later.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Save https://www.youtube.com/watch?v=l6DKRf-fAAM; I already know I want it later.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
@@ -869,11 +931,12 @@
   },
   {
     "id": "save_disambiguation_3_2",
-    "user": "Add https://www.youtube.com/watch?v=l6DKRf-fAAM as a saved source, not just an analysis.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Add https://www.youtube.com/watch?v=l6DKRf-fAAM as a saved source, not just an analysis.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
@@ -883,11 +946,12 @@
   },
   {
     "id": "save_disambiguation_3_3",
-    "user": "Store https://www.youtube.com/watch?v=l6DKRf-fAAM in Scratchpad for future reading.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Store https://www.youtube.com/watch?v=l6DKRf-fAAM in Scratchpad for future reading.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM"
@@ -897,11 +961,12 @@
   },
   {
     "id": "save_disambiguation_4_0",
-    "user": "Keep https://github.com/ggml-org/llama.cpp in my library; don't just preview it.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Keep https://github.com/ggml-org/llama.cpp in my library; don't just preview it.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp"
@@ -911,11 +976,12 @@
   },
   {
     "id": "save_disambiguation_4_1",
-    "user": "Save https://github.com/ggml-org/llama.cpp; I already know I want it later.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Save https://github.com/ggml-org/llama.cpp; I already know I want it later.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp"
@@ -925,11 +991,12 @@
   },
   {
     "id": "save_disambiguation_4_2",
-    "user": "Add https://github.com/ggml-org/llama.cpp as a saved source, not just an analysis.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Add https://github.com/ggml-org/llama.cpp as a saved source, not just an analysis.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp"
@@ -939,11 +1006,12 @@
   },
   {
     "id": "save_disambiguation_4_3",
-    "user": "Store https://github.com/ggml-org/llama.cpp in Scratchpad for future reading.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Store https://github.com/ggml-org/llama.cpp in Scratchpad for future reading.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp"
@@ -953,11 +1021,12 @@
   },
   {
     "id": "save_disambiguation_5_0",
-    "user": "Keep https://example.com/old-rag-post in my library; don't just preview it.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Keep https://example.com/old-rag-post in my library; don't just preview it.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/old-rag-post"
@@ -967,11 +1036,12 @@
   },
   {
     "id": "save_disambiguation_5_1",
-    "user": "Save https://example.com/old-rag-post; I already know I want it later.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Save https://example.com/old-rag-post; I already know I want it later.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/old-rag-post"
@@ -981,11 +1051,12 @@
   },
   {
     "id": "save_disambiguation_5_2",
-    "user": "Add https://example.com/old-rag-post as a saved source, not just an analysis.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Add https://example.com/old-rag-post as a saved source, not just an analysis.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/old-rag-post"
@@ -995,11 +1066,12 @@
   },
   {
     "id": "save_disambiguation_5_3",
-    "user": "Store https://example.com/old-rag-post in Scratchpad for future reading.",
     "expected_tool": "content_add",
     "intent": "save_source",
     "category": "known_failure_content_add_vs_analyze",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Store https://example.com/old-rag-post in Scratchpad for future reading.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/old-rag-post"
@@ -1009,11 +1081,12 @@
   },
   {
     "id": "status_unread_0",
-    "user": "Mark https://example.com/article as unread.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://example.com/article as unread.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1024,11 +1097,12 @@
   },
   {
     "id": "status_unread_1",
-    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as unread.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as unread.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1039,11 +1113,12 @@
   },
   {
     "id": "status_unread_2",
-    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as unread.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as unread.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1054,11 +1129,12 @@
   },
   {
     "id": "status_unread_3",
-    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as unread.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as unread.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1069,11 +1145,12 @@
   },
   {
     "id": "status_started_0",
-    "user": "Mark https://example.com/article as started.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://example.com/article as started.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1084,11 +1161,12 @@
   },
   {
     "id": "status_started_1",
-    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as started.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as started.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1099,11 +1177,12 @@
   },
   {
     "id": "status_started_2",
-    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as started.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as started.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1114,11 +1193,12 @@
   },
   {
     "id": "status_started_3",
-    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as started.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as started.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1129,11 +1209,12 @@
   },
   {
     "id": "status_done_0",
-    "user": "Mark https://example.com/article as done.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://example.com/article as done.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1144,11 +1225,12 @@
   },
   {
     "id": "status_done_1",
-    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as done.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as done.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1159,11 +1241,12 @@
   },
   {
     "id": "status_done_2",
-    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as done.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as done.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1174,11 +1257,12 @@
   },
   {
     "id": "status_done_3",
-    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as done.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as done.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1189,11 +1273,12 @@
   },
   {
     "id": "status_archived_0",
-    "user": "Mark https://example.com/article as archived.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://example.com/article as archived.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1204,11 +1289,12 @@
   },
   {
     "id": "status_archived_1",
-    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as archived.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as archived.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1219,11 +1305,12 @@
   },
   {
     "id": "status_archived_2",
-    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as archived.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as archived.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1234,11 +1321,12 @@
   },
   {
     "id": "status_archived_3",
-    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as archived.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as archived.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1249,11 +1337,12 @@
   },
   {
     "id": "status_abandoned_0",
-    "user": "Mark https://example.com/article as abandoned.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://example.com/article as abandoned.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1264,11 +1353,12 @@
   },
   {
     "id": "status_abandoned_1",
-    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as abandoned.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://builders.ramp.com/post/stack-benchmarking as abandoned.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1279,11 +1369,12 @@
   },
   {
     "id": "status_abandoned_2",
-    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as abandoned.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html as abandoned.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1294,11 +1385,12 @@
   },
   {
     "id": "status_abandoned_3",
-    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as abandoned.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "library_update",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Mark https://www.youtube.com/watch?v=l6DKRf-fAAM as abandoned.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1309,11 +1401,12 @@
   },
   {
     "id": "status_grounding_unread_0_0",
-    "user": "Set the saved URL https://example.com/article to unread; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://example.com/article to unread; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1324,11 +1417,12 @@
   },
   {
     "id": "status_grounding_unread_0_1",
-    "user": "For https://example.com/article, update only the reading status to unread.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://example.com/article, update only the reading status to unread.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1339,11 +1433,12 @@
   },
   {
     "id": "status_grounding_unread_0_2",
-    "user": "Change status for this exact URL to unread: https://example.com/article",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to unread: https://example.com/article",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1354,11 +1449,12 @@
   },
   {
     "id": "status_grounding_unread_0_3",
-    "user": "Mark the source at https://example.com/article unread; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://example.com/article unread; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1369,11 +1465,12 @@
   },
   {
     "id": "status_grounding_unread_1_0",
-    "user": "Set the saved URL https://builders.ramp.com/post/stack-benchmarking to unread; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://builders.ramp.com/post/stack-benchmarking to unread; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1384,11 +1481,12 @@
   },
   {
     "id": "status_grounding_unread_1_1",
-    "user": "For https://builders.ramp.com/post/stack-benchmarking, update only the reading status to unread.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://builders.ramp.com/post/stack-benchmarking, update only the reading status to unread.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1399,11 +1497,12 @@
   },
   {
     "id": "status_grounding_unread_1_2",
-    "user": "Change status for this exact URL to unread: https://builders.ramp.com/post/stack-benchmarking",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to unread: https://builders.ramp.com/post/stack-benchmarking",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1414,11 +1513,12 @@
   },
   {
     "id": "status_grounding_unread_1_3",
-    "user": "Mark the source at https://builders.ramp.com/post/stack-benchmarking unread; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://builders.ramp.com/post/stack-benchmarking unread; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1429,11 +1529,12 @@
   },
   {
     "id": "status_grounding_unread_2_0",
-    "user": "Set the saved URL https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html to unread; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html to unread; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1444,11 +1545,12 @@
   },
   {
     "id": "status_grounding_unread_2_1",
-    "user": "For https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html, update only the reading status to unread.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html, update only the reading status to unread.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1459,11 +1561,12 @@
   },
   {
     "id": "status_grounding_unread_2_2",
-    "user": "Change status for this exact URL to unread: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to unread: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1474,11 +1577,12 @@
   },
   {
     "id": "status_grounding_unread_2_3",
-    "user": "Mark the source at https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html unread; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html unread; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1489,11 +1593,12 @@
   },
   {
     "id": "status_grounding_unread_3_0",
-    "user": "Set the saved URL https://www.youtube.com/watch?v=l6DKRf-fAAM to unread; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://www.youtube.com/watch?v=l6DKRf-fAAM to unread; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1504,11 +1609,12 @@
   },
   {
     "id": "status_grounding_unread_3_1",
-    "user": "For https://www.youtube.com/watch?v=l6DKRf-fAAM, update only the reading status to unread.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://www.youtube.com/watch?v=l6DKRf-fAAM, update only the reading status to unread.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1519,11 +1625,12 @@
   },
   {
     "id": "status_grounding_unread_3_2",
-    "user": "Change status for this exact URL to unread: https://www.youtube.com/watch?v=l6DKRf-fAAM",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to unread: https://www.youtube.com/watch?v=l6DKRf-fAAM",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1534,11 +1641,12 @@
   },
   {
     "id": "status_grounding_unread_3_3",
-    "user": "Mark the source at https://www.youtube.com/watch?v=l6DKRf-fAAM unread; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://www.youtube.com/watch?v=l6DKRf-fAAM unread; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1549,11 +1657,12 @@
   },
   {
     "id": "status_grounding_started_0_0",
-    "user": "Set the saved URL https://example.com/article to started; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://example.com/article to started; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1564,11 +1673,12 @@
   },
   {
     "id": "status_grounding_started_0_1",
-    "user": "For https://example.com/article, update only the reading status to started.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://example.com/article, update only the reading status to started.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1579,11 +1689,12 @@
   },
   {
     "id": "status_grounding_started_0_2",
-    "user": "Change status for this exact URL to started: https://example.com/article",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to started: https://example.com/article",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1594,11 +1705,12 @@
   },
   {
     "id": "status_grounding_started_0_3",
-    "user": "Mark the source at https://example.com/article started; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://example.com/article started; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1609,11 +1721,12 @@
   },
   {
     "id": "status_grounding_started_1_0",
-    "user": "Set the saved URL https://builders.ramp.com/post/stack-benchmarking to started; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://builders.ramp.com/post/stack-benchmarking to started; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1624,11 +1737,12 @@
   },
   {
     "id": "status_grounding_started_1_1",
-    "user": "For https://builders.ramp.com/post/stack-benchmarking, update only the reading status to started.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://builders.ramp.com/post/stack-benchmarking, update only the reading status to started.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1639,11 +1753,12 @@
   },
   {
     "id": "status_grounding_started_1_2",
-    "user": "Change status for this exact URL to started: https://builders.ramp.com/post/stack-benchmarking",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to started: https://builders.ramp.com/post/stack-benchmarking",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1654,11 +1769,12 @@
   },
   {
     "id": "status_grounding_started_1_3",
-    "user": "Mark the source at https://builders.ramp.com/post/stack-benchmarking started; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://builders.ramp.com/post/stack-benchmarking started; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1669,11 +1785,12 @@
   },
   {
     "id": "status_grounding_started_2_0",
-    "user": "Set the saved URL https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html to started; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html to started; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1684,11 +1801,12 @@
   },
   {
     "id": "status_grounding_started_2_1",
-    "user": "For https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html, update only the reading status to started.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html, update only the reading status to started.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1699,11 +1817,12 @@
   },
   {
     "id": "status_grounding_started_2_2",
-    "user": "Change status for this exact URL to started: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to started: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1714,11 +1833,12 @@
   },
   {
     "id": "status_grounding_started_2_3",
-    "user": "Mark the source at https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html started; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html started; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1729,11 +1849,12 @@
   },
   {
     "id": "status_grounding_started_3_0",
-    "user": "Set the saved URL https://www.youtube.com/watch?v=l6DKRf-fAAM to started; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://www.youtube.com/watch?v=l6DKRf-fAAM to started; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1744,11 +1865,12 @@
   },
   {
     "id": "status_grounding_started_3_1",
-    "user": "For https://www.youtube.com/watch?v=l6DKRf-fAAM, update only the reading status to started.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://www.youtube.com/watch?v=l6DKRf-fAAM, update only the reading status to started.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1759,11 +1881,12 @@
   },
   {
     "id": "status_grounding_started_3_2",
-    "user": "Change status for this exact URL to started: https://www.youtube.com/watch?v=l6DKRf-fAAM",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to started: https://www.youtube.com/watch?v=l6DKRf-fAAM",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1774,11 +1897,12 @@
   },
   {
     "id": "status_grounding_started_3_3",
-    "user": "Mark the source at https://www.youtube.com/watch?v=l6DKRf-fAAM started; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://www.youtube.com/watch?v=l6DKRf-fAAM started; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1789,11 +1913,12 @@
   },
   {
     "id": "status_grounding_done_0_0",
-    "user": "Set the saved URL https://example.com/article to done; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://example.com/article to done; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1804,11 +1929,12 @@
   },
   {
     "id": "status_grounding_done_0_1",
-    "user": "For https://example.com/article, update only the reading status to done.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://example.com/article, update only the reading status to done.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1819,11 +1945,12 @@
   },
   {
     "id": "status_grounding_done_0_2",
-    "user": "Change status for this exact URL to done: https://example.com/article",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to done: https://example.com/article",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1834,11 +1961,12 @@
   },
   {
     "id": "status_grounding_done_0_3",
-    "user": "Mark the source at https://example.com/article done; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://example.com/article done; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -1849,11 +1977,12 @@
   },
   {
     "id": "status_grounding_done_1_0",
-    "user": "Set the saved URL https://builders.ramp.com/post/stack-benchmarking to done; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://builders.ramp.com/post/stack-benchmarking to done; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1864,11 +1993,12 @@
   },
   {
     "id": "status_grounding_done_1_1",
-    "user": "For https://builders.ramp.com/post/stack-benchmarking, update only the reading status to done.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://builders.ramp.com/post/stack-benchmarking, update only the reading status to done.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1879,11 +2009,12 @@
   },
   {
     "id": "status_grounding_done_1_2",
-    "user": "Change status for this exact URL to done: https://builders.ramp.com/post/stack-benchmarking",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to done: https://builders.ramp.com/post/stack-benchmarking",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1894,11 +2025,12 @@
   },
   {
     "id": "status_grounding_done_1_3",
-    "user": "Mark the source at https://builders.ramp.com/post/stack-benchmarking done; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://builders.ramp.com/post/stack-benchmarking done; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -1909,11 +2041,12 @@
   },
   {
     "id": "status_grounding_done_2_0",
-    "user": "Set the saved URL https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html to done; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html to done; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1924,11 +2057,12 @@
   },
   {
     "id": "status_grounding_done_2_1",
-    "user": "For https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html, update only the reading status to done.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html, update only the reading status to done.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1939,11 +2073,12 @@
   },
   {
     "id": "status_grounding_done_2_2",
-    "user": "Change status for this exact URL to done: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to done: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1954,11 +2089,12 @@
   },
   {
     "id": "status_grounding_done_2_3",
-    "user": "Mark the source at https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html done; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html done; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -1969,11 +2105,12 @@
   },
   {
     "id": "status_grounding_done_3_0",
-    "user": "Set the saved URL https://www.youtube.com/watch?v=l6DKRf-fAAM to done; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://www.youtube.com/watch?v=l6DKRf-fAAM to done; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1984,11 +2121,12 @@
   },
   {
     "id": "status_grounding_done_3_1",
-    "user": "For https://www.youtube.com/watch?v=l6DKRf-fAAM, update only the reading status to done.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://www.youtube.com/watch?v=l6DKRf-fAAM, update only the reading status to done.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -1999,11 +2137,12 @@
   },
   {
     "id": "status_grounding_done_3_2",
-    "user": "Change status for this exact URL to done: https://www.youtube.com/watch?v=l6DKRf-fAAM",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to done: https://www.youtube.com/watch?v=l6DKRf-fAAM",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -2014,11 +2153,12 @@
   },
   {
     "id": "status_grounding_done_3_3",
-    "user": "Mark the source at https://www.youtube.com/watch?v=l6DKRf-fAAM done; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://www.youtube.com/watch?v=l6DKRf-fAAM done; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -2029,11 +2169,12 @@
   },
   {
     "id": "status_grounding_archived_0_0",
-    "user": "Set the saved URL https://example.com/article to archived; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://example.com/article to archived; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -2044,11 +2185,12 @@
   },
   {
     "id": "status_grounding_archived_0_1",
-    "user": "For https://example.com/article, update only the reading status to archived.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://example.com/article, update only the reading status to archived.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -2059,11 +2201,12 @@
   },
   {
     "id": "status_grounding_archived_0_2",
-    "user": "Change status for this exact URL to archived: https://example.com/article",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to archived: https://example.com/article",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -2074,11 +2217,12 @@
   },
   {
     "id": "status_grounding_archived_0_3",
-    "user": "Mark the source at https://example.com/article archived; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://example.com/article archived; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -2089,11 +2233,12 @@
   },
   {
     "id": "status_grounding_archived_1_0",
-    "user": "Set the saved URL https://builders.ramp.com/post/stack-benchmarking to archived; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://builders.ramp.com/post/stack-benchmarking to archived; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -2104,11 +2249,12 @@
   },
   {
     "id": "status_grounding_archived_1_1",
-    "user": "For https://builders.ramp.com/post/stack-benchmarking, update only the reading status to archived.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://builders.ramp.com/post/stack-benchmarking, update only the reading status to archived.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -2119,11 +2265,12 @@
   },
   {
     "id": "status_grounding_archived_1_2",
-    "user": "Change status for this exact URL to archived: https://builders.ramp.com/post/stack-benchmarking",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to archived: https://builders.ramp.com/post/stack-benchmarking",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -2134,11 +2281,12 @@
   },
   {
     "id": "status_grounding_archived_1_3",
-    "user": "Mark the source at https://builders.ramp.com/post/stack-benchmarking archived; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://builders.ramp.com/post/stack-benchmarking archived; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -2149,11 +2297,12 @@
   },
   {
     "id": "status_grounding_archived_2_0",
-    "user": "Set the saved URL https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html to archived; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html to archived; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -2164,11 +2313,12 @@
   },
   {
     "id": "status_grounding_archived_2_1",
-    "user": "For https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html, update only the reading status to archived.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html, update only the reading status to archived.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -2179,11 +2329,12 @@
   },
   {
     "id": "status_grounding_archived_2_2",
-    "user": "Change status for this exact URL to archived: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to archived: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -2194,11 +2345,12 @@
   },
   {
     "id": "status_grounding_archived_2_3",
-    "user": "Mark the source at https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html archived; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html archived; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -2209,11 +2361,12 @@
   },
   {
     "id": "status_grounding_archived_3_0",
-    "user": "Set the saved URL https://www.youtube.com/watch?v=l6DKRf-fAAM to archived; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://www.youtube.com/watch?v=l6DKRf-fAAM to archived; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -2224,11 +2377,12 @@
   },
   {
     "id": "status_grounding_archived_3_1",
-    "user": "For https://www.youtube.com/watch?v=l6DKRf-fAAM, update only the reading status to archived.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://www.youtube.com/watch?v=l6DKRf-fAAM, update only the reading status to archived.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -2239,11 +2393,12 @@
   },
   {
     "id": "status_grounding_archived_3_2",
-    "user": "Change status for this exact URL to archived: https://www.youtube.com/watch?v=l6DKRf-fAAM",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to archived: https://www.youtube.com/watch?v=l6DKRf-fAAM",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -2254,11 +2409,12 @@
   },
   {
     "id": "status_grounding_archived_3_3",
-    "user": "Mark the source at https://www.youtube.com/watch?v=l6DKRf-fAAM archived; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://www.youtube.com/watch?v=l6DKRf-fAAM archived; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -2269,11 +2425,12 @@
   },
   {
     "id": "status_grounding_abandoned_0_0",
-    "user": "Set the saved URL https://example.com/article to abandoned; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://example.com/article to abandoned; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -2284,11 +2441,12 @@
   },
   {
     "id": "status_grounding_abandoned_0_1",
-    "user": "For https://example.com/article, update only the reading status to abandoned.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://example.com/article, update only the reading status to abandoned.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -2299,11 +2457,12 @@
   },
   {
     "id": "status_grounding_abandoned_0_2",
-    "user": "Change status for this exact URL to abandoned: https://example.com/article",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to abandoned: https://example.com/article",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -2314,11 +2473,12 @@
   },
   {
     "id": "status_grounding_abandoned_0_3",
-    "user": "Mark the source at https://example.com/article abandoned; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://example.com/article abandoned; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -2329,11 +2489,12 @@
   },
   {
     "id": "status_grounding_abandoned_1_0",
-    "user": "Set the saved URL https://builders.ramp.com/post/stack-benchmarking to abandoned; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://builders.ramp.com/post/stack-benchmarking to abandoned; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -2344,11 +2505,12 @@
   },
   {
     "id": "status_grounding_abandoned_1_1",
-    "user": "For https://builders.ramp.com/post/stack-benchmarking, update only the reading status to abandoned.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://builders.ramp.com/post/stack-benchmarking, update only the reading status to abandoned.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -2359,11 +2521,12 @@
   },
   {
     "id": "status_grounding_abandoned_1_2",
-    "user": "Change status for this exact URL to abandoned: https://builders.ramp.com/post/stack-benchmarking",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to abandoned: https://builders.ramp.com/post/stack-benchmarking",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -2374,11 +2537,12 @@
   },
   {
     "id": "status_grounding_abandoned_1_3",
-    "user": "Mark the source at https://builders.ramp.com/post/stack-benchmarking abandoned; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://builders.ramp.com/post/stack-benchmarking abandoned; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking",
@@ -2389,11 +2553,12 @@
   },
   {
     "id": "status_grounding_abandoned_2_0",
-    "user": "Set the saved URL https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html to abandoned; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html to abandoned; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -2404,11 +2569,12 @@
   },
   {
     "id": "status_grounding_abandoned_2_1",
-    "user": "For https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html, update only the reading status to abandoned.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html, update only the reading status to abandoned.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -2419,11 +2585,12 @@
   },
   {
     "id": "status_grounding_abandoned_2_2",
-    "user": "Change status for this exact URL to abandoned: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to abandoned: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -2434,11 +2601,12 @@
   },
   {
     "id": "status_grounding_abandoned_2_3",
-    "user": "Mark the source at https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html abandoned; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html abandoned; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -2449,11 +2617,12 @@
   },
   {
     "id": "status_grounding_abandoned_3_0",
-    "user": "Set the saved URL https://www.youtube.com/watch?v=l6DKRf-fAAM to abandoned; use the URL itself as the identifier.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Set the saved URL https://www.youtube.com/watch?v=l6DKRf-fAAM to abandoned; use the URL itself as the identifier.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -2464,11 +2633,12 @@
   },
   {
     "id": "status_grounding_abandoned_3_1",
-    "user": "For https://www.youtube.com/watch?v=l6DKRf-fAAM, update only the reading status to abandoned.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For https://www.youtube.com/watch?v=l6DKRf-fAAM, update only the reading status to abandoned.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -2479,11 +2649,12 @@
   },
   {
     "id": "status_grounding_abandoned_3_2",
-    "user": "Change status for this exact URL to abandoned: https://www.youtube.com/watch?v=l6DKRf-fAAM",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Change status for this exact URL to abandoned: https://www.youtube.com/watch?v=l6DKRf-fAAM",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -2494,11 +2665,12 @@
   },
   {
     "id": "status_grounding_abandoned_3_3",
-    "user": "Mark the source at https://www.youtube.com/watch?v=l6DKRf-fAAM abandoned; do not invent an item id.",
     "expected_tool": "content_status_update",
     "intent": "status_update",
     "category": "known_failure_url_vs_id",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Mark the source at https://www.youtube.com/watch?v=l6DKRf-fAAM abandoned; do not invent an item id.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM",
@@ -2509,11 +2681,12 @@
   },
   {
     "id": "update_title",
-    "user": "Correct the saved item for https://example.com/article: set the title to Better Local LLM Evals.",
     "expected_tool": "content_update",
     "intent": "metadata_update",
     "category": "library_update",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Correct the saved item for https://example.com/article: set the title to Better Local LLM Evals.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -2524,11 +2697,12 @@
   },
   {
     "id": "update_summary",
-    "user": "Update the summary for https://builders.ramp.com/post/stack-benchmarking to mention stack benchmarking and engineering tradeoffs.",
     "expected_tool": "content_update",
     "intent": "metadata_update",
     "category": "library_update",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Update the summary for https://builders.ramp.com/post/stack-benchmarking to mention stack benchmarking and engineering tradeoffs.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking"
@@ -2538,11 +2712,12 @@
   },
   {
     "id": "update_categories",
-    "user": "For the saved YouTube item with source_id l6DKRf-fAAM, set categories to AI coding tools and interviews.",
     "expected_tool": "content_update",
     "intent": "metadata_update",
     "category": "library_update",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "For the saved YouTube item with source_id l6DKRf-fAAM, set categories to AI coding tools and interviews.",
     "expected_arguments": {
       "must_equal": {
         "source_id": "l6DKRf-fAAM"
@@ -2558,11 +2733,12 @@
   },
   {
     "id": "update_time",
-    "user": "Change the estimated time for https://example.com/article to 12 minutes.",
     "expected_tool": "content_update",
     "intent": "metadata_update",
     "category": "library_update",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Change the estimated time for https://example.com/article to 12 minutes.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -2573,11 +2749,12 @@
   },
   {
     "id": "update_notes",
-    "user": "Add a note to https://github.com/ggml-org/llama.cpp that it may be useful for GGUF serving experiments.",
     "expected_tool": "content_update",
     "intent": "metadata_update",
     "category": "library_update",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Add a note to https://github.com/ggml-org/llama.cpp that it may be useful for GGUF serving experiments.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp"
@@ -2587,11 +2764,12 @@
   },
   {
     "id": "update_subject",
-    "user": "For https://example.com/article, change the subject to local model evaluation.",
     "expected_tool": "content_update",
     "intent": "metadata_update",
     "category": "library_update",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "For https://example.com/article, change the subject to local model evaluation.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -2602,11 +2780,12 @@
   },
   {
     "id": "update_depth",
-    "user": "Update https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html so its depth is deep.",
     "expected_tool": "content_update",
     "intent": "metadata_update",
     "category": "library_update",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Update https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html so its depth is deep.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -2617,11 +2796,12 @@
   },
   {
     "id": "update_confidence",
-    "user": "Set confidence for https://example.com/article to 0.7.",
     "expected_tool": "content_update",
     "intent": "metadata_update",
     "category": "library_update",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Set confidence for https://example.com/article to 0.7.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -2632,11 +2812,12 @@
   },
   {
     "id": "update_learning_effort",
-    "user": "For https://github.com/ggml-org/llama.cpp, set learning effort to 90 minutes.",
     "expected_tool": "content_update",
     "intent": "metadata_update",
     "category": "library_update",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "For https://github.com/ggml-org/llama.cpp, set learning effort to 90 minutes.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp",
@@ -2647,11 +2828,12 @@
   },
   {
     "id": "update_youtube_title",
-    "user": "Fix the saved YouTube item with source_id ILdE7FaAjVA: title should be Practical AI Agents Talk.",
     "expected_tool": "content_update",
     "intent": "metadata_update",
     "category": "library_update",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Fix the saved YouTube item with source_id ILdE7FaAjVA: title should be Practical AI Agents Talk.",
     "expected_arguments": {
       "must_equal": {
         "source_id": "ILdE7FaAjVA",
@@ -2662,11 +2844,12 @@
   },
   {
     "id": "update_notes_existing",
-    "user": "This is already saved: add note 'useful for GGUF serving experiments' to https://github.com/ggml-org/llama.cpp.",
     "expected_tool": "content_update",
     "intent": "metadata_update",
     "category": "known_failure_content_update_vs_add",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "This is already saved: add note 'useful for GGUF serving experiments' to https://github.com/ggml-org/llama.cpp.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://github.com/ggml-org/llama.cpp"
@@ -2676,11 +2859,12 @@
   },
   {
     "id": "update_summary_existing",
-    "user": "Do not add a new item. Update https://builders.ramp.com/post/stack-benchmarking summary to emphasize engineering tradeoffs.",
     "expected_tool": "content_update",
     "intent": "metadata_update",
     "category": "known_failure_content_update_vs_add",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Do not add a new item. Update https://builders.ramp.com/post/stack-benchmarking summary to emphasize engineering tradeoffs.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://builders.ramp.com/post/stack-benchmarking"
@@ -2690,11 +2874,12 @@
   },
   {
     "id": "update_title_existing",
-    "user": "The item exists already. Rename https://example.com/article to Better Local LLM Evals.",
     "expected_tool": "content_update",
     "intent": "metadata_update",
     "category": "known_failure_content_update_vs_add",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "The item exists already. Rename https://example.com/article to Better Local LLM Evals.",
     "expected_arguments": {
       "must_equal": {
         "url": "https://example.com/article",
@@ -2705,11 +2890,12 @@
   },
   {
     "id": "update_depth_existing",
-    "user": "For the saved OWASP prompt-injection cheat sheet URL, set depth_level to deep: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_tool": "content_update",
     "intent": "metadata_update",
     "category": "known_failure_content_update_vs_add",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "For the saved OWASP prompt-injection cheat sheet URL, set depth_level to deep: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
     "expected_arguments": {
       "must_equal": {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
@@ -2720,11 +2906,12 @@
   },
   {
     "id": "recommend_time_10_0",
-    "user": "What should I read in 10 minutes?",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What should I read in 10 minutes?",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2734,11 +2921,12 @@
   },
   {
     "id": "recommend_time_10_1",
-    "user": "I have 10 minutes, pick something useful from my library.",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "I have 10 minutes, pick something useful from my library.",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2748,11 +2936,12 @@
   },
   {
     "id": "recommend_time_10_2",
-    "user": "Recommend something I can learn from in under 10 minutes.",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Recommend something I can learn from in under 10 minutes.",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2762,11 +2951,12 @@
   },
   {
     "id": "recommend_time_10_3",
-    "user": "What should I watch or read now if I only have 10 minutes?",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What should I watch or read now if I only have 10 minutes?",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2776,11 +2966,12 @@
   },
   {
     "id": "recommend_time_20_0",
-    "user": "What should I read in 20 minutes?",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What should I read in 20 minutes?",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2790,11 +2981,12 @@
   },
   {
     "id": "recommend_time_20_1",
-    "user": "I have 20 minutes, pick something useful from my library.",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "I have 20 minutes, pick something useful from my library.",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2804,11 +2996,12 @@
   },
   {
     "id": "recommend_time_20_2",
-    "user": "Recommend something I can learn from in under 20 minutes.",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Recommend something I can learn from in under 20 minutes.",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2818,11 +3011,12 @@
   },
   {
     "id": "recommend_time_20_3",
-    "user": "What should I watch or read now if I only have 20 minutes?",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What should I watch or read now if I only have 20 minutes?",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2832,11 +3026,12 @@
   },
   {
     "id": "recommend_time_30_0",
-    "user": "What should I read in 30 minutes?",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What should I read in 30 minutes?",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2846,11 +3041,12 @@
   },
   {
     "id": "recommend_time_30_1",
-    "user": "I have 30 minutes, pick something useful from my library.",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "I have 30 minutes, pick something useful from my library.",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2860,11 +3056,12 @@
   },
   {
     "id": "recommend_time_30_2",
-    "user": "Recommend something I can learn from in under 30 minutes.",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Recommend something I can learn from in under 30 minutes.",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2874,11 +3071,12 @@
   },
   {
     "id": "recommend_time_30_3",
-    "user": "What should I watch or read now if I only have 30 minutes?",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What should I watch or read now if I only have 30 minutes?",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2888,11 +3086,12 @@
   },
   {
     "id": "recommend_time_45_0",
-    "user": "What should I read in 45 minutes?",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What should I read in 45 minutes?",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2902,11 +3101,12 @@
   },
   {
     "id": "recommend_time_45_1",
-    "user": "I have 45 minutes, pick something useful from my library.",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "I have 45 minutes, pick something useful from my library.",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2916,11 +3116,12 @@
   },
   {
     "id": "recommend_time_45_2",
-    "user": "Recommend something I can learn from in under 45 minutes.",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Recommend something I can learn from in under 45 minutes.",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2930,11 +3131,12 @@
   },
   {
     "id": "recommend_time_45_3",
-    "user": "What should I watch or read now if I only have 45 minutes?",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "recommendation_skill",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What should I watch or read now if I only have 45 minutes?",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2944,11 +3146,12 @@
   },
   {
     "id": "recommend_skill_routing_0",
-    "user": "Before recommending, load the Scratchpad recommendation policy for a 15 minute session.",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "known_failure_recommendation_skill_routing",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Before recommending, load the Scratchpad recommendation policy for a 15 minute session.",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2958,11 +3161,12 @@
   },
   {
     "id": "recommend_skill_routing_1",
-    "user": "Use the recommendation skill to decide what I should read now.",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "known_failure_recommendation_skill_routing",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Use the recommendation skill to decide what I should read now.",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2972,11 +3176,12 @@
   },
   {
     "id": "recommend_skill_routing_2",
-    "user": "I want a personalized reading recommendation from my library; load the right skill first.",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "known_failure_recommendation_skill_routing",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "I want a personalized reading recommendation from my library; load the right skill first.",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -2986,11 +3191,12 @@
   },
   {
     "id": "recommend_skill_routing_3",
-    "user": "Pick something for me, but follow the Scratchpad recommendation process.",
     "expected_tool": "skill_view",
     "intent": "recommendation_policy",
     "category": "known_failure_recommendation_skill_routing",
-    "difficulty": "targeted",
+    "difficulty": "medium",
+    "context_kind": "stateless",
+    "user": "Pick something for me, but follow the Scratchpad recommendation process.",
     "expected_arguments": {
       "must_equal": {
         "name": "scratchpad-recommendation"
@@ -3000,11 +3206,12 @@
   },
   {
     "id": "list_topic_0",
-    "user": "Show me saved items about AI agents.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "content_list",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Show me saved items about AI agents.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3024,11 +3231,12 @@
   },
   {
     "id": "recommend_topic_0",
-    "user": "Find me unread deep dives about AI agents from my library.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "known_failure_depth_status_filters",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Find me unread deep dives about AI agents from my library.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3050,11 +3258,12 @@
   },
   {
     "id": "list_topic_1",
-    "user": "Show me saved items about evals.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "content_list",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Show me saved items about evals.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3074,11 +3283,12 @@
   },
   {
     "id": "recommend_topic_1",
-    "user": "Find me unread deep dives about evals from my library.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "known_failure_depth_status_filters",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Find me unread deep dives about evals from my library.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3100,11 +3310,12 @@
   },
   {
     "id": "list_topic_2",
-    "user": "Show me saved items about local LLMs.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "content_list",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Show me saved items about local LLMs.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3124,11 +3335,12 @@
   },
   {
     "id": "recommend_topic_2",
-    "user": "Find me unread deep dives about local LLMs from my library.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "known_failure_depth_status_filters",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Find me unread deep dives about local LLMs from my library.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3150,11 +3362,12 @@
   },
   {
     "id": "list_topic_3",
-    "user": "Show me saved items about RL.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "content_list",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Show me saved items about RL.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3174,11 +3387,12 @@
   },
   {
     "id": "recommend_topic_3",
-    "user": "Find me unread deep dives about RL from my library.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "known_failure_depth_status_filters",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Find me unread deep dives about RL from my library.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3200,11 +3414,12 @@
   },
   {
     "id": "list_topic_4",
-    "user": "Show me saved items about security.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "content_list",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Show me saved items about security.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3224,11 +3439,12 @@
   },
   {
     "id": "recommend_topic_4",
-    "user": "Find me unread deep dives about security from my library.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "known_failure_depth_status_filters",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Find me unread deep dives about security from my library.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3250,11 +3466,12 @@
   },
   {
     "id": "list_topic_5",
-    "user": "Show me saved items about coding agents.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "content_list",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Show me saved items about coding agents.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3274,11 +3491,12 @@
   },
   {
     "id": "recommend_topic_5",
-    "user": "Find me unread deep dives about coding agents from my library.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "known_failure_depth_status_filters",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Find me unread deep dives about coding agents from my library.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3300,11 +3518,12 @@
   },
   {
     "id": "list_depth_light",
-    "user": "Show me light unread items from my library.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "known_failure_depth_status_filters",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Show me light unread items from my library.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3326,11 +3545,12 @@
   },
   {
     "id": "list_depth_medium",
-    "user": "Show me medium unread items from my library.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "known_failure_depth_status_filters",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Show me medium unread items from my library.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3352,11 +3572,12 @@
   },
   {
     "id": "list_depth_deep",
-    "user": "Show me deep unread items from my library.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "known_failure_depth_status_filters",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Show me deep unread items from my library.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3378,11 +3599,12 @@
   },
   {
     "id": "list_filter_medium_unread",
-    "user": "Only show unread medium-depth saved items.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "known_failure_depth_status_filters",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Only show unread medium-depth saved items.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3404,11 +3626,12 @@
   },
   {
     "id": "list_filter_deep_unread",
-    "user": "Find deep unread sources; exclude anything done or archived.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "known_failure_depth_status_filters",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "Find deep unread sources; exclude anything done or archived.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3430,11 +3653,12 @@
   },
   {
     "id": "list_filter_light_unread",
-    "user": "I want light unread items from the library.",
     "expected_tool": "content_list",
     "intent": "library_query",
     "category": "known_failure_depth_status_filters",
-    "difficulty": "targeted",
+    "difficulty": "hard",
+    "context_kind": "stateless",
+    "user": "I want light unread items from the library.",
     "expected_arguments": {
       "must_include": {
         "status": [
@@ -3455,162 +3679,332 @@
     "split": "heldout"
   },
   {
+    "id": "context_save_previous_url",
+    "expected_tool": "content_add",
+    "intent": "save_source",
+    "category": "contextual_reference",
+    "difficulty": "hard",
+    "context_kind": "contextual",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I found this engineering article: https://builders.ramp.com/post/stack-benchmarking"
+      },
+      {
+        "role": "assistant",
+        "content": "I can help inspect it or save it."
+      },
+      {
+        "role": "user",
+        "content": "Save that one for later."
+      }
+    ],
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://builders.ramp.com/post/stack-benchmarking"
+      }
+    },
+    "split": "heldout"
+  },
+  {
+    "id": "context_status_previous_url",
+    "expected_tool": "content_status_update",
+    "intent": "status_update",
+    "category": "contextual_reference",
+    "difficulty": "hard",
+    "context_kind": "contextual",
+    "messages": [
+      {
+        "role": "user",
+        "content": "The saved item is https://github.com/ggml-org/llama.cpp."
+      },
+      {
+        "role": "assistant",
+        "content": "Understood."
+      },
+      {
+        "role": "user",
+        "content": "Mark it done."
+      }
+    ],
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://github.com/ggml-org/llama.cpp",
+        "status": "done"
+      }
+    },
+    "split": "train"
+  },
+  {
+    "id": "context_update_previous_url",
+    "expected_tool": "content_update",
+    "intent": "metadata_update",
+    "category": "contextual_reference",
+    "difficulty": "hard",
+    "context_kind": "contextual",
+    "messages": [
+      {
+        "role": "user",
+        "content": "We already saved the OWASP prompt injection cheat sheet: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+      },
+      {
+        "role": "assistant",
+        "content": "I have the URL in context."
+      },
+      {
+        "role": "user",
+        "content": "Update its depth to deep."
+      }
+    ],
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+        "depth_level": "deep"
+      }
+    },
+    "split": "train"
+  },
+  {
+    "id": "context_inspect_then_save_correction",
+    "expected_tool": "content_add",
+    "intent": "save_source",
+    "category": "contextual_correction",
+    "difficulty": "hard",
+    "context_kind": "contextual",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can you inspect https://www.youtube.com/watch?v=ILdE7FaAjVA?"
+      },
+      {
+        "role": "assistant",
+        "content": "I would use analyze_source to preview it."
+      },
+      {
+        "role": "user",
+        "content": "Actually save it instead."
+      }
+    ],
+    "expected_arguments": {
+      "must_equal": {
+        "url": "https://www.youtube.com/watch?v=ILdE7FaAjVA"
+      }
+    },
+    "split": "train"
+  },
+  {
+    "id": "ambiguous_status_missing_target",
+    "expected_tool": "no_tool",
+    "intent": "clarify_missing_context",
+    "category": "ambiguous_no_tool",
+    "difficulty": "ambiguous",
+    "context_kind": "stateless",
+    "user": "Mark it done.",
+    "split": "validation"
+  },
+  {
+    "id": "ambiguous_save_missing_url",
+    "expected_tool": "no_tool",
+    "intent": "clarify_missing_context",
+    "category": "ambiguous_no_tool",
+    "difficulty": "ambiguous",
+    "context_kind": "stateless",
+    "user": "Save the article we talked about.",
+    "split": "train"
+  },
+  {
+    "id": "ambiguous_update_missing_target",
+    "expected_tool": "no_tool",
+    "intent": "clarify_missing_context",
+    "category": "ambiguous_no_tool",
+    "difficulty": "ambiguous",
+    "context_kind": "stateless",
+    "user": "Update the title to Better Local LLM Evals.",
+    "split": "train"
+  },
+  {
+    "id": "ambiguous_recommend_no_library_query",
+    "expected_tool": "no_tool",
+    "intent": "answer_without_tools",
+    "category": "ambiguous_no_tool",
+    "difficulty": "ambiguous",
+    "context_kind": "stateless",
+    "user": "Should I learn SFT or evals first? Answer from general reasoning, do not inspect my library.",
+    "split": "train"
+  },
+  {
     "id": "no_tool_0",
-    "user": "What is local-first software? Give me a short explanation, don't inspect or save anything.",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What is local-first software? Give me a short explanation, don't inspect or save anything.",
     "retention_kind": "conceptual",
     "split": "train"
   },
   {
     "id": "no_tool_1",
-    "user": "Explain what SFT means in one paragraph.",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Explain what SFT means in one paragraph.",
     "retention_kind": "conceptual",
     "split": "heldout"
   },
   {
     "id": "no_tool_2",
-    "user": "What is the difference between LoRA and full fine-tuning?",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What is the difference between LoRA and full fine-tuning?",
     "retention_kind": "conceptual",
     "split": "train"
   },
   {
     "id": "no_tool_3",
-    "user": "Why are evals useful for local LLM projects?",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Why are evals useful for local LLM projects?",
     "retention_kind": "conceptual",
     "split": "validation"
   },
   {
     "id": "no_tool_4",
-    "user": "Give me three reasons small models can still be useful.",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Give me three reasons small models can still be useful.",
     "retention_kind": "conceptual",
     "split": "heldout"
   },
   {
     "id": "no_tool_5",
-    "user": "What does GGUF mean at a high level?",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What does GGUF mean at a high level?",
     "retention_kind": "conceptual",
     "split": "heldout"
   },
   {
     "id": "no_tool_6",
-    "user": "What is the difference between a training dataset and an eval dataset?",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What is the difference between a training dataset and an eval dataset?",
     "retention_kind": "conceptual",
     "split": "validation"
   },
   {
     "id": "no_tool_7",
-    "user": "Explain why overfitting is dangerous in one paragraph.",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Explain why overfitting is dangerous in one paragraph.",
     "retention_kind": "conceptual",
     "split": "train"
   },
   {
     "id": "no_tool_8",
-    "user": "What does heldout mean in model evaluation?",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What does heldout mean in model evaluation?",
     "retention_kind": "conceptual",
     "split": "train"
   },
   {
     "id": "no_tool_9",
-    "user": "Give me a high-level explanation of DPO.",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Give me a high-level explanation of DPO.",
     "retention_kind": "conceptual",
     "split": "validation"
   },
   {
     "id": "no_tool_10",
-    "user": "What is a quantized model?",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What is a quantized model?",
     "retention_kind": "conceptual",
     "split": "heldout"
   },
   {
     "id": "no_tool_11",
-    "user": "Why might a 350M model still be worth testing?",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Why might a 350M model still be worth testing?",
     "retention_kind": "conceptual",
     "split": "validation"
   },
   {
     "id": "no_tool_12",
-    "user": "Explain tool calling as if I am new to agents.",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Explain tool calling as if I am new to agents.",
     "retention_kind": "conceptual",
     "split": "heldout"
   },
   {
     "id": "no_tool_13",
-    "user": "What is the purpose of a validation split?",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What is the purpose of a validation split?",
     "retention_kind": "conceptual",
     "split": "train"
   },
   {
     "id": "no_tool_14",
-    "user": "Tell me the tradeoff between local and cloud LLMs.",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "Tell me the tradeoff between local and cloud LLMs.",
     "retention_kind": "conceptual",
     "split": "train"
   },
   {
     "id": "no_tool_15",
-    "user": "What is a model profile?",
     "expected_tool": "no_tool",
     "intent": "answer_without_tools",
     "category": "retention_no_tool",
-    "difficulty": "basic",
+    "difficulty": "easy",
+    "context_kind": "stateless",
+    "user": "What is a model profile?",
     "retention_kind": "conceptual",
     "split": "train"
   }

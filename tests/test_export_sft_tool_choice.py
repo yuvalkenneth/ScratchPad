@@ -117,6 +117,28 @@ def test_messages_from_case_uses_openai_tool_calls() -> None:
     ]
 
 
+def test_messages_from_case_preserves_multi_turn_context_before_target() -> None:
+    messages = messages_from_case(
+        {
+            "id": "context_save",
+            "messages": [
+                {"role": "user", "content": "Here is https://example.com"},
+                {"role": "assistant", "content": "I can inspect it or save it."},
+                {"role": "user", "content": "Save that one."},
+            ],
+            "expected_tool": "content_add",
+            "expected_arguments": {"must_equal": {"url": "https://example.com"}},
+        },
+        system_prompt="system",
+    )
+
+    assert [message["role"] for message in messages] == ["system", "user", "assistant", "user", "assistant"]
+    assert messages[-1]["tool_calls"][0]["function"] == {
+        "name": "content_add",
+        "arguments": {"url": "https://example.com"},
+    }
+
+
 def test_text_row_renders_with_supplied_chat_template_tokenizer() -> None:
     row = sft_row_from_case(
         {

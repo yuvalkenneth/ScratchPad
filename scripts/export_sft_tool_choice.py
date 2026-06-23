@@ -75,8 +75,11 @@ def messages_from_case(
 ) -> list[dict[str, Any]]:
     messages: list[dict[str, Any]] = [
         {"role": "system", "content": system_prompt},
-        {"role": "user", "content": case["user"]},
     ]
+    if "messages" in case:
+        messages.extend(case["messages"])
+    else:
+        messages.append({"role": "user", "content": case["user"]})
     if case["expected_tool"] == NO_TOOL_LABEL:
         messages.append(
             {
@@ -163,7 +166,7 @@ def sft_row_from_case(
             "native_tools": True,
         },
     }
-    for metadata_key in ("intent", "category", "difficulty", "retention_kind", "split"):
+    for metadata_key in ("intent", "category", "difficulty", "retention_kind", "split", "context_kind"):
         if metadata_key in case:
             row["metadata"][metadata_key] = case[metadata_key]
     if output_format == "messages":

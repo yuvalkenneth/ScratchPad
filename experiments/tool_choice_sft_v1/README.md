@@ -36,6 +36,11 @@ Observed base failures:
 Canonical tool-choice data stays model-agnostic: user request plus expected
 Scratchpad action. The SFT export writes OpenAI-style `messages` with
 `tool_calls`, or tokenizer-rendered `text` for model-specific training.
+Cases may be stateless single-turn prompts (`user`) or contextual multi-turn
+prompts (`messages`) where the correct tool arguments must be grounded in prior
+conversation. Difficulty uses `easy`, `medium`, `hard`, and `ambiguous`;
+ambiguous cases expect `no_tool` because there is not enough context to safely
+mutate the library.
 
 Each generated case carries an explicit deterministic `split` field based on a
 stable hash of the case id:

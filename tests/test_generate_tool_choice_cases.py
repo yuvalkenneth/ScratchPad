@@ -16,6 +16,7 @@ def test_generated_tool_choice_cases_are_large_and_cover_all_tools() -> None:
         "content_list",
         "no_tool",
     }
+    assert len(cases) >= 240
 
 
 def test_generated_tool_choice_case_ids_are_unique() -> None:
@@ -55,7 +56,8 @@ def test_generated_cases_include_experiment_metadata() -> None:
     for case in cases:
         assert case["intent"]
         assert case["category"]
-        assert case["difficulty"] in {"basic", "targeted"}
+        assert case["difficulty"] in {"easy", "medium", "hard", "ambiguous"}
+        assert case["context_kind"] in {"stateless", "contextual"}
         assert case["split"] in SPLITS
 
 
@@ -76,3 +78,15 @@ def test_generated_cases_target_qwen_08b_failures() -> None:
     assert "known_failure_content_update_vs_add" in categories
     assert "known_failure_recommendation_skill_routing" in categories
     assert "known_failure_depth_status_filters" in categories
+
+
+def test_generated_cases_include_contextual_and_ambiguous_examples() -> None:
+    cases = generate_cases()
+
+    contextual = [case for case in cases if case["context_kind"] == "contextual"]
+    ambiguous = [case for case in cases if case["difficulty"] == "ambiguous"]
+
+    assert contextual
+    assert ambiguous
+    assert all("messages" in case for case in contextual)
+    assert all(case["expected_tool"] == "no_tool" for case in ambiguous)

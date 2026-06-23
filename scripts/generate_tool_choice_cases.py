@@ -36,23 +36,31 @@ def split_for_case_id(case_id: str) -> str:
 
 def case(
     case_id: str,
-    user: str,
+    user: str | None,
     expected_tool: str,
     expected_arguments: dict[str, Any] | None = None,
     *,
     intent: str,
     category: str,
-    difficulty: str = "basic",
+    difficulty: str = "easy",
+    messages: list[dict[str, str]] | None = None,
+    context_kind: str = "stateless",
     retention_kind: str | None = None,
 ) -> dict[str, Any]:
     payload: dict[str, Any] = {
         "id": case_id,
-        "user": user,
         "expected_tool": expected_tool,
         "intent": intent,
         "category": category,
         "difficulty": difficulty,
+        "context_kind": context_kind,
     }
+    if messages:
+        payload["messages"] = messages
+    elif user:
+        payload["user"] = user
+    else:
+        raise ValueError(f"Case {case_id} needs user or messages.")
     if expected_arguments:
         payload["expected_arguments"] = expected_arguments
     if retention_kind:
@@ -136,7 +144,7 @@ def generate_cases() -> list[dict[str, Any]]:
                     must_equal(url=url),
                     intent="save_source",
                     category="known_failure_content_add_vs_analyze",
-                    difficulty="targeted",
+                    difficulty="medium",
                 )
             )
 
@@ -150,6 +158,7 @@ def generate_cases() -> list[dict[str, Any]]:
                     must_equal(url=url, status=status),
                     intent="status_update",
                     category="library_update",
+                    difficulty="easy",
                 )
             )
 
@@ -170,7 +179,7 @@ def generate_cases() -> list[dict[str, Any]]:
                         must_equal(url=url, status=status),
                         intent="status_update",
                         category="known_failure_url_vs_id",
-                        difficulty="targeted",
+                        difficulty="hard",
                     )
                 )
 
@@ -241,7 +250,7 @@ def generate_cases() -> list[dict[str, Any]]:
                 expected_arguments,
                 intent="metadata_update",
                 category="library_update",
-                difficulty="targeted",
+                difficulty="medium",
             )
         )
 
@@ -279,7 +288,7 @@ def generate_cases() -> list[dict[str, Any]]:
                 expected_arguments,
                 intent="metadata_update",
                 category="known_failure_content_update_vs_add",
-                difficulty="targeted",
+                difficulty="hard",
             )
         )
 
@@ -298,9 +307,10 @@ def generate_cases() -> list[dict[str, Any]]:
                     "skill_view",
                     must_equal(name="scratchpad-recommendation"),
                     intent="recommendation_policy",
-                    category="recommendation_skill",
-                )
+                category="recommendation_skill",
+                difficulty="easy",
             )
+        )
 
     recommendation_skill_templates = [
         "Before recommending, load the Scratchpad recommendation policy for a 15 minute session.",
@@ -317,7 +327,7 @@ def generate_cases() -> list[dict[str, Any]]:
                 must_equal(name="scratchpad-recommendation"),
                 intent="recommendation_policy",
                 category="known_failure_recommendation_skill_routing",
-                difficulty="targeted",
+                difficulty="medium",
             )
         )
 
@@ -330,6 +340,7 @@ def generate_cases() -> list[dict[str, Any]]:
                 list_default_status_args(),
                 intent="library_query",
                 category="content_list",
+                difficulty="easy",
             )
         )
         cases.append(
@@ -343,7 +354,7 @@ def generate_cases() -> list[dict[str, Any]]:
                 },
                 intent="library_query",
                 category="known_failure_depth_status_filters",
-                difficulty="targeted",
+                difficulty="hard",
             )
         )
 
@@ -359,7 +370,7 @@ def generate_cases() -> list[dict[str, Any]]:
                 },
                 intent="library_query",
                 category="known_failure_depth_status_filters",
-                difficulty="targeted",
+                difficulty="hard",
             )
         )
 
@@ -380,9 +391,114 @@ def generate_cases() -> list[dict[str, Any]]:
                 },
                 intent="library_query",
                 category="known_failure_depth_status_filters",
-                difficulty="targeted",
+                difficulty="hard",
             )
         )
+
+    contextual_cases = [
+        case(
+            "context_save_previous_url",
+            None,
+            "content_add",
+            must_equal(url="https://builders.ramp.com/post/stack-benchmarking"),
+            intent="save_source",
+            category="contextual_reference",
+            difficulty="hard",
+            context_kind="contextual",
+            messages=[
+                {
+                    "role": "user",
+                    "content": "I found this engineering article: https://builders.ramp.com/post/stack-benchmarking",
+                },
+                {"role": "assistant", "content": "I can help inspect it or save it."},
+                {"role": "user", "content": "Save that one for later."},
+            ],
+        ),
+        case(
+            "context_status_previous_url",
+            None,
+            "content_status_update",
+            must_equal(url="https://github.com/ggml-org/llama.cpp", status="done"),
+            intent="status_update",
+            category="contextual_reference",
+            difficulty="hard",
+            context_kind="contextual",
+            messages=[
+                {"role": "user", "content": "The saved item is https://github.com/ggml-org/llama.cpp."},
+                {"role": "assistant", "content": "Understood."},
+                {"role": "user", "content": "Mark it done."},
+            ],
+        ),
+        case(
+            "context_update_previous_url",
+            None,
+            "content_update",
+            must_equal(
+                url="https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+                depth_level="deep",
+            ),
+            intent="metadata_update",
+            category="contextual_reference",
+            difficulty="hard",
+            context_kind="contextual",
+            messages=[
+                {
+                    "role": "user",
+                    "content": "We already saved the OWASP prompt injection cheat sheet: https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+                },
+                {"role": "assistant", "content": "I have the URL in context."},
+                {"role": "user", "content": "Update its depth to deep."},
+            ],
+        ),
+        case(
+            "context_inspect_then_save_correction",
+            None,
+            "content_add",
+            must_equal(url="https://www.youtube.com/watch?v=ILdE7FaAjVA"),
+            intent="save_source",
+            category="contextual_correction",
+            difficulty="hard",
+            context_kind="contextual",
+            messages=[
+                {"role": "user", "content": "Can you inspect https://www.youtube.com/watch?v=ILdE7FaAjVA?"},
+                {"role": "assistant", "content": "I would use analyze_source to preview it."},
+                {"role": "user", "content": "Actually save it instead."},
+            ],
+        ),
+        case(
+            "ambiguous_status_missing_target",
+            "Mark it done.",
+            "no_tool",
+            intent="clarify_missing_context",
+            category="ambiguous_no_tool",
+            difficulty="ambiguous",
+        ),
+        case(
+            "ambiguous_save_missing_url",
+            "Save the article we talked about.",
+            "no_tool",
+            intent="clarify_missing_context",
+            category="ambiguous_no_tool",
+            difficulty="ambiguous",
+        ),
+        case(
+            "ambiguous_update_missing_target",
+            "Update the title to Better Local LLM Evals.",
+            "no_tool",
+            intent="clarify_missing_context",
+            category="ambiguous_no_tool",
+            difficulty="ambiguous",
+        ),
+        case(
+            "ambiguous_recommend_no_library_query",
+            "Should I learn SFT or evals first? Answer from general reasoning, do not inspect my library.",
+            "no_tool",
+            intent="answer_without_tools",
+            category="ambiguous_no_tool",
+            difficulty="ambiguous",
+        ),
+    ]
+    cases.extend(contextual_cases)
 
     no_tool_prompts = [
         "What is local-first software? Give me a short explanation, don't inspect or save anything.",
