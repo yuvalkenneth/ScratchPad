@@ -1,12 +1,27 @@
 # Scratchpad
 
-A local-first learning inbox and testbed for small/local LLM agents.
+A local-first LLM agent testbed for tool routing, evaluation, and small-model reliability.
+
+Scratchpad is a bounded agent system for testing whether local and small LLMs
+can reliably perform useful personal workflows with explicit tools, evals,
+traces, Markdown persistence, and SFT experiments.
+
+It combines:
+
+* a bounded tool surface for saving, updating, and querying learning content
+* deterministic evals for tool choice, retention, recommendations, workflows, and content profiling
+* local/API model profiles for comparing model behavior
+* SFT data pipelines for improving small-model tool routing
+* inspectable Markdown persistence, traces, and evaluation artifacts
 
 ---
 
 ## What it does
 
-Scratchpad helps you manage what to learn when you have limited time, while providing a realistic environment for testing whether local and small LLMs can handle useful personal-knowledge workflows.
+Scratchpad uses a personal learning inbox as the concrete product loop for
+testing local/small LLM agents. It helps you manage what to learn when you have
+limited time, while providing a realistic environment for measuring whether
+models can handle useful personal-knowledge workflows.
 
 You can save anything:
 
@@ -28,16 +43,21 @@ Each item is automatically classified (e.g. depth and estimated time), so the sy
 
 ## Core idea
 
-Scratchpad is not just a place to store links.
+Scratchpad is not primarily a link saver. It is a bounded agent testbed with a
+real user-facing workflow.
 
 It is a system that:
 
 * estimates how much attention something requires
 * helps you choose what to consume next
 * resurfaces things at the right time
-* creates repeatable tasks for evaluating local LLM behavior
+* creates repeatable tasks for evaluating local/small LLM behavior
+* records inspectable artifacts such as Markdown state, tool calls, eval reports, traces, and training datasets
 
-The product goal is to make reading and learning more intentional. The engineering goal is to use that bounded product loop to test agentic LLM systems under realistic constraints.
+The product goal is to make reading and learning more intentional. The
+engineering goal is to use that bounded product loop to test whether small/local
+LLMs can reliably choose tools, ground arguments, persist state, retrieve
+context, and make useful recommendations under realistic constraints.
 
 The key loop is:
 
