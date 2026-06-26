@@ -67,6 +67,43 @@ capture source -> analyze into a content profile -> save as Markdown -> query/re
 
 This loop matters because it is small enough to run locally, but real enough to expose local-model failures that isolated prompts hide: wrong tool choice, weak extraction, bad time estimates, hallucinated summaries, poor ranking, missing persistence, and unhelpful recommendations.
 
+## Architecture
+
+```mermaid
+flowchart TD
+    U["User"] --> A["Scratchpad agent / CLI"]
+
+    A --> T["Bounded tool surface"]
+    T --> ADD["content_add"]
+    T --> UPD["content_update / content_status_update"]
+    T --> LIST["content_list"]
+    T --> SKILL["scratchpad-recommendation skill"]
+
+    ADD --> ANA["Source analyzers"]
+    ANA --> SRC["Web / GitHub / Reddit / YouTube"]
+    ANA --> PROF["ContentProfile"]
+
+    PROF --> LIB["Markdown library"]
+    UPD --> LIB
+    LIST --> LIB
+    SKILL --> LIST
+
+    LIB --> REC["Query + recommendation"]
+    REC --> A
+
+    A --> LLM["LLM provider layer"]
+    LLM --> LOCAL["Local llama.cpp models"]
+    LLM --> API["OpenAI-compatible APIs"]
+
+    EVAL["Eval suites"] --> A
+    EVAL --> REPORTS["JSON reports / scorecards / MLflow"]
+    TRAIN["SFT data + experiments"] --> LLM
+    REPORTS --> TRAIN
+
+    OBS["Runtime observability"] --> LOCAL
+    OBS --> ART["Runtime JSON / HTML / MLflow artifacts"]
+```
+
 ### Product success hypotheses
 
 Scratchpad should be judged by a few concrete hypotheses:
@@ -81,20 +118,11 @@ Scratchpad should be judged by a few concrete hypotheses:
 
 ## Local LLM testbed
 
-Scratchpad is also a compact environment for experimenting with LLM-based systems.
-
-It is used to explore:
-
-* tool-driven agent loops
-* structured vs unstructured memory
-* retrieval and reasoning over personal data
-* small local model capabilities
-* local vs cloud tradeoffs
-* model switching, latency, output quality, and failure modes
-* whether small models can reliably classify, save, retrieve, and recommend useful learning material
-* whether narrow SFT can improve small-model tool use without catastrophic forgetting
-
-The learning-inbox product provides a realistic and bounded setting for these experiments. Instead of testing models on isolated prompts, Scratchpad tests whether they can complete a real workflow: ingest a source, produce a useful profile, store it, and later retrieve or recommend it in context.
+The learning-inbox product gives the models a realistic but bounded job:
+ingest a source, produce a useful profile, store it, retrieve it, recommend it,
+and update state later. That loop is used to compare local/API models, measure
+tool-routing failures, track latency and runtime behavior, and test whether
+narrow SFT can improve small-model tool use without catastrophic forgetting.
 
 ---
 
@@ -173,18 +201,7 @@ Local-model failures should be tracked in product terms, not just pass/fail:
 
 ## Current state
 
-Early development.
-
-Current focus:
-
-* minimal LLM client
-* tool-driven local chat loop with a small product-focused tool surface
-* model switching and local server observability
-* normalized content profiles across web, GitHub, Reddit, and YouTube
-* Markdown-backed content saving, deduplication, listing, metadata updates, status updates, and Git-backed history
-* content-profile eval fixtures for comparing small/local model behavior
-
-Already implemented foundation:
+Early development, with the core local-agent loop in place:
 
 * flat Markdown persistence under `library/items/`
 * deterministic deduplication by source identity or URL
@@ -198,6 +215,7 @@ Already implemented foundation:
 * manual model eval scripts for content profiles and tool choice
 * deterministic workflow evals for save -> list/recommend -> status-update product flows
 * deterministic recommendation ranking evals with fake libraries and fake user profiles
+* experiment observability through JSON reports, scorecards, optional MLflow logging, and runtime HTML artifacts
 
 ---
 
@@ -211,48 +229,13 @@ Already implemented foundation:
 
 ---
 
-## Content profile contract
+## Library and data model
 
-Analyzer tools return a normalized `content_profile` shape so different sources can be stored and ranked through one contract.
-
-Current v1 fields:
-
-* `source_type`
-* `source_id`
-* `url`
-* `title`
-* `summary`
-* `subject`
-* `depth_level`
-* `categories`
-* `estimated_time_minutes`
-* `learning_effort_minutes`
-* `confidence`
-* `metadata`
-
-Notes:
-
-* `source_id` is intended to hold a stable external identifier such as a YouTube video ID
-* `source_type + source_id` should be unique for deduplication once persistence exists
-* `url` should also be unique when present once persistence exists
-* `subject` is intentionally singular for v1 to keep the schema simple, though multi-topic support may replace it later
-* `estimated_time_minutes` means consumption time: reading, watching, or skimming enough to decide what to do with the item
-* `learning_effort_minutes` is optional and means broader follow-up effort such as practice, implementation, note-taking, or deeper understanding
-
-Recommendation requests such as "I have 20 minutes" should use `estimated_time_minutes` as the hard constraint. Learning plans can use `learning_effort_minutes` when present to explain the follow-up investment.
-
-For YouTube ingestion, the product goal is not just transcript retrieval. The target output is a save-ready content profile with fields such as:
-
-* `source_type = "youtube"`
-* `source_id = <video_id>`
-* `url`
-* `title`
-* `summary`
-* `subject`
-* `depth_level`
-* `estimated_time_minutes`
-
-The likely first storage format is one Markdown file per content item with YAML frontmatter for the normalized fields and a Markdown body for notes, excerpts, and richer analysis.
+Analyzer tools return a normalized `ContentProfile` so articles, papers, repos,
+videos, threads, and notes can be stored and ranked through one contract. The v1
+profile includes source identity, URL, title, summary, subject, categories,
+depth, estimated consumption time, optional learning effort, confidence, and
+source metadata.
 
 The Markdown library is intentionally not separated by source. Files live under:
 
@@ -263,41 +246,34 @@ library/
     <source-type>-<topic-slug>-<stable-hash>.md
 ```
 
-Retrieval should be by metadata and text, such as subject, category, depth, available time, status, and free-text query. `source_type` stays in frontmatter for deduplication and source-specific rendering.
+Retrieval is by metadata and text: subject, category, depth, available time,
+status, and free-text query. Querying is intentionally simple in v1:
+`content_list` scans Markdown frontmatter/body in memory and returns match
+scores, match reasons, and query-policy metadata. This keeps recommendation
+behavior debuggable before adding SQLite or embeddings.
 
-Querying is intentionally boring in v1. `content_list` scans Markdown frontmatter
-and body text in memory, returns match scores and match reasons, and includes a
-`query_policy` block showing that it used `frontmatter_body_scan` rather than
-SQLite or embeddings. This keeps recommendations debuggable while the library is
-small.
+Core tools:
 
-Use `content_add` for the normal ingestion path: it analyzes a URL, converts the analyzer result into the normalized profile contract, and writes the corresponding Markdown item. If the same source is added again, Scratchpad updates the existing Markdown file instead of creating a duplicate.
-
-Use `analyze_source` when the user wants to inspect a source before saving it. Use `content_update` for corrections to saved item details such as title, summary, subject, categories, depth, time, confidence, metadata, or notes. Use `content_status_update` only for reading state changes such as `unread`, `started`, `done`, `archived`, and `abandoned`.
-
-The LLM-facing `content_list` tool defaults to `status=["unread", "started"]` when no status is supplied, so recommendation requests do not surface completed, archived, or abandoned items unless the user explicitly asks for them.
+* `analyze_source`: inspect a source before saving it
+* `content_add`: analyze and save a source, updating duplicates instead of creating new files
+* `content_list`: query saved items, defaulting to `status=["unread", "started"]`
+* `content_update`: correct saved item metadata or notes
+* `content_status_update`: update reading state: `unread`, `started`, `done`, `archived`, `abandoned`
 
 ### Library history
 
-The content library is versioned separately from the application code. On the first content mutation, Scratchpad initializes a Git repository under `library/.git` and commits the changed Markdown item.
-
-This is not just backup. Git history makes local-model experiments easier to inspect:
+The content library is versioned separately from the application code under
+`library/.git`. This is not just backup; it makes local-model experiments easier
+to inspect:
 
 * every saved or updated item has an operation-level commit
 * analyzer and recommendation behavior can be audited through diffs
 * failed Git commits are reported in tool output without blocking the content write
 * the app repo and the personal library history stay separate
 
-Current commit messages are intentionally simple:
-
-```text
-Add content: <title>
-Update content: <title>
-Update status: <title> -> <status>
-Update notes: <title>
-```
-
-History viewing, diffs, and restore commands are planned later. For now, Git is used to make library mutations observable while keeping Markdown as the source of truth.
+History viewing, diffs, and restore commands are planned later. For now, Git is
+used to make library mutations observable while keeping Markdown as the source
+of truth.
 
 ---
 
@@ -323,101 +299,25 @@ uv run python main.py
 
 ### Tests and evals
 
-Run deterministic unit tests with pytest:
-
 ```bash
 uv run pytest
-```
-
-Run the content-profile model eval manually when comparing prompts or models:
-
-```bash
+uv run python scripts/eval_tool_choice.py --profile qwen-local --report reports/tool-choice.json
 uv run python scripts/eval_content_profiles.py
-```
-
-The eval script reads frozen cases from:
-
-```text
-evals/content_profiles/cases.json
-```
-
-The fixture includes recent real-source cases for agent/coding-agent evaluation papers and repositories. Eval output reports per-case analysis latency plus an aggregate summary with pass counts, average score, total runtime, and average analysis latency.
-
-Run the tool-choice eval manually to check whether a model chooses the expected tool and required arguments for simple requests:
-
-```bash
-uv run python scripts/eval_tool_choice.py
-```
-
-This eval does not execute tools. It only inspects the first tool call selected by the model and applies simple argument constraints, so it can safely test save/update/status intents without mutating the Markdown library.
-
-Use `--report <path>` to write aggregate classification metrics, including first-tool accuracy, argument accuracy, confusion matrix, per-class precision/recall/F1, default reliance rate, and latency.
-Reports also include failure-type counts such as wrong tool, missing tool, tool
-false positive, invalid tool arguments, argument mismatch, and extra tool call.
-
-Run the retention eval manually to check catastrophic-forgetting smoke cases:
-
-```bash
 uv run python scripts/eval_retention.py
-```
-
-Retention fixtures live in:
-
-```text
-evals/retention/cases.json
-```
-
-Retention reports label cases as `pass`, `degraded`, or `fail`, and track
-whether the model incorrectly called Scratchpad tools for ordinary assistant
-requests.
-
-Run deterministic product workflow evals to check whether library operations compose into useful flows:
-
-```bash
 uv run python scripts/eval_workflows.py
-```
-
-Workflow fixtures live in:
-
-```text
-evals/workflows/cases.json
-```
-
-Run deterministic recommendation ranking evals:
-
-```bash
 uv run python scripts/eval_recommendations.py
+uv run python scripts/run_benchmark.py --profile qwen-local --label qwen-smoke
 ```
 
-Recommendation fixtures live in:
-
-```text
-evals/recommendations/cases.json
-```
-
-Run the mini-harness as one benchmark command:
-
-```bash
-uv run python scripts/run_benchmark.py --label qwen4b --provider llama_cpp --model Qwen3.5-4B-BF16 --start-script /path/to/run-qwen-4b-server.sh
-```
-
-The benchmark runner writes manifests under `evals/runs/` and can run only
-deterministic evals with `--skip-model-evals`.
+Eval scripts write explicit reports with metrics, grouped failure types, latency,
+and enough raw output to compare local/API models over time. Tool-choice evals
+inspect the first model-selected tool call without executing tools, so save and
+update intents can be tested safely.
 
 ### Chat commands
 
-The REPL in [main.py](main.py) supports a few built-in commands:
-
-* `/reset` resets the conversation but keeps the current client and model
-* `/reload` reloads `.env`, rebuilds the client, and resets the conversation
-* `/model <model_name> <start_script>` stops the current local server, starts the requested model server, rebuilds the client, and resets the conversation
-* `/server-status` shows server health plus the latest parsed timing block from `llama-server.log`
-
-Example model switch:
-
-```bash
-/model Qwen3.5-0.8B-BF16 /Users/yuvalkenneth/Desktop/local-llms/scripts/run-qwen-0.8b-server.sh
-```
+The REPL in [main.py](main.py) supports `/reset`, `/reload`, `/model`, and
+`/server-status` for basic local-model iteration.
 
 ---
 
@@ -453,77 +353,13 @@ tests/        # deterministic pytest unit tests
 
 ---
 
-## Improvement roadmap
+## Roadmap
 
-These are the main improvement ideas after rereading the repo against the project objective.
+Near-term work:
 
-### Architecture
-
-* Narrow the public tool surface further. Small models are sensitive to adjacent tools with overlapping meanings, so the visible interface should stay centered on `analyze_source`, `content_add`, `content_list`, `content_update`, and `content_status_update`; lower-level analyzer/save tools should remain internal.
-* Split Markdown storage responsibilities once the file grows painful. `app/library/markdown_store.py` currently handles normalization, serialization, lookup, mutation, notes, querying, and Git commits. The likely split is serializer, repository, mutations, and history.
-* Replace hand-rolled frontmatter parsing when human editing becomes common. The current JSON-in-frontmatter approach is simple and testable, but real YAML frontmatter or an explicit JSON metadata block would be safer for multiline fields and manual edits.
-* Continue isolating analyzer seams without a broad refactor. URL and YouTube analyzers now share the core content-profile prompt contract; future cleanup can move full message construction behind a stable profiler interface.
-* Move runtime/server lifecycle logic out of the CLI over time. `main.py` should mostly orchestrate the REPL; provider startup, shutdown, health, model listing, and timing should live under `app/llm/runtime.py`.
-* Avoid eval scripts depending on private underscore functions from tool modules. Export stable profile-message builders so evals and tools test the same behavior through an intentional interface.
-
-### Product and Recommendation
-
-* Build the recommendation policy before adding heavy ranking infrastructure. The first version uses a `scratchpad-recommendation` skill plus `content_list`; add a `content_recommend` tool only when repeated behavior shows the policy is stable.
-* Add behavioral signals after the explicit profile. The readable `library/user/profile.md` now provides transparent context; append-only signals can later record saved, recommended, started, done, and accepted events.
-* Keep recommendation output explainable. Recommendations should show why each item fits: time, status, depth, topic match, preference match, and whether it is a stretch.
-* Decide how to model topic multiplicity. A singular `subject` keeps v1 simple, but real recommendations likely need multi-topic support or weighted tags.
-* Add semantic search only after simple query reports show a real need. `content_list` now exposes its simple query policy, so weak ranking behavior can be debugged before adding embeddings.
-
-### Evaluation
-
-* Extend recommendation evals toward model-in-the-loop recommendation answers. The deterministic base now covers fake libraries, fake user profiles, and expected ranking constraints.
-* Extend workflow evals toward real model-in-the-loop runs. The deterministic base now checks whether save, query, recommend constraints, and status update compose correctly.
-* Diversify content-profile fixtures beyond LLM-agent material. Keep adding recent non-arXiv examples across security, systems, product, design, finance, research, videos, and repos.
-* Extend failure categories beyond tool choice. Tool-choice reports now count wrong tool, no tool, false positive tool use, invalid arguments, argument mismatch, and extra tool calls; content-profile and recommendation reports should get similar taxonomies.
-* Run repeated generations for unstable local models. A `--runs N` mode would expose nondeterminism that a single pass hides.
-
----
-
-## Status
-
-Work in progress. Expect breaking changes.
-
-The local chat runtime currently supports:
-
-* OpenAI-compatible chat completions
-* tool execution with a small local registry
-* current local time included directly in the system prompt, without a separate time tool
-* loop protection for repeated or excessive tool rounds
-* local `llama.cpp` server startup and shutdown
-* log-based server timing inspection for prompt/output token counts and speed
-* Markdown-backed content analysis, ingestion, metadata updates, status updates, listing, and Git-backed mutation history through `analyze_source`, `content_add`, `content_update`, `content_status_update`, and `content_list`
-
----
-
-## Command executor
-
-The repo includes a simple local executor in [app/tools/executor.py](app/tools/executor.py).
-
-It currently supports:
-
-* `Executor.run_shell(cmd, cwd=None)` via `bash -lc`
-* `Executor.run_python(code, cwd=None)` via `uv run python -c`
-* fixed workspace scoping rooted at this repository
-* permission checks before execution
-* timeout support
-* stdout/stderr truncation
-* a stripped environment allowlist to avoid leaking secrets
-
-These executor and local filesystem inspection tools are not exposed to the app LLM by default. Enable them only for development/debugging:
-
-```bash
-SCRATCHPAD_ENABLE_EXECUTOR_TOOLS=1
-```
-
-Permission behavior is intentionally simple:
-
-* deny `sudo`, privilege escalation, destructive commands, and sensitive paths
-* ask for approval on networked commands, background processes, and paths outside the workspace
-* otherwise allow
-
-There is no sandbox backend yet. Commands run directly on the host process with the checks above.
+* run the real heldout baseline for Qwen 0.8B
+* export train/validation/heldout SFT datasets and inspect rendered templates
+* run the first small LoRA/QLoRA tool-routing SFT
+* compare base vs SFT by difficulty, context kind, failure type, retention, and latency
+* make llama.cpp observability live by enabling `/metrics`, writing a PID file, and polling runtime status
+* keep recommendation behavior explainable before adding heavier ranking or semantic search

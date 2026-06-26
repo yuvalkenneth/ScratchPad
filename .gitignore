@@ -9,3 +9,6 @@ launch.json
 !/training/datasets/
 /training/datasets/*
 !/training/datasets/README.md
+mlruns/
+/experiments/*/reports/*.json
+!/experiments/*/reports/README.md
