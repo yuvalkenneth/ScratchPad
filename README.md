@@ -201,21 +201,24 @@ Local-model failures should be tracked in product terms, not just pass/fail:
 
 ## Current state
 
-Early development, with the core local-agent loop in place:
+Early but usable for local experimentation.
 
-* flat Markdown persistence under `library/items/`
-* deterministic deduplication by source identity or URL
-* a normalized `ContentProfile` / `ContentItem` contract in code
-* content add, list, update, and status-update tools
-* a `scratchpad-recommendation` skill that requires querying saved items before recommending
-* a local editable user profile at `library/user/profile.md` exposed through `user_profile_get`
-* basic metadata and free-text query over Markdown frontmatter/body with explicit query-policy metadata
-* separate Git history for personal library mutations
-* deterministic pytest coverage for analyzers, tool policy, executor safety, library behavior, and eval scoring
-* manual model eval scripts for content profiles and tool choice
-* deterministic workflow evals for save -> list/recommend -> status-update product flows
-* deterministic recommendation ranking evals with fake libraries and fake user profiles
-* experiment observability through JSON reports, scorecards, optional MLflow logging, and runtime HTML artifacts
+Implemented:
+
+* Markdown-backed content library with add, list, update, and status tools
+* source analysis into normalized content profiles
+* local/API model profiles and OpenAI-compatible model calls
+* deterministic evals for tool choice, workflows, recommendations, retention, and content profiles
+* first SFT experiment scaffold for Qwen 0.8B tool routing
+* JSON, MLflow, and runtime artifacts for comparing runs
+
+Not yet done:
+
+* production UI
+* live llama.cpp utilization dashboard
+* semantic search or embeddings
+* broad content-profile eval set
+* completed SFT run and base-vs-SFT scorecard
 
 ---
 
