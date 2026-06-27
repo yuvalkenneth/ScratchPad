@@ -6,9 +6,7 @@ def tool_names() -> set[str]:
     return {item["function"]["name"] for item in get_tool_definitions()}
 
 
-def test_executor_tools_are_hidden_by_default(monkeypatch) -> None:
-    monkeypatch.delenv("SCRATCHPAD_ENABLE_EXECUTOR_TOOLS", raising=False)
-
+def test_executor_tools_are_not_part_of_tool_surface() -> None:
     names = tool_names()
     prompt_text = get_tools_prompt_text()
 
@@ -20,9 +18,7 @@ def test_executor_tools_are_hidden_by_default(monkeypatch) -> None:
     assert "list_files" not in prompt_text
 
 
-def test_default_tool_surface_hides_low_level_analysis_and_save_tools(monkeypatch) -> None:
-    monkeypatch.delenv("SCRATCHPAD_ENABLE_EXECUTOR_TOOLS", raising=False)
-
+def test_default_tool_surface_hides_low_level_analysis_and_save_tools() -> None:
     names = tool_names()
     prompt_text = get_tools_prompt_text()
 
@@ -43,23 +39,6 @@ def test_default_tool_surface_hides_low_level_analysis_and_save_tools(monkeypatc
     assert "- youtube_analyze:" not in prompt_text
     assert "- content_save:" not in prompt_text
     assert "- list_files:" not in prompt_text
-
-
-def test_executor_tools_can_be_enabled_for_dev_mode(monkeypatch) -> None:
-    monkeypatch.setenv("SCRATCHPAD_ENABLE_EXECUTOR_TOOLS", "1")
-
-    names = tool_names()
-    prompt_text = get_tools_prompt_text()
-
-    assert "run_shell" in names
-    assert "run_python" in names
-    assert "list_files" in names
-    assert "url_analyze" not in names
-    assert "youtube_analyze" not in names
-    assert "content_save" not in names
-    assert "run_shell" in prompt_text
-    assert "run_python" in prompt_text
-    assert "list_files" in prompt_text
 
 
 def test_youtube_skill_routes_url_only_inputs_to_youtube_analyze() -> None:

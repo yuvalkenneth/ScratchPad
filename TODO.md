@@ -25,7 +25,6 @@
 * Deterministic workflow evals cover save, time-boxed library querying, and status-update state transitions
 * Editable user profile support exists at `library/user/profile.md` through `user_profile_get`
 * `content_list` exposes transparent query-policy metadata and stays on frontmatter/body scanning without SQLite or embeddings
-* Default LLM-facing tool surface hides local dev tools such as `list_files`, `run_shell`, and `run_python`
 * Content profiles separate consumption time (`estimated_time_minutes`) from optional learning effort (`learning_effort_minutes`)
 * Deterministic recommendation evals cover fake libraries, fake user profiles, and expected ranking constraints
 * Tool-choice eval reports include failure-type counts for wrong tool, no tool, false positive tool use, invalid arguments, argument mismatch, and extra tool calls
@@ -176,14 +175,6 @@ The core Markdown persistence path is already implemented. Remaining work here i
 * For Reddit posts, estimate learning time based on whether the post is a deep dive, experiment, walkthrough, or a short discussion/update
 * Extend other source types similarly so learning-time estimates reflect depth and effort, not only source length
 * Add eval cases that check learning-time estimates across GitHub, Reddit, articles, and YouTube
-
-## Executor
-
-* Add a clearer public result type instead of raw `dict[str, Any]`
-* Add tests for timeout behavior and stdout/stderr truncation
-* Improve path detection for quoted shell fragments and command substitutions
-* Decide whether outside-workspace references should be denied by default instead of approval-gated
-* Add explicit tests for denied sensitive paths such as `/etc` and `~/.ssh`
 
 ## Agent Loop
 

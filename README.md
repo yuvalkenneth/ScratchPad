@@ -324,26 +324,6 @@ The REPL in [main.py](main.py) supports `/reset`, `/reload`, `/model`, and
 
 ---
 
-## Project structure (initial)
-
-```text
-app/
-  content.py  # normalized content profile/item contract
-  fetchers/   # source-specific fetching and extraction
-  library/    # Markdown-backed content storage
-  llm/        # model client, runtime, and prompting
-  tools/      # tool implementations and registry
-
-skills/       # markdown skill definitions
-library/      # local Markdown content items and their separate Git history, created as needed
-
-scripts/      # dev scripts
-evals/        # frozen model-eval fixtures
-tests/        # deterministic pytest unit tests
-```
-
----
-
 ## Philosophy
 
 * focus on usefulness first
@@ -356,13 +336,11 @@ tests/        # deterministic pytest unit tests
 
 ---
 
-## Roadmap
+## Next steps
 
-Near-term work:
-
-* run the real heldout baseline for Qwen 0.8B
-* export train/validation/heldout SFT datasets and inspect rendered templates
-* run the first small LoRA/QLoRA tool-routing SFT
-* compare base vs SFT by difficulty, context kind, failure type, retention, and latency
-* make llama.cpp observability live by enabling `/metrics`, writing a PID file, and polling runtime status
-* keep recommendation behavior explainable before adding heavier ranking or semantic search
+* Run the heldout Qwen 0.8B baseline.
+* Export and inspect train/validation/heldout SFT datasets.
+* Run the first LoRA/QLoRA tool-routing SFT.
+* Compare base vs SFT by difficulty, context kind, failure type, retention, and latency.
+* Add live llama.cpp runtime status with `/metrics`, slots, and PID-based memory tracking.
+* Keep recommendation ranking explainable before adding embeddings or heavier search.
