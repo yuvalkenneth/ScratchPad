@@ -1,4 +1,6 @@
-from scripts.eval_tool_choice import (
+"""Tests for tool-choice eval scoring, grouping, and failure taxonomy."""
+
+from scripts.evals.tool_choice import (
     build_report,
     classify_failure_types,
     effective_tool_arguments,

@@ -1,4 +1,6 @@
-from scripts.experiment_tracking import flatten_numeric_metrics
+"""Tests for optional MLflow metric extraction helpers."""
+
+from scripts.observability.experiment_tracking import flatten_numeric_metrics
 
 
 def test_flatten_numeric_metrics_skips_large_result_payloads() -> None:

@@ -1,3 +1,5 @@
+"""Tests for the shared content-profile prompt/schema contract."""
+
 from app.content_profile_prompt import (
     CONTENT_PROFILE_SCHEMA_TEXT,
     common_content_profile_field_guidance,

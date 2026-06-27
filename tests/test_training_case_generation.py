@@ -1,5 +1,7 @@
-from scripts.eval_tool_choice import load_cases
-from scripts.generate_tool_choice_cases import SPLITS, generate_cases, split_for_case_id
+"""Tests for generated tool-choice case coverage, metadata, and splits."""
+
+from scripts.evals.tool_choice import load_cases
+from scripts.training.generate_tool_choice_cases import SPLITS, generate_cases, split_for_case_id
 
 
 def test_generated_tool_choice_cases_are_large_and_cover_all_tools() -> None:

@@ -1,6 +1,8 @@
+"""Tests for deterministic multi-step workflow eval fixtures."""
+
 from pathlib import Path
 
-from scripts.eval_workflows import load_cases, run, run_case
+from scripts.evals.workflows import load_cases, run, run_case
 
 
 def test_workflow_cases_load() -> None:

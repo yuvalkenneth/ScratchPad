@@ -1,6 +1,8 @@
+"""Tests for retention eval labels, text constraints, and summaries."""
+
 import json
 
-from scripts.eval_retention import (
+from scripts.evals.retention import (
     build_report,
     evaluate_text_expectations,
     load_cases,

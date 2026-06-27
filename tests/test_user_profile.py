@@ -1,3 +1,5 @@
+"""Tests for editable user-profile parsing and default template creation."""
+
 from pathlib import Path
 
 from app.library.user_profile import parse_user_profile, read_user_profile, user_profile_path

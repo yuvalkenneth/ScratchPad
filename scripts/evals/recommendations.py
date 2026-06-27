@@ -1,3 +1,5 @@
+"""Run deterministic recommendation-ranking checks over fake libraries."""
+
 from __future__ import annotations
 
 import argparse
@@ -7,7 +9,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
@@ -19,6 +21,7 @@ DEFAULT_CASES_PATH = REPO_ROOT / "evals" / "recommendations" / "cases.json"
 
 
 def load_cases(path: Path = DEFAULT_CASES_PATH) -> list[dict[str, Any]]:
+    """Load and validate recommendation eval cases."""
     with path.open(encoding="utf-8") as handle:
         cases = json.load(handle)
     if not isinstance(cases, list):
@@ -29,6 +32,7 @@ def load_cases(path: Path = DEFAULT_CASES_PATH) -> list[dict[str, Any]]:
 
 
 def validate_case(case: dict[str, Any]) -> None:
+    """Validate the recommendation eval case schema."""
     for key in ("id", "user_request", "items", "filters", "expected"):
         if key not in case:
             raise ValueError(f"Recommendation case is missing required field: {key}")
@@ -37,6 +41,7 @@ def validate_case(case: dict[str, Any]) -> None:
 
 
 def run_case(case: dict[str, Any], *, library_root: Path) -> dict[str, Any]:
+    """Materialize one fake library and evaluate the resulting listing."""
     write_profile(case.get("user_profile") or {}, library_root=library_root)
     profile = read_user_profile(library_root=library_root)["profile"]
     for item in case["items"]:
@@ -57,12 +62,14 @@ def run_case(case: dict[str, Any], *, library_root: Path) -> dict[str, Any]:
 
 
 def write_profile(profile: dict[str, Any], *, library_root: Path) -> None:
+    """Write a fake editable user profile for recommendation tests."""
     path = user_profile_path(library_root=library_root)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(render_profile(profile), encoding="utf-8")
 
 
 def render_profile(profile: dict[str, Any]) -> str:
+    """Render a profile dict into the Markdown format the product reads."""
     return "\n".join(
         [
             "# Scratchpad User Profile",
@@ -84,16 +91,19 @@ def render_profile(profile: dict[str, Any]) -> str:
 
 
 def render_bullets(values: Any) -> list[str]:
+    """Render a sequence as Markdown bullets."""
     return [f"- {value}" for value in values or []] or ["- "]
 
 
 def render_preferences(values: Any) -> list[str]:
+    """Render preference key/value pairs as Markdown bullets."""
     if not isinstance(values, dict) or not values:
         return ["- "]
     return [f"- {key}: {value}" for key, value in values.items()]
 
 
 def evaluate_listing(listing: dict[str, Any], expected: dict[str, Any]) -> dict[str, Any]:
+    """Check listing output against deterministic recommendation constraints."""
     failures: list[str] = []
     items = listing.get("items", [])
     titles = [str(item.get("title") or "") for item in items]
@@ -124,6 +134,7 @@ def evaluate_listing(listing: dict[str, Any], expected: dict[str, Any]) -> dict[
 
 
 def run(argv: list[str] | None = None) -> int:
+    """Run the recommendation eval CLI."""
     parser = argparse.ArgumentParser(
         description="Evaluate deterministic Scratchpad recommendation ranking constraints."
     )

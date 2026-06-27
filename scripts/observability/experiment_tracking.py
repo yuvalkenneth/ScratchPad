@@ -1,3 +1,5 @@
+"""Optional MLflow logging helpers for Scratchpad eval reports."""
+
 from __future__ import annotations
 
 import json
@@ -7,6 +9,7 @@ from typing import Any
 
 
 def current_git_sha() -> str | None:
+    """Return the current Git SHA when the checkout is available."""
     completed = subprocess.run(
         ["git", "rev-parse", "HEAD"],
         capture_output=True,
@@ -24,6 +27,7 @@ def flatten_numeric_metrics(
     prefix: str = "",
     max_depth: int = 4,
 ) -> dict[str, float]:
+    """Flatten report metrics into MLflow-compatible numeric keys."""
     if max_depth < 0:
         return {}
     if isinstance(value, bool):
@@ -51,6 +55,7 @@ def mlflow_log_report(
     artifacts: list[Path] | None = None,
     params: dict[str, Any] | None = None,
 ) -> str:
+    """Log an eval report, numeric metrics, params, and artifacts to MLflow."""
     try:
         import mlflow
     except ImportError as exc:

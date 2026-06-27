@@ -1,3 +1,5 @@
+"""Tests for LLM runtime prompt policy, env resolution, and tool-call guards."""
+
 import os
 import asyncio
 from types import SimpleNamespace

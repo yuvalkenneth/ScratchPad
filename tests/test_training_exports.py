@@ -1,7 +1,9 @@
+"""Tests for exporting tool-choice cases into SFT datasets."""
+
 import json
 from pathlib import Path
 
-from scripts.export_sft_tool_choice import (
+from scripts.training.export_sft_tool_choice import (
     export_rows,
     export_split_rows,
     messages_from_case,

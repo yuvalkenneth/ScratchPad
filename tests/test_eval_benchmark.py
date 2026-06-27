@@ -1,7 +1,9 @@
+"""Tests for eval benchmark command construction and dry-run manifests."""
+
 from argparse import Namespace
 from pathlib import Path
 
-from scripts.run_benchmark import build_commands, run
+from scripts.evals.benchmark import build_commands, run
 
 
 def test_build_commands_can_skip_model_evals(tmp_path: Path) -> None:

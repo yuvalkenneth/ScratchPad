@@ -1,3 +1,5 @@
+"""Render collected local-LLM runtime snapshots as an HTML report."""
+
 from __future__ import annotations
 
 import argparse
@@ -8,6 +10,7 @@ from typing import Any
 
 
 def point_path(values: list[float], *, width: int = 900, height: int = 260, padding: int = 24) -> str:
+    """Convert a numeric series into an SVG path."""
     if not values:
         return ""
     if len(values) == 1:
@@ -30,6 +33,7 @@ def point_path(values: list[float], *, width: int = 900, height: int = 260, padd
 
 
 def extract_rss_mib(report: dict[str, Any]) -> list[float]:
+    """Extract process RSS samples from a runtime JSON report in MiB."""
     values: list[float] = []
     for snapshot in report.get("snapshots", []):
         process = snapshot.get("process") or {}
@@ -40,6 +44,7 @@ def extract_rss_mib(report: dict[str, Any]) -> list[float]:
 
 
 def latest_snapshot(report: dict[str, Any]) -> dict[str, Any]:
+    """Return the last collected snapshot, or an empty dict."""
     snapshots = report.get("snapshots", [])
     if not snapshots:
         return {}
@@ -47,6 +52,7 @@ def latest_snapshot(report: dict[str, Any]) -> dict[str, Any]:
 
 
 def endpoint_summary(report: dict[str, Any]) -> dict[str, Any]:
+    """Count how many snapshots contained llama.cpp endpoint payloads."""
     snapshots = report.get("snapshots", [])
     return {
         "metrics_snapshots": sum(1 for snapshot in snapshots if snapshot.get("llama_metrics_raw")),
@@ -55,12 +61,13 @@ def endpoint_summary(report: dict[str, Any]) -> dict[str, Any]:
 
 
 def render_rss_section(rss_values: list[float]) -> str:
+    """Render the memory chart or an explanation for missing PID data."""
     if not rss_values:
         return """
   <section class="card warning">
     <h2>Process RSS MiB</h2>
     <p>No process RSS samples were collected. Pass <code>--pid</code> to
-    <code>collect_llm_runtime.py</code>, or update the launcher to write a PID
+    <code>scripts/observability/collect_llm_runtime.py</code>, or update the launcher to write a PID
     file. Without a PID this report can still show llama.cpp slot status, but
     cannot plot OS process memory.</p>
   </section>
@@ -77,6 +84,7 @@ def render_rss_section(rss_values: list[float]) -> str:
 
 
 def render_slots_section(snapshot: dict[str, Any]) -> str:
+    """Render the latest llama.cpp slot state when available."""
     slots = snapshot.get("llama_slots")
     if slots is None:
         return """
@@ -110,6 +118,7 @@ def render_slots_section(snapshot: dict[str, Any]) -> str:
 
 
 def render_html(report: dict[str, Any]) -> str:
+    """Render a complete standalone HTML runtime report."""
     rss_values = extract_rss_mib(report)
     endpoints = endpoint_summary(report)
     latest = latest_snapshot(report)
@@ -177,6 +186,7 @@ def render_html(report: dict[str, Any]) -> str:
 
 
 def run(argv: list[str] | None = None) -> int:
+    """Run the runtime HTML renderer CLI."""
     parser = argparse.ArgumentParser(description="Render a Scratchpad LLM runtime JSON report as HTML.")
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)

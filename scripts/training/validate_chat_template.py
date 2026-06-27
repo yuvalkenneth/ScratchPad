@@ -1,3 +1,5 @@
+"""Validate tokenizer-rendered SFT rows before training."""
+
 from __future__ import annotations
 
 import argparse
@@ -7,15 +9,16 @@ from pathlib import Path
 from typing import Any
 
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from scripts.export_sft_tool_choice import build_sft_rows, load_chat_template_tokenizer
-from scripts.eval_tool_choice import DEFAULT_CASES_PATH
+from scripts.evals.tool_choice import DEFAULT_CASES_PATH
+from scripts.training.export_sft_tool_choice import build_sft_rows, load_chat_template_tokenizer
 
 
 def infer_family(tokenizer_name_or_path: str) -> str:
+    """Infer template-marker expectations from a tokenizer path or id."""
     lowered = tokenizer_name_or_path.lower()
     if "qwen" in lowered:
         return "qwen"
@@ -23,6 +26,7 @@ def infer_family(tokenizer_name_or_path: str) -> str:
 
 
 def assert_required_substrings(text: str, required: list[str], *, row_id: str) -> None:
+    """Fail when a rendered row is missing expected template/tool markers."""
     missing = [substring for substring in required if substring not in text]
     if missing:
         raise ValueError(f"Rendered row {row_id} is missing required template markers: {missing}")
@@ -33,6 +37,7 @@ def validate_rendered_row(
     *,
     family: str,
 ) -> dict[str, Any]:
+    """Validate one rendered row and return a compact inspection summary."""
     text = row.get("text")
     if not isinstance(text, str) or not text.strip():
         raise ValueError(f"Rendered row {row.get('id')} is missing non-empty text.")
@@ -82,6 +87,7 @@ def validate_rendered_row(
 
 
 def run(argv: list[str] | None = None) -> int:
+    """Run the chat-template validation CLI."""
     parser = argparse.ArgumentParser(
         description=(
             "Render Scratchpad SFT rows through a tokenizer chat template and validate "

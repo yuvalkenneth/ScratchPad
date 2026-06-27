@@ -1,3 +1,5 @@
+"""Generate deterministic Scratchpad tool-choice cases for evals and SFT."""
+
 from __future__ import annotations
 
 import argparse
@@ -7,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT_PATH = REPO_ROOT / "evals" / "tool_choice" / "generated_cases.json"
 
 
@@ -26,6 +28,7 @@ SPLITS = ("train", "validation", "heldout")
 
 
 def split_for_case_id(case_id: str) -> str:
+    """Assign a stable split from a case id hash."""
     bucket = int(hashlib.sha256(case_id.encode("utf-8")).hexdigest(), 16) % 10
     if bucket < 2:
         return "validation"
@@ -47,6 +50,7 @@ def case(
     context_kind: str = "stateless",
     retention_kind: str | None = None,
 ) -> dict[str, Any]:
+    """Build one tool-choice case with required experiment metadata."""
     payload: dict[str, Any] = {
         "id": case_id,
         "expected_tool": expected_tool,
@@ -69,14 +73,17 @@ def case(
 
 
 def must_equal(**values: Any) -> dict[str, Any]:
+    """Build exact-match argument expectations."""
     return {"must_equal": values}
 
 
 def must_include(**values: list[Any]) -> dict[str, Any]:
+    """Build list-inclusion argument expectations."""
     return {"must_include": values}
 
 
 def list_default_status_args(extra: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Build expected default status filters for content-list routing."""
     payload = {
         "must_include": {"status": ["unread", "started"]},
         "must_not_include": {"status": ["done", "archived", "abandoned"]},
@@ -88,6 +95,7 @@ def list_default_status_args(extra: dict[str, Any] | None = None) -> dict[str, A
 
 
 def generate_cases() -> list[dict[str, Any]]:
+    """Generate the complete tool-choice case set."""
     cases: list[dict[str, Any]] = []
 
     inspect_templates = [
@@ -536,6 +544,7 @@ def generate_cases() -> list[dict[str, Any]]:
 
 
 def run(argv: list[str] | None = None) -> int:
+    """Run the case-generation CLI."""
     parser = argparse.ArgumentParser(description="Generate expanded deterministic tool-choice cases.")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT_PATH)
     args = parser.parse_args(argv)

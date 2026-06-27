@@ -1,3 +1,5 @@
+"""Build and run grouped Scratchpad benchmark commands."""
+
 from __future__ import annotations
 
 import argparse
@@ -10,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
@@ -21,21 +23,24 @@ DEFAULT_REPORTS_DIR = REPO_ROOT / "evals" / "runs"
 
 @dataclass
 class BenchmarkCommand:
+    """A subprocess command plus optional report path for benchmark manifests."""
+
     name: str
     command: list[str]
     report_path: Path | None = None
 
 
 def build_commands(args: argparse.Namespace) -> list[BenchmarkCommand]:
+    """Create the deterministic and model-backed commands for one benchmark run."""
     reports_dir = Path(args.reports_dir)
     commands = [
         BenchmarkCommand(
             name="workflow",
-            command=[sys.executable, "scripts/eval_workflows.py", "--json"],
+            command=[sys.executable, "scripts/eval.py", "workflows", "--json"],
         ),
         BenchmarkCommand(
             name="recommendations",
-            command=[sys.executable, "scripts/eval_recommendations.py", "--json"],
+            command=[sys.executable, "scripts/eval.py", "recommendations", "--json"],
         ),
     ]
 
@@ -45,7 +50,8 @@ def build_commands(args: argparse.Namespace) -> list[BenchmarkCommand]:
     tool_report = reports_dir / f"{args.label}-tool-choice.json"
     tool_command = [
         sys.executable,
-        "scripts/eval_tool_choice.py",
+        "scripts/eval.py",
+        "tool-choice",
         "--report",
         str(tool_report),
         "--json",
@@ -61,7 +67,8 @@ def build_commands(args: argparse.Namespace) -> list[BenchmarkCommand]:
 
     content_command = [
         sys.executable,
-        "scripts/eval_content_profiles.py",
+        "scripts/eval.py",
+        "content-profiles",
         "--json",
     ]
     append_model_args(content_command, args)
@@ -78,6 +85,7 @@ def build_commands(args: argparse.Namespace) -> list[BenchmarkCommand]:
 
 
 def append_model_args(command: list[str], args: argparse.Namespace) -> None:
+    """Append shared model/profile CLI arguments to an eval command."""
     if args.profile:
         command.extend(["--profile", args.profile])
     if args.provider:
@@ -91,6 +99,7 @@ def append_model_args(command: list[str], args: argparse.Namespace) -> None:
 
 
 def run_command(command: BenchmarkCommand) -> dict[str, Any]:
+    """Execute one benchmark subprocess and capture output for the manifest."""
     started_at = time.perf_counter()
     completed = subprocess.run(
         command.command,
@@ -110,6 +119,7 @@ def run_command(command: BenchmarkCommand) -> dict[str, Any]:
 
 
 def run(argv: list[str] | None = None) -> int:
+    """Run the benchmark CLI or write a dry-run manifest."""
     parser = argparse.ArgumentParser(
         description="Run Scratchpad as a local-model benchmark harness."
     )

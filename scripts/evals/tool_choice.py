@@ -1,3 +1,5 @@
+"""Evaluate first-tool routing and argument grounding for Scratchpad agents."""
+
 from __future__ import annotations
 
 import argparse
@@ -8,7 +10,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
@@ -19,7 +21,7 @@ from app.llm.profiles import config_from_profile
 from app.llm.runtime import ensure_provider_ready
 from app.tools.content_library_tool import apply_content_list_defaults
 from app.tools.registry import get_tool_definitions
-from scripts.experiment_tracking import mlflow_log_report
+from scripts.observability.experiment_tracking import mlflow_log_report
 
 
 DEFAULT_CASES_PATH = REPO_ROOT / "evals" / "tool_choice" / "cases.json"
@@ -30,6 +32,7 @@ GROUP_FIELDS = ("split", "difficulty", "category", "intent", "context_kind")
 
 
 def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
+    """Resolve the model-under-test config from CLI args, env vars, or profiles."""
     profile_name = args.profile or os.getenv("EVAL_PROFILE")
     if profile_name:
         return config_from_profile(
@@ -54,12 +57,14 @@ def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
 
 
 def prepare_eval_provider(config: LLMConfig, *, auto_start: bool) -> LLMConfig:
+    """Start a local llama.cpp provider when the eval explicitly allows it."""
     if auto_start and config.provider.strip().lower() == "llama_cpp":
         return ensure_provider_ready(config)
     return config
 
 
 def load_cases(path: Path = DEFAULT_CASES_PATH) -> list[dict[str, Any]]:
+    """Load and validate tool-choice cases from JSON."""
     with path.open(encoding="utf-8") as handle:
         cases = json.load(handle)
     if not isinstance(cases, list):
@@ -70,6 +75,7 @@ def load_cases(path: Path = DEFAULT_CASES_PATH) -> list[dict[str, Any]]:
 
 
 def validate_case(case: dict[str, Any]) -> None:
+    """Validate the schema and metadata used by tool-choice eval cases."""
     for key in ("id", "expected_tool"):
         if not str(case.get(key) or "").strip():
             raise ValueError(f"Tool-choice case is missing required field: {key}")
@@ -105,6 +111,7 @@ def validate_case(case: dict[str, Any]) -> None:
 
 
 def filter_cases_by_split(cases: list[dict[str, Any]], split: str | None) -> list[dict[str, Any]]:
+    """Return only cases in the requested canonical split."""
     if split is None:
         return cases
     filtered = [case for case in cases if case.get("split") == split]
@@ -114,6 +121,7 @@ def filter_cases_by_split(cases: list[dict[str, Any]], split: str | None) -> lis
 
 
 def parse_tool_arguments(raw_arguments: str | None) -> dict[str, Any]:
+    """Parse OpenAI-compatible tool arguments as a JSON object."""
     if not raw_arguments:
         return {}
     parsed = json.loads(raw_arguments)
@@ -123,6 +131,7 @@ def parse_tool_arguments(raw_arguments: str | None) -> dict[str, Any]:
 
 
 def effective_tool_arguments(tool_name: str | None, arguments: dict[str, Any]) -> dict[str, Any]:
+    """Apply tool defaults before comparing model arguments to expectations."""
     if tool_name == "content_list":
         return apply_content_list_defaults(arguments)
     return dict(arguments)
@@ -133,6 +142,7 @@ def evaluate_arguments(
     expected: dict[str, Any] | None,
     actual: dict[str, Any],
 ) -> dict[str, Any]:
+    """Evaluate expected argument constraints against actual tool arguments."""
     if not expected:
         return {"passed": True, "checks": []}
 
@@ -181,10 +191,12 @@ def evaluate_arguments(
 
 
 def uses_tool_defaults(tool_name: str | None, parsed: dict[str, Any], effective: dict[str, Any]) -> bool:
+    """Report whether scoring depended on implicit tool defaults."""
     return tool_name == "content_list" and parsed != effective
 
 
 def request_messages_from_case(case: dict[str, Any]) -> list[dict[str, str]]:
+    """Build the chat request for a single tool-choice case."""
     messages: list[dict[str, str]] = [{"role": "system", "content": build_system_prompt()}]
     if "messages" in case:
         messages.extend(case["messages"])
@@ -200,6 +212,7 @@ def run_case(
     temperature: float,
     top_p: float | None,
 ) -> dict[str, Any]:
+    """Run one model call and score the selected first tool."""
     request_kwargs: dict[str, Any] = {
         "model": config.model_name,
         "messages": request_messages_from_case(case),
@@ -283,6 +296,7 @@ def classify_failure_types(
     argument_pass: bool,
     extra_tool_count: int,
 ) -> list[str]:
+    """Classify a failed result into stable failure buckets."""
     failures: list[str] = []
     if actual_tool != expected_tool:
         if actual_tool == NO_TOOL_LABEL:
@@ -308,6 +322,7 @@ def build_report(
     profile: str | None = None,
     split: str | None = None,
 ) -> dict[str, Any]:
+    """Aggregate tool-choice results into metrics, groups, and raw outputs."""
     labels = sorted(
         {
             result["expected_tool"]
@@ -421,6 +436,7 @@ def build_report(
 
 
 def build_group_metrics(results: list[dict[str, Any]], field: str) -> dict[str, dict[str, Any]]:
+    """Summarize results grouped by one case metadata field."""
     grouped: dict[str, list[dict[str, Any]]] = {}
     for result in results:
         value = result.get("case_metadata", {}).get(field, "<missing>")
@@ -432,6 +448,7 @@ def build_group_metrics(results: list[dict[str, Any]], field: str) -> dict[str, 
 
 
 def summarize_result_subset(results: list[dict[str, Any]]) -> dict[str, Any]:
+    """Compute the same core metrics for a subset of tool-choice results."""
     total = len(results)
     constrained_results = [result for result in results if result["argument_checks"]]
     latencies = [float(result["latency_seconds"]) for result in results]
@@ -508,6 +525,7 @@ def summarize_result_subset(results: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def run(argv: list[str] | None = None) -> int:
+    """Run the tool-choice eval CLI."""
     parser = argparse.ArgumentParser(
         description="Evaluate whether a model chooses the expected Scratchpad tool for simple requests."
     )

@@ -1,3 +1,5 @@
+"""Tests for source extraction and content-profile analyzer fallbacks."""
+
 import json
 
 from app.fetchers.web import extract_page_content

@@ -1,3 +1,5 @@
+"""Run deterministic multi-step workflows against a temporary library."""
+
 from __future__ import annotations
 
 import argparse
@@ -8,7 +10,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
@@ -19,6 +21,7 @@ DEFAULT_CASES_PATH = REPO_ROOT / "evals" / "workflows" / "cases.json"
 
 
 def load_cases(path: Path = DEFAULT_CASES_PATH) -> list[dict[str, Any]]:
+    """Load and validate workflow eval cases."""
     with path.open(encoding="utf-8") as handle:
         cases = json.load(handle)
     if not isinstance(cases, list):
@@ -29,6 +32,7 @@ def load_cases(path: Path = DEFAULT_CASES_PATH) -> list[dict[str, Any]]:
 
 
 def validate_case(case: dict[str, Any]) -> None:
+    """Validate the workflow eval case schema."""
     if not str(case.get("id") or "").strip():
         raise ValueError("Workflow case is missing required field: id")
     steps = case.get("steps")
@@ -41,6 +45,7 @@ def validate_case(case: dict[str, Any]) -> None:
 
 
 def run_case(case: dict[str, Any], *, library_root: Path) -> dict[str, Any]:
+    """Execute every step in a workflow case and collect per-step outcomes."""
     step_results: list[dict[str, Any]] = []
     for index, step in enumerate(case["steps"], start=1):
         started_at = time.perf_counter()
@@ -66,6 +71,7 @@ def run_case(case: dict[str, Any], *, library_root: Path) -> dict[str, Any]:
 
 
 def run_step(step: dict[str, Any], *, library_root: Path) -> dict[str, Any]:
+    """Dispatch a single workflow step to the corresponding product tool."""
     step_type = step["type"]
     if step_type == "save":
         return content_save(step["item"], library_root=library_root)
@@ -85,6 +91,7 @@ def run_step(step: dict[str, Any], *, library_root: Path) -> dict[str, Any]:
 
 
 def evaluate_step(step: dict[str, Any], result: dict[str, Any]) -> dict[str, Any]:
+    """Compare a workflow step result to its expected fields."""
     expected = step.get("expect") or {}
     failures: list[str] = []
     step_type = step["type"]
@@ -120,6 +127,7 @@ def evaluate_step(step: dict[str, Any], result: dict[str, Any]) -> dict[str, Any
 
 
 def compact_step_result(step_type: str, result: dict[str, Any]) -> dict[str, Any]:
+    """Keep workflow eval output readable by retaining only useful fields."""
     if step_type == "list":
         return {
             "status": result.get("status"),
@@ -144,6 +152,7 @@ def compact_step_result(step_type: str, result: dict[str, Any]) -> dict[str, Any
 
 
 def run(argv: list[str] | None = None) -> int:
+    """Run the workflow eval CLI."""
     parser = argparse.ArgumentParser(
         description="Run deterministic Scratchpad workflow evals against a temporary Markdown library."
     )

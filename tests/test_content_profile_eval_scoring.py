@@ -1,6 +1,8 @@
+"""Tests for deterministic content-profile eval scoring."""
+
 import json
 
-from scripts import eval_content_profiles
+from scripts.evals import content_profiles
 
 
 def eval_case() -> dict[str, object]:
@@ -38,7 +40,7 @@ def test_evaluate_case_accepts_expected_profile() -> None:
         "confidence": 0.7,
     }
 
-    evaluation = eval_content_profiles.evaluate_case(profile, case)
+    evaluation = content_profiles.evaluate_case(profile, case)
 
     assert evaluation["passed"]
     assert evaluation["passed_checks"] == evaluation["total_checks"]
@@ -60,7 +62,7 @@ def test_evaluate_case_reports_soft_failures_without_failing_schema() -> None:
         "confidence": 0.7,
     }
 
-    evaluation = eval_content_profiles.evaluate_case(profile, case)
+    evaluation = content_profiles.evaluate_case(profile, case)
 
     assert evaluation["passed"]
     assert evaluation["hard_failures"] == []
@@ -89,7 +91,7 @@ def test_evaluate_case_accepts_depth_options() -> None:
         "confidence": 0.7,
     }
 
-    evaluation = eval_content_profiles.evaluate_case(profile, case)
+    evaluation = content_profiles.evaluate_case(profile, case)
 
     assert evaluation["checks"]["depth_level"]["passed"]
 
@@ -113,9 +115,9 @@ def test_run_limit_evaluates_first_n_cases(tmp_path, monkeypatch, capsys) -> Non
             "confidence": 0.7,
         }
 
-    monkeypatch.setattr(eval_content_profiles, "analyze_case", fake_analyze_case)
+    monkeypatch.setattr(content_profiles, "analyze_case", fake_analyze_case)
 
-    exit_code = eval_content_profiles.run(["--fixtures", str(cases_path), "--limit", "1", "--json"])
+    exit_code = content_profiles.run(["--fixtures", str(cases_path), "--limit", "1", "--json"])
     lines = capsys.readouterr().out.splitlines()
 
     assert exit_code == 0

@@ -1,3 +1,5 @@
+"""Regression tests for agent-level tool routing with fake model responses."""
+
 import asyncio
 from types import SimpleNamespace
 

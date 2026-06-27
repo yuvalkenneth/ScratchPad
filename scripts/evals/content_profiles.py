@@ -1,3 +1,5 @@
+"""Evaluate source-to-content-profile extraction on frozen source fixtures."""
+
 from __future__ import annotations
 
 import argparse
@@ -9,7 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
@@ -52,6 +54,7 @@ JUDGE_RESULT_KEYS = {
 
 
 def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
+    """Resolve the analyzer model config from CLI args, env vars, or profiles."""
     profile_name = args.profile or os.getenv("EVAL_PROFILE")
     if profile_name:
         return config_from_profile(
@@ -76,6 +79,7 @@ def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
 
 
 def prepare_eval_provider(config: LLMConfig, *, auto_start: bool) -> LLMConfig:
+    """Start a local llama.cpp provider when the eval explicitly allows it."""
     if auto_start and config.provider.strip().lower() == "llama_cpp":
         return ensure_provider_ready(config)
     return config
@@ -83,6 +87,8 @@ def prepare_eval_provider(config: LLMConfig, *, auto_start: bool) -> LLMConfig:
 
 @dataclass
 class JudgeConfig:
+    """Resolved config for an optional qualitative LLM judge."""
+
     provider: str
     model_name: str
     base_url: str
@@ -92,6 +98,7 @@ class JudgeConfig:
 
     @classmethod
     def from_args(cls, args: argparse.Namespace, default: LLMConfig) -> "JudgeConfig":
+        """Resolve judge config separately from the model under test."""
         profile_name = args.judge_profile or os.getenv("EVAL_JUDGE_PROFILE")
         if profile_name:
             profile_config = config_from_profile(
@@ -133,6 +140,7 @@ class JudgeConfig:
 
 
 def load_cases(path: Path = DEFAULT_FIXTURE_PATH) -> list[dict[str, Any]]:
+    """Load and validate content-profile fixture cases."""
     with path.open(encoding="utf-8") as handle:
         cases = json.load(handle)
     if not isinstance(cases, list):
@@ -143,6 +151,7 @@ def load_cases(path: Path = DEFAULT_FIXTURE_PATH) -> list[dict[str, Any]]:
 
 
 def validate_case(case: dict[str, Any]) -> None:
+    """Validate fixture schema before model calls are made."""
     missing = sorted(key for key in REQUIRED_CASE_KEYS if key not in case)
     if missing:
         raise ValueError(f"Case is missing required fields: {', '.join(missing)}")
@@ -176,6 +185,7 @@ def analyze_case(
     config: LLMConfig | None = None,
     complete_text: Callable[[LLMConfig, list[dict[str, str]], int], str] | None = None,
 ) -> dict[str, Any]:
+    """Run the product analyzer prompt for one frozen source fixture."""
     input_data = case["input"]
     text = str(input_data["text"]).strip()
     title = str(input_data.get("title") or case["title"]).strip()
@@ -244,6 +254,7 @@ def judge_case(
     config: JudgeConfig | LLMConfig | None = None,
     complete_text: Callable[[Any, list[dict[str, str]], int], str] | None = None,
 ) -> dict[str, Any]:
+    """Ask an optional judge model to score profile usefulness and faithfulness."""
     config = config or LLMConfig.from_env()
     if complete_text is None:
         complete_text = _complete_judge_text
@@ -281,6 +292,7 @@ def _complete_judge_text(config: JudgeConfig | LLMConfig, messages: list[dict[st
 
 
 def build_judge_messages(profile: dict[str, Any], case: dict[str, Any]) -> list[dict[str, str]]:
+    """Build the judge prompt with product context, source text, and profile."""
     system_prompt = "\n".join(
         [
             "You are evaluating content profiles for Scratchpad, a local-first learning inbox.",
@@ -355,6 +367,7 @@ def _extract_json_object(text: str) -> dict[str, Any]:
 
 
 def evaluate_case(profile: dict[str, Any], case: dict[str, Any]) -> dict[str, Any]:
+    """Evaluate deterministic schema, source identity, and fuzzy rubric checks."""
     expected = case["expected"]
     checks = {
         "required_fields": _check(
@@ -441,6 +454,7 @@ def score_case(profile: dict[str, Any], case: dict[str, Any]) -> dict[str, bool]
 
 
 def expected_depth_options(expected: dict[str, Any]) -> list[str]:
+    """Return acceptable depth labels for a fixture expectation."""
     if "depth_level_options" in expected:
         return [str(option) for option in expected["depth_level_options"]]
     return [str(expected.get("depth_level"))]
@@ -453,6 +467,7 @@ def _check(passed: bool, *, severity: str) -> dict[str, Any]:
 
 
 def format_failed_checks(evaluation: dict[str, Any]) -> list[str]:
+    """Format failed check names with severity for text output."""
     return [
         f"{name} ({evaluation['checks'][name]['severity']})"
         for name in evaluation["hard_failures"] + evaluation["soft_failures"]
@@ -552,6 +567,7 @@ def _normalize(value: str) -> str:
 
 
 def run(argv: list[str] | None = None) -> int:
+    """Run the content-profile eval CLI."""
     parser = argparse.ArgumentParser(description="Evaluate content-profile LLM output on frozen inputs.")
     parser.add_argument("--fixtures", type=Path, default=DEFAULT_FIXTURE_PATH)
     parser.add_argument("--case", dest="case_id")
@@ -747,6 +763,7 @@ def build_run_summary(
     eval_profile: str | None = None,
     judge_profile: str | None = None,
 ) -> dict[str, Any]:
+    """Build aggregate metadata and latency summary for one eval run."""
     total_cases = len(results)
     passed_cases = sum(1 for result in results if result["passed"])
     analysis_latencies = [result["latency"]["analysis_seconds"] for result in results]

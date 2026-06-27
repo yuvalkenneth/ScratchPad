@@ -58,16 +58,16 @@ existing cases between splits.
 ## Reproduce Data
 
 ```bash
-uv run python scripts/generate_tool_choice_cases.py
-uv run python scripts/export_sft_tool_choice.py \
+uv run python scripts/training/generate_tool_choice_cases.py
+uv run python scripts/training/export_sft_tool_choice.py \
   --cases evals/tool_choice/generated_cases.json \
   --split-dir training/datasets/tool_choice
-uv run python scripts/export_sft_tool_choice.py \
+uv run python scripts/training/export_sft_tool_choice.py \
   --cases evals/tool_choice/generated_cases.json \
   --split-dir training/datasets/tool_choice-qwen35-text \
   --output-format text \
   --tokenizer models/hf/unsloth--Qwen3.5-0.8B
-uv run --with transformers --with jinja2 python scripts/validate_chat_template.py \
+uv run --with transformers --with jinja2 python scripts/training/validate_chat_template.py \
   --cases evals/tool_choice/generated_cases.json \
   --tokenizer models/hf/unsloth--Qwen3.5-0.8B \
   --family qwen \
@@ -92,7 +92,7 @@ Run base and SFT on identical tool-choice and retention suites.
 Tool-choice eval:
 
 ```bash
-uv run python scripts/eval_tool_choice.py \
+uv run python scripts/eval.py tool-choice \
   --cases evals/tool_choice/generated_cases.json \
   --split heldout \
   --profile qwen-local \
@@ -108,7 +108,7 @@ only improving easy stateless routing.
 Retention eval:
 
 ```bash
-uv run python scripts/eval_retention.py \
+uv run python scripts/eval.py retention \
   --cases evals/retention/cases.json \
   --profile qwen-local \
   --temperature 0 \
@@ -121,7 +121,7 @@ write `sft-tool-choice.json` and `sft-retention.json`.
 Optional local MLflow tracking:
 
 ```bash
-uv run --with mlflow python scripts/eval_tool_choice.py \
+uv run --with mlflow python scripts/eval.py tool-choice \
   --cases evals/tool_choice/generated_cases.json \
   --split heldout \
   --profile qwen-local \
@@ -134,12 +134,12 @@ uv run --with mlflow python scripts/eval_tool_choice.py \
 Runtime memory/latency artifact:
 
 ```bash
-uv run python scripts/collect_llm_runtime.py \
+uv run python scripts/observability/collect_llm_runtime.py \
   --base-url http://127.0.0.1:8080 \
   --pid <LLAMA_SERVER_PID> \
   --duration-seconds 30 \
   --output experiments/tool_choice_sft_v1/reports/qwen08b-runtime.json
-uv run python scripts/render_runtime_report.py \
+uv run python scripts/observability/render_runtime_report.py \
   --input experiments/tool_choice_sft_v1/reports/qwen08b-runtime.json \
   --output experiments/tool_choice_sft_v1/reports/qwen08b-runtime.html
 ```
@@ -150,7 +150,7 @@ running an eval with `--mlflow-experiment`.
 Comparison scorecard:
 
 ```bash
-uv run python scripts/compare_experiment_reports.py \
+uv run python scripts/eval.py compare \
   --base-tool-report experiments/tool_choice_sft_v1/reports/base-tool-choice.json \
   --sft-tool-report experiments/tool_choice_sft_v1/reports/sft-tool-choice.json \
   --base-retention-report experiments/tool_choice_sft_v1/reports/base-retention.json \

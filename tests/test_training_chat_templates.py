@@ -1,6 +1,8 @@
+"""Tests for tokenizer-rendered SFT row validation."""
+
 import pytest
 
-from scripts.validate_chat_template import (
+from scripts.training.validate_chat_template import (
     infer_family,
     validate_rendered_row,
 )

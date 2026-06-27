@@ -33,7 +33,7 @@
 
 ## Priority 1: Content-Profile Evaluation Calibration
 
-* Make `scripts/eval_content_profiles.py` report partial scores such as `passed_checks / total_checks`, not only binary pass/fail
+* Make `scripts/eval.py content-profiles` report partial scores such as `passed_checks / total_checks`, not only binary pass/fail
 * Split checks into severity levels, such as hard failures for schema/source identity and soft warnings for fuzzy subject/category matches
 * Let the model under test use explicit provider, model id, base URL, API key, and llama.cpp start-script arguments
 * Auto-start the llama.cpp server for eval runs unless explicitly disabled
@@ -43,7 +43,7 @@
 * Keep LLM judge results separate from deterministic checks so invalid schema/source identity cannot be hidden by a permissive judge
 * Add per-case timing and model metadata to the eval output so model comparisons are traceable
 * Expand and keep curating the recent real-source content-profile fixture; it currently includes agent/coding-agent papers and repositories from February-June 2026
-* Rerun `uv run python scripts/eval_content_profiles.py --provider gemini --model gemini-3.5-flash --limit 3 --json` after Gemini free-tier daily quota resets; the latest attempt failed with `GenerateRequestsPerDayPerProjectPerModel-FreeTier`
+* Rerun `uv run python scripts/eval.py content-profiles --provider gemini --model gemini-3.5-flash --limit 3 --json` after Gemini free-tier daily quota resets; the latest attempt failed with `GenerateRequestsPerDayPerProjectPerModel-FreeTier`
 * Improve semantic matching for subjects and categories without hiding genuinely poor classifications
 * Keep content-profile LLM eval inputs frozen so prompt/model changes are compared against identical source text
 * Allow eval expectations to express semantic alternatives instead of exact strings, especially for subjects, categories, and summary coverage
@@ -57,8 +57,8 @@
 * Start with 1-5 SLMs, including at least one under 0.6B and one around 0.8-1B
 * Run baseline evals before training: tool-choice accuracy, argument accuracy, JSON validity, latency, and failure-type counts
 * DONE: Add a first lesson outline under `training/README.md`
-* DONE: Add `scripts/export_sft_tool_choice.py` to export tool-choice cases as chat-style SFT JSONL
-* DONE: Add `scripts/generate_tool_choice_cases.py` for a larger deterministic tool-choice SFT starter dataset
+* DONE: Add `scripts/training/export_sft_tool_choice.py` to export tool-choice cases as chat-style SFT JSONL
+* DONE: Add `scripts/training/generate_tool_choice_cases.py` for a larger deterministic tool-choice SFT starter dataset
 * DONE: Download a first local starter set: SmolLM2-135M-Instruct, SmolLM2-360M-Instruct, Qwen3.5-0.8B, Qwen3-0.6B, LiquidAI/LFM2.5-350M, and LiquidAI/LFM2.5-1.2B-Instruct
 * DONE: Make tool-choice SFT export template-aware: OpenAI-style `messages`/`tool_calls` by default, optional tokenizer-rendered `text`
 * DONE: Add Experiment 1 spec under `experiments/tool_choice_sft_v1/`
@@ -120,7 +120,7 @@
 * Add failure-type counts to content-profile and recommendation eval reports
 * Build a cross-source content-profile eval set from recent, valuable, non-canonical URLs to reduce train-set contamination risk
 * Freeze fetched source text/transcripts/metadata into fixtures so eval runs do not depend on live network access
-* Later add `scripts/eval_recommendations.py` to compare recommendation behavior across local models
+* Later extend `scripts/eval.py recommendations` to compare recommendation behavior across local models
 * Extend deterministic workflow evals into model-in-the-loop workflow evals once recommendation policy stabilizes
 
 ## Markdown Persistence Follow-ups

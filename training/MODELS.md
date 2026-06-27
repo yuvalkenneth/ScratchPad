@@ -55,7 +55,7 @@ Start with baseline evals before training. The first SFT lesson should use the
 tool-choice JSONL exported by:
 
 ```bash
-uv run python scripts/export_sft_tool_choice.py
+uv run python scripts/training/export_sft_tool_choice.py
 ```
 
 If downloads need to be repeated, prefer explicit local directories:

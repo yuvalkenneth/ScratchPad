@@ -1,3 +1,5 @@
+"""Evaluate whether a model preserves normal no-tool assistant behavior."""
+
 from __future__ import annotations
 
 import argparse
@@ -9,7 +11,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
@@ -19,7 +21,7 @@ from app.llm.prompting import build_system_prompt
 from app.llm.profiles import config_from_profile
 from app.llm.runtime import ensure_provider_ready
 from app.tools.registry import get_tool_definitions
-from scripts.experiment_tracking import mlflow_log_report
+from scripts.observability.experiment_tracking import mlflow_log_report
 
 
 DEFAULT_CASES_PATH = REPO_ROOT / "evals" / "retention" / "cases.json"
@@ -34,6 +36,7 @@ RETENTION_KINDS = (
 
 
 def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
+    """Resolve the retention eval model config from args, env vars, or profiles."""
     profile_name = args.profile or os.getenv("EVAL_PROFILE")
     if profile_name:
         return config_from_profile(
@@ -58,12 +61,14 @@ def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
 
 
 def prepare_eval_provider(config: LLMConfig, *, auto_start: bool) -> LLMConfig:
+    """Start a local llama.cpp provider when the eval explicitly allows it."""
     if auto_start and config.provider.strip().lower() == "llama_cpp":
         return ensure_provider_ready(config)
     return config
 
 
 def load_cases(path: Path = DEFAULT_CASES_PATH) -> list[dict[str, Any]]:
+    """Load and validate retention cases from JSON."""
     with path.open(encoding="utf-8") as handle:
         cases = json.load(handle)
     if not isinstance(cases, list):
@@ -74,6 +79,7 @@ def load_cases(path: Path = DEFAULT_CASES_PATH) -> list[dict[str, Any]]:
 
 
 def validate_case(case: dict[str, Any]) -> None:
+    """Validate the small retention-case schema."""
     for key in ("id", "retention_kind", "user", "expectations"):
         if key not in case:
             raise ValueError(f"Retention case is missing required field: {key}")
@@ -84,10 +90,12 @@ def validate_case(case: dict[str, Any]) -> None:
 
 
 def count_sentences(text: str) -> int:
+    """Count sentence-like spans for simple retention constraints."""
     return len([part for part in re.split(r"[.!?]+", text.strip()) if part.strip()])
 
 
 def evaluate_text_expectations(content: str, expectations: dict[str, Any]) -> list[dict[str, Any]]:
+    """Score deterministic text constraints such as required/forbidden terms."""
     lowered = content.lower()
     checks: list[dict[str, Any]] = []
 
@@ -161,6 +169,7 @@ def evaluate_text_expectations(content: str, expectations: dict[str, Any]) -> li
 
 
 def retention_label(*, tool_called: bool, content: str, checks: list[dict[str, Any]]) -> str:
+    """Convert tool-use and text-check outcomes into pass/degraded/fail."""
     if tool_called:
         return "fail"
     if not content.strip():
@@ -177,6 +186,7 @@ def run_case(
     temperature: float,
     top_p: float | None,
 ) -> dict[str, Any]:
+    """Run one retention case and label the response."""
     request_kwargs: dict[str, Any] = {
         "model": config.model_name,
         "messages": [
@@ -223,6 +233,7 @@ def build_report(
     provider: str,
     profile: str | None = None,
 ) -> dict[str, Any]:
+    """Aggregate retention results by label and retention kind."""
     total = len(results)
     label_counts = {label: 0 for label in RETENTION_LABELS}
     kind_counts: dict[str, dict[str, int]] = {}
@@ -252,6 +263,7 @@ def build_report(
 
 
 def run(argv: list[str] | None = None) -> int:
+    """Run the retention eval CLI."""
     parser = argparse.ArgumentParser(
         description="Evaluate whether a tuned model retains basic no-tool assistant behavior."
     )

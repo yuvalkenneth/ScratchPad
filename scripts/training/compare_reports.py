@@ -1,3 +1,5 @@
+"""Compare base and SFT eval reports into one experiment scorecard."""
+
 from __future__ import annotations
 
 import argparse
@@ -22,6 +24,7 @@ RETENTION_METRICS = (
 
 
 def load_report(path: Path) -> dict[str, Any]:
+    """Load one JSON report and require an object at the top level."""
     with path.open(encoding="utf-8") as handle:
         report = json.load(handle)
     if not isinstance(report, dict):
@@ -30,6 +33,7 @@ def load_report(path: Path) -> dict[str, Any]:
 
 
 def metric_delta(base: float | int | None, sft: float | int | None) -> float | None:
+    """Return the signed SFT-minus-base delta for comparable metrics."""
     if base is None or sft is None:
         return None
     return round(float(sft) - float(base), 4)
@@ -40,6 +44,7 @@ def compare_metric_group(
     sft: dict[str, Any],
     metric_names: tuple[str, ...],
 ) -> dict[str, dict[str, float | None]]:
+    """Compare the same named metrics across two report sections."""
     return {
         metric: {
             "base": base.get(metric),
@@ -54,6 +59,7 @@ def compare_failure_type_counts(
     base: dict[str, Any],
     sft: dict[str, Any],
 ) -> dict[str, dict[str, int]]:
+    """Compare failure bucket counts across base and SFT reports."""
     base_counts = base.get("failure_type_counts", {})
     sft_counts = sft.get("failure_type_counts", {})
     labels = sorted(set(base_counts) | set(sft_counts))
@@ -71,6 +77,7 @@ def compare_per_class_f1(
     base: dict[str, Any],
     sft: dict[str, Any],
 ) -> dict[str, dict[str, float]]:
+    """Compare per-tool F1 scores across base and SFT reports."""
     base_per_class = base.get("per_class", {})
     sft_per_class = sft.get("per_class", {})
     labels = sorted(set(base_per_class) | set(sft_per_class))
@@ -92,6 +99,7 @@ def compare_tool_groups(
     base: dict[str, Any],
     sft: dict[str, Any],
 ) -> dict[str, dict[str, Any]]:
+    """Compare grouped tool-choice metrics such as difficulty or intent."""
     base_groups = base.get("groups", {})
     sft_groups = sft.get("groups", {})
     group_names = sorted(set(base_groups) | set(sft_groups))
@@ -127,6 +135,7 @@ def compare_label_counts(
     base: dict[str, Any],
     sft: dict[str, Any],
 ) -> dict[str, dict[str, int]]:
+    """Compare retention pass/degraded/fail label counts."""
     base_counts = base.get("label_counts", {})
     sft_counts = sft.get("label_counts", {})
     labels = sorted(set(base_counts) | set(sft_counts))
@@ -147,6 +156,7 @@ def build_scorecard(
     base_retention_report: dict[str, Any],
     sft_retention_report: dict[str, Any],
 ) -> dict[str, Any]:
+    """Build the compact base-vs-SFT scorecard for Experiment 1."""
     return {
         "type": "tool_choice_sft_v1_scorecard",
         "model": {
@@ -191,6 +201,7 @@ def build_scorecard(
 
 
 def run(argv: list[str] | None = None) -> int:
+    """Run the scorecard comparison CLI."""
     parser = argparse.ArgumentParser(description="Compare base vs SFT tool-choice and retention reports.")
     parser.add_argument("--base-tool-report", type=Path, required=True)
     parser.add_argument("--sft-tool-report", type=Path, required=True)

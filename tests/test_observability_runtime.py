@@ -1,5 +1,7 @@
-from scripts.collect_llm_runtime import process_stats
-from scripts.render_runtime_report import extract_rss_mib, render_html
+"""Tests for runtime collection fallbacks and HTML report rendering."""
+
+from scripts.observability.collect_llm_runtime import process_stats
+from scripts.observability.render_runtime_report import extract_rss_mib, render_html
 
 
 def test_extract_rss_mib_from_runtime_report() -> None:

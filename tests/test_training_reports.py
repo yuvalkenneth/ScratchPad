@@ -1,4 +1,6 @@
-from scripts.compare_experiment_reports import build_scorecard
+"""Tests for base-vs-SFT comparison scorecards."""
+
+from scripts.training.compare_reports import build_scorecard
 
 
 def test_build_scorecard_compares_tool_and_retention_metrics() -> None:

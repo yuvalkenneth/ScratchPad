@@ -42,9 +42,9 @@ Scratchpad system prompt + user request -> {"tool": "...", "arguments": {...}}
 Export the initial dataset:
 
 ```bash
-uv run python scripts/generate_tool_choice_cases.py
-uv run python scripts/export_sft_tool_choice.py
-uv run python scripts/export_sft_tool_choice.py --cases evals/tool_choice/generated_cases.json --split-dir training/datasets/tool_choice
+uv run python scripts/training/generate_tool_choice_cases.py
+uv run python scripts/training/export_sft_tool_choice.py
+uv run python scripts/training/export_sft_tool_choice.py --cases evals/tool_choice/generated_cases.json --split-dir training/datasets/tool_choice
 ```
 
 This writes:
@@ -72,7 +72,7 @@ For trainers that expect a single pre-rendered `text` column, render with the
 target tokenizer instead of hand-writing ChatML:
 
 ```bash
-uv run python scripts/export_sft_tool_choice.py \
+uv run python scripts/training/export_sft_tool_choice.py \
   --cases evals/tool_choice/generated_cases.json \
   --split-dir training/datasets/tool_choice-qwen35-text \
   --output-format text \
@@ -85,7 +85,7 @@ tokenizer's real template emits Qwen markers such as `<|im_start|>` /
 contains the expected native `<tool_call>` function and parameters:
 
 ```bash
-uv run --with transformers --with jinja2 python scripts/validate_chat_template.py \
+uv run --with transformers --with jinja2 python scripts/training/validate_chat_template.py \
   --cases evals/tool_choice/generated_cases.json \
   --tokenizer models/hf/unsloth--Qwen3.5-0.8B \
   --family qwen \
@@ -108,7 +108,7 @@ Also run a retention smoke eval before and after SFT so tool-routing gains do
 not hide catastrophic forgetting:
 
 ```bash
-uv run python scripts/eval_retention.py \
+uv run python scripts/eval.py retention \
   --cases evals/retention/cases.json \
   --profile qwen-local \
   --temperature 0 \
@@ -118,7 +118,7 @@ uv run python scripts/eval_retention.py \
 Compare base and SFT runs with:
 
 ```bash
-uv run python scripts/compare_experiment_reports.py \
+uv run python scripts/eval.py compare \
   --base-tool-report experiments/tool_choice_sft_v1/reports/base-tool-choice.json \
   --sft-tool-report experiments/tool_choice_sft_v1/reports/sft-tool-choice.json \
   --base-retention-report experiments/tool_choice_sft_v1/reports/base-retention.json \

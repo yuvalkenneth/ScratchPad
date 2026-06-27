@@ -1,3 +1,5 @@
+"""Collect lightweight runtime snapshots from a local llama.cpp server."""
+
 from __future__ import annotations
 
 import argparse
@@ -11,6 +13,7 @@ from urllib.request import urlopen
 
 
 def read_url(url: str, *, timeout: float = 2.0) -> str | None:
+    """Read a URL as text, returning None when the endpoint is unavailable."""
     try:
         with urlopen(url, timeout=timeout) as response:
             return response.read().decode("utf-8", errors="replace")
@@ -19,6 +22,7 @@ def read_url(url: str, *, timeout: float = 2.0) -> str | None:
 
 
 def read_json_url(url: str, *, timeout: float = 2.0) -> Any | None:
+    """Read a URL and decode JSON, returning None for missing/invalid data."""
     raw = read_url(url, timeout=timeout)
     if raw is None:
         return None
@@ -29,6 +33,7 @@ def read_json_url(url: str, *, timeout: float = 2.0) -> Any | None:
 
 
 def process_stats(pid: int | None) -> dict[str, Any] | None:
+    """Read process memory and CPU stats through `ps` for an optional PID."""
     if pid is None:
         return None
     completed = subprocess.run(
@@ -57,6 +62,7 @@ def collect_snapshot(
     base_url: str,
     pid: int | None,
 ) -> dict[str, Any]:
+    """Collect one endpoint/process snapshot."""
     normalized_base_url = base_url.rstrip("/")
     return {
         "timestamp_unix": time.time(),
@@ -74,6 +80,7 @@ def collect_series(
     interval_seconds: float,
     duration_seconds: float,
 ) -> list[dict[str, Any]]:
+    """Collect snapshots over a duration at a fixed interval."""
     snapshots: list[dict[str, Any]] = []
     deadline = time.monotonic() + duration_seconds
     while True:
@@ -85,6 +92,7 @@ def collect_series(
 
 
 def run(argv: list[str] | None = None) -> int:
+    """Run the runtime collector CLI."""
     parser = argparse.ArgumentParser(
         description="Collect local LLM runtime memory/process and llama.cpp monitoring snapshots."
     )

@@ -95,12 +95,13 @@ flowchart TD
     LLM --> LOCAL["Local llama.cpp models"]
     LLM --> API["OpenAI-compatible APIs"]
 
-    EVAL["Eval suites"] --> A
+    CLI["scripts/eval.py"] --> EVAL["Eval suites"]
+    EVAL --> A
     EVAL --> REPORTS["JSON reports / scorecards / MLflow"]
-    TRAIN["SFT data + experiments"] --> LLM
+    TRAIN["scripts/training + SFT experiments"] --> LLM
     REPORTS --> TRAIN
 
-    OBS["Runtime observability"] --> LOCAL
+    OBS["scripts/observability"] --> LOCAL
     OBS --> ART["Runtime JSON / HTML / MLflow artifacts"]
 ```
 
@@ -175,8 +176,8 @@ still allow one-off overrides:
 ```bash
 uv run python scripts/models.py list
 uv run python scripts/models.py show gemini-flash
-uv run python scripts/eval_tool_choice.py --profile qwen-local
-uv run python scripts/run_benchmark.py --profile gemini-flash --label gemini-smoke
+uv run python scripts/eval.py tool-choice --profile qwen-local
+uv run python scripts/eval.py benchmark --profile gemini-flash --label gemini-smoke
 ```
 
 Scratchpad does not require owning server lifecycle. By default, profiles are
@@ -304,12 +305,12 @@ uv run python main.py
 
 ```bash
 uv run pytest
-uv run python scripts/eval_tool_choice.py --profile qwen-local --report reports/tool-choice.json
-uv run python scripts/eval_content_profiles.py
-uv run python scripts/eval_retention.py
-uv run python scripts/eval_workflows.py
-uv run python scripts/eval_recommendations.py
-uv run python scripts/run_benchmark.py --profile qwen-local --label qwen-smoke
+uv run python scripts/eval.py tool-choice --profile qwen-local --report reports/tool-choice.json
+uv run python scripts/eval.py content-profiles
+uv run python scripts/eval.py retention
+uv run python scripts/eval.py workflows
+uv run python scripts/eval.py recommendations
+uv run python scripts/eval.py benchmark --profile qwen-local --label qwen-smoke
 ```
 
 Eval scripts write explicit reports with metrics, grouped failure types, latency,

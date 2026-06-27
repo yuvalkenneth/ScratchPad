@@ -1,6 +1,8 @@
+"""Tests for deterministic recommendation eval fixtures and CLI flow."""
+
 from pathlib import Path
 
-from scripts.eval_recommendations import load_cases, run, run_case
+from scripts.evals.recommendations import load_cases, run, run_case
 
 
 def test_recommendation_cases_load() -> None:

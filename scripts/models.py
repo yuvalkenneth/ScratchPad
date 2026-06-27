@@ -1,3 +1,5 @@
+"""Inspect and verify configured Scratchpad model profiles."""
+
 from __future__ import annotations
 
 import argparse
@@ -16,6 +18,7 @@ from app.llm.runtime import ensure_provider_ready
 
 
 def run(argv: list[str] | None = None) -> int:
+    """Run the model-profile CLI."""
     parser = argparse.ArgumentParser(description="Inspect and check Scratchpad model profiles.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 

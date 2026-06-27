@@ -1,3 +1,5 @@
+"""Export Scratchpad tool-choice cases into SFT training formats."""
+
 from __future__ import annotations
 
 import argparse
@@ -7,13 +9,13 @@ from pathlib import Path
 from typing import Any, Protocol
 
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from app.llm.prompting import DEFAULT_SYSTEM_PROMPT
 from app.tools.registry import get_tool_definitions
-from scripts.eval_tool_choice import DEFAULT_CASES_PATH, NO_TOOL_LABEL, SPLIT_LABELS, load_cases
+from scripts.evals.tool_choice import DEFAULT_CASES_PATH, NO_TOOL_LABEL, SPLIT_LABELS, load_cases
 
 
 DEFAULT_OUTPUT_PATH = REPO_ROOT / "training" / "datasets" / "tool_choice" / "sft.jsonl"
@@ -22,6 +24,8 @@ OUTPUT_FORMATS = ("messages", "text")
 
 
 class ChatTemplateTokenizer(Protocol):
+    """Minimal tokenizer protocol needed for chat-template rendering."""
+
     def apply_chat_template(
         self,
         conversation: list[dict[str, Any]],
@@ -34,6 +38,7 @@ class ChatTemplateTokenizer(Protocol):
 
 
 def build_training_system_prompt() -> str:
+    """Build the system prompt used in exported tool-routing examples."""
     return "\n\n".join(
         [
             DEFAULT_SYSTEM_PROMPT.strip(),
@@ -44,6 +49,7 @@ def build_training_system_prompt() -> str:
 
 
 def target_from_case(case: dict[str, Any]) -> dict[str, Any]:
+    """Convert eval expectations into the canonical training target."""
     expected_tool = str(case["expected_tool"])
     expected_arguments = case.get("expected_arguments") or {}
     arguments: dict[str, Any] = {}
@@ -58,6 +64,7 @@ def target_from_case(case: dict[str, Any]) -> dict[str, Any]:
 
 
 def openai_tool_call_from_case(case: dict[str, Any]) -> dict[str, Any]:
+    """Render one case target as an OpenAI-style tool call."""
     target = target_from_case(case)
     return {
         "type": "function",
@@ -73,6 +80,7 @@ def messages_from_case(
     *,
     system_prompt: str,
 ) -> list[dict[str, Any]]:
+    """Build OpenAI-style SFT messages for a single tool-choice case."""
     messages: list[dict[str, Any]] = [
         {"role": "system", "content": system_prompt},
     ]
@@ -105,6 +113,7 @@ def render_messages_as_text(
     tokenizer: ChatTemplateTokenizer,
     tools: list[dict[str, Any]] | None = None,
 ) -> str:
+    """Render messages through the target tokenizer's chat template."""
     kwargs: dict[str, Any] = {}
     if tools is not None:
         kwargs["tools"] = tools
@@ -121,6 +130,7 @@ def load_chat_template_tokenizer(
     *,
     chat_template: str | None = None,
 ) -> ChatTemplateTokenizer:
+    """Load a tokenizer and optionally apply an Unsloth chat template."""
     try:
         from transformers import AutoTokenizer
     except ImportError as exc:
@@ -150,6 +160,7 @@ def sft_row_from_case(
     output_format: str = "messages",
     tokenizer: ChatTemplateTokenizer | None = None,
 ) -> dict[str, Any]:
+    """Convert one eval case into one SFT JSONL row."""
     messages = messages_from_case(
         case,
         system_prompt=system_prompt,
@@ -186,6 +197,7 @@ def build_sft_rows(
     output_format: str = "messages",
     tokenizer: ChatTemplateTokenizer | None = None,
 ) -> list[dict[str, Any]]:
+    """Build all SFT rows from a case file."""
     system_prompt = build_training_system_prompt()
     source = str(cases_path.relative_to(REPO_ROOT)) if cases_path.is_relative_to(REPO_ROOT) else str(cases_path)
     return [
@@ -201,6 +213,7 @@ def build_sft_rows(
 
 
 def split_rows(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    """Split rows into train/validation/heldout, preferring explicit metadata."""
     splits = {split: [] for split in SPLIT_LABELS}
     for index, row in enumerate(rows):
         explicit_split = row.get("metadata", {}).get("split")
@@ -216,6 +229,7 @@ def split_rows(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
 
 
 def write_jsonl(rows: list[dict[str, Any]], output_path: Path) -> None:
+    """Write rows as newline-delimited JSON."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8") as handle:
         for row in rows:
@@ -229,6 +243,7 @@ def export_rows(
     output_format: str = "messages",
     tokenizer: ChatTemplateTokenizer | None = None,
 ) -> int:
+    """Export one unsplit JSONL file and return the row count."""
     rows = build_sft_rows(
         cases_path,
         output_format=output_format,
@@ -245,6 +260,7 @@ def export_split_rows(
     output_format: str = "messages",
     tokenizer: ChatTemplateTokenizer | None = None,
 ) -> dict[str, int]:
+    """Export train/validation/heldout JSONL files and return split counts."""
     rows = build_sft_rows(
         cases_path,
         output_format=output_format,
@@ -257,6 +273,7 @@ def export_split_rows(
 
 
 def run(argv: list[str] | None = None) -> int:
+    """Run the SFT export CLI."""
     parser = argparse.ArgumentParser(
         description="Export Scratchpad tool-choice eval cases as chat-style SFT JSONL."
     )

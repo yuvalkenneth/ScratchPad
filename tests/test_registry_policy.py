@@ -1,3 +1,5 @@
+"""Tests for the LLM-facing tool registry and routing policy text."""
+
 from app.tools.registry import get_tool_definitions, get_tools_prompt_text
 from app.tools.skills_tool import skill_view
 
