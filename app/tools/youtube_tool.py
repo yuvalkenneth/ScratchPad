@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from typing import Any, Optional
 
-from app.fetchers.common import fetch_json
+from app.fetchers.utils import fetch_json
 
 try:
     from youtube_transcript_api import YouTubeTranscriptApi

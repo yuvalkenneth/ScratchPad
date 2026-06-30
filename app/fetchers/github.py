@@ -6,7 +6,7 @@ from typing import Any, Optional
 
 import httpx
 
-from app.fetchers.common import estimate_time_minutes, fetch_json, host_for_url, normalize_whitespace, truncate_lines, truncate_text
+from app.fetchers.utils import estimate_time_minutes, fetch_json, host_for_url, normalize_whitespace, truncate_lines, truncate_text
 
 
 def is_github_domain(url: str) -> bool:

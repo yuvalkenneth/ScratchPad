@@ -5,7 +5,7 @@ from typing import Any
 
 import httpx
 
-from app.fetchers.common import estimate_time_minutes, http_error_payload
+from app.fetchers.utils import estimate_time_minutes, http_error_payload
 from app.fetchers.router import fetch_source
 from app.content_profile_prompt import (
     common_content_profile_field_guidance,

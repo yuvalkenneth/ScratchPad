@@ -5,7 +5,7 @@ from html import unescape
 from html.parser import HTMLParser
 from typing import Optional
 
-from app.fetchers.common import fetch_url_html, host_for_url, normalize_whitespace, truncate_text
+from app.fetchers.utils import fetch_url_html, host_for_url, normalize_whitespace, truncate_text
 
 
 GENERIC_X_ERROR_SNIPPETS = (
