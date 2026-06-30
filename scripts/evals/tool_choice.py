@@ -15,10 +15,10 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from app.llm.config import LLMConfig
-from app.llm.openai_compatible import create_completion_with_retries
+from app.llm.openai_compatible import create_completion_with_retries, request_settings
 from app.llm.prompting import build_system_prompt
-from app.llm.profiles import config_from_profile
-from app.llm.runtime import ensure_provider_ready
+from app.llm.catalog import config_from_model_ref
+from app.llm.runtime import ensure_provider_ready, is_llama_cpp_provider
 from app.tools.content_library_tool import apply_content_list_defaults
 from app.tools.registry import get_tool_definitions
 from scripts.observability.experiment_tracking import mlflow_log_report
@@ -32,13 +32,15 @@ GROUP_FIELDS = ("split", "difficulty", "category", "intent", "context_kind")
 
 
 def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
-    """Resolve the model-under-test config from CLI args, env vars, or profiles."""
-    profile_name = args.profile or os.getenv("EVAL_PROFILE")
-    if profile_name:
-        return config_from_profile(
-            profile_name,
+    """Resolve the model-under-test config from CLI args, env vars, or model refs."""
+    model_ref = args.model_ref or os.getenv("EVAL_MODEL_REF")
+    if not model_ref and str(args.model or "").startswith("custom:"):
+        model_ref = args.model
+    if model_ref:
+        return config_from_model_ref(
+            model_ref,
             provider=args.provider or os.getenv("EVAL_PROVIDER"),
-            model=args.model or os.getenv("EVAL_MODEL"),
+            model=None if str(args.model or "").startswith("custom:") else args.model or os.getenv("EVAL_MODEL"),
             base_url=args.base_url or os.getenv("EVAL_BASE_URL"),
             api_key=args.api_key or os.getenv("EVAL_API_KEY"),
             start_script=args.start_script or os.getenv("EVAL_START_SCRIPT"),
@@ -58,7 +60,7 @@ def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
 
 def prepare_eval_provider(config: LLMConfig, *, auto_start: bool) -> LLMConfig:
     """Start a local llama.cpp provider when the eval explicitly allows it."""
-    if auto_start and config.provider.strip().lower() == "llama_cpp":
+    if auto_start and is_llama_cpp_provider(config.provider):
         return ensure_provider_ready(config)
     return config
 
@@ -216,13 +218,14 @@ def run_case(
     request_kwargs: dict[str, Any] = {
         "model": config.model_name,
         "messages": request_messages_from_case(case),
-        "temperature": temperature,
-        "max_tokens": 256,
+        **request_settings(
+            config,
+            defaults={"temperature": temperature, "max_tokens": 256},
+            overrides={"top_p": top_p} if top_p is not None else None,
+        ),
         "tools": get_tool_definitions(),
         "tool_choice": "auto",
     }
-    if top_p is not None:
-        request_kwargs["top_p"] = top_p
 
     started_at = time.perf_counter()
     response = create_completion_with_retries(config, request_kwargs)
@@ -319,7 +322,7 @@ def build_report(
     *,
     model: str,
     provider: str,
-    profile: str | None = None,
+    model_ref: str | None = None,
     split: str | None = None,
 ) -> dict[str, Any]:
     """Aggregate tool-choice results into metrics, groups, and raw outputs."""
@@ -383,7 +386,7 @@ def build_report(
     }
     return {
         "type": "tool_choice_report",
-        "profile": profile,
+        "model_ref": model_ref,
         "provider": provider,
         "model": model,
         "split": split,
@@ -536,7 +539,7 @@ def run(argv: list[str] | None = None) -> int:
         choices=SPLIT_LABELS,
         help="Evaluate only cases assigned to this canonical split.",
     )
-    parser.add_argument("--profile", help="Named model profile from config/models.json or config/models.local.json.")
+    parser.add_argument("--model-ref", help="Model ref from config/models.json, e.g. custom:llamacpp:qwen3.5:9b.")
     parser.add_argument("--provider", help="Provider for the model under test. Defaults to EVAL_PROVIDER or LLM_PROVIDER.")
     parser.add_argument("--model", help="Model id for the model under test. Defaults to EVAL_MODEL or LLM_MODEL.")
     parser.add_argument("--base-url", help="OpenAI-compatible base URL for the model under test.")
@@ -600,7 +603,7 @@ def run(argv: list[str] | None = None) -> int:
         results,
         model=config.model_name,
         provider=config.provider,
-        profile=args.profile or os.getenv("EVAL_PROFILE"),
+        model_ref=args.model_ref or os.getenv("EVAL_MODEL_REF"),
         split=args.split,
     )
     if args.report:

@@ -5,7 +5,7 @@ from app.llm.config import LLMConfig
 
 
 def ensure_provider_ready(config: LLMConfig) -> LLMConfig:
-    if config.provider.strip().lower() != "llama_cpp":
+    if not is_llama_cpp_provider(config.provider):
         return config
 
     script_path = os.path.join(
@@ -21,3 +21,8 @@ def ensure_provider_ready(config: LLMConfig) -> LLMConfig:
 
     subprocess.run([script_path], check=True, env=env)
     return config
+
+
+def is_llama_cpp_provider(provider: str) -> bool:
+    normalized = provider.strip().lower().replace("_", "-")
+    return normalized in {"llama-cpp", "llamacpp", "custom:llamacpp", "custom:llama-cpp"}

@@ -20,8 +20,8 @@ belong in `scripts/eval.py` commands, not in normal `pytest` runs.
 
 ## LLM Configuration
 
-* `test_llm_profiles.py`: model-profile loading, local overrides, env-backed
-  values, and unknown-profile errors.
+* `test_llm_catalog.py`: model catalog loading, local overrides, env-backed
+  values, and unknown-provider errors.
 * `test_llm_runtime.py`: runtime prompt policy, client env resolution,
   quota-error handling, `.env` loading, and repeated-tool-call handling.
 

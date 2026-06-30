@@ -10,9 +10,9 @@ move implementation helpers into a named subdirectory.
   and `compare`.
 * `__init__.py`: marks `scripts` as an explicit package for test and command
   imports.
-* `models.py`: lists, resolves, and checks configured local/API model profiles.
+* `models.py`: lists, resolves, and checks configured local/API model refs.
 * `ensure_local_server.sh`: helper for starting a local llama.cpp-compatible
-  server when a profile or manual run expects one.
+  server when a model ref or manual run expects one.
 * `stop_local_server.sh`: helper for stopping the local server used during
   Scratchpad development.
 

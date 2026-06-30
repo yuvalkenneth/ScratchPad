@@ -21,6 +21,15 @@ PROVIDERS_TO_BASE_URL = {
     "llama_cpp": "http://127.0.0.1:8080/v1",
 }
 
+OPENAI_COMPATIBLE_REQUEST_KEYS = {
+    "temperature",
+    "top_p",
+    "max_tokens",
+    "frequency_penalty",
+    "presence_penalty",
+    "reasoning_effort",
+}
+
 
 def resolve_api_key(config: LLMConfig | Any) -> str:
     provider = getattr(config, "provider", "llama_cpp")
@@ -78,14 +87,16 @@ def complete_text(
     temperature: float = 0.2,
     top_p: float | None = None,
 ) -> str:
+    settings = request_settings(
+        config,
+        defaults={"temperature": temperature, "max_tokens": max_tokens},
+        overrides={"top_p": top_p} if top_p is not None else None,
+    )
     request_kwargs: dict[str, Any] = {
         "model": config.model_name,
         "messages": messages,
-        "temperature": temperature,
-        "max_tokens": max_tokens,
+        **settings,
     }
-    if top_p is not None:
-        request_kwargs["top_p"] = top_p
 
     response = create_completion_with_retries(config, request_kwargs)
     content = response.choices[0].message.content
@@ -119,3 +130,27 @@ def is_non_retryable_quota_error(exc: BaseException) -> bool:
         or "current quota" in text
         or "please check your plan and billing details" in text.lower()
     )
+
+
+def request_settings(
+    config: LLMConfig | Any,
+    *,
+    defaults: dict[str, Any] | None = None,
+    overrides: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    settings: dict[str, Any] = {}
+    if defaults:
+        settings.update(defaults)
+    config_settings = getattr(config, "request_settings", None) or {}
+    settings.update(config_settings)
+    if overrides:
+        settings.update({key: value for key, value in overrides.items() if value is not None})
+    return filter_request_settings(settings)
+
+
+def filter_request_settings(settings: dict[str, Any]) -> dict[str, Any]:
+    return {
+        key: value
+        for key, value in settings.items()
+        if key in OPENAI_COMPATIBLE_REQUEST_KEYS and value is not None
+    }

@@ -110,7 +110,7 @@ not hide catastrophic forgetting:
 ```bash
 uv run python scripts/eval.py retention \
   --cases evals/retention/cases.json \
-  --profile qwen-local \
+  --model-ref custom:llamacpp:qwen3.5:9b \
   --temperature 0 \
   --report experiments/tool_choice_sft_v1/reports/base-retention.json
 ```

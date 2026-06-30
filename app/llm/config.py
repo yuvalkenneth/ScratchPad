@@ -1,7 +1,7 @@
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 
 def load_env_file(path: Path | str = ".env") -> None:
@@ -27,6 +27,7 @@ class LLMConfig:
     base_url: str = "http://127.0.0.1:8080/v1"
     api_key: str = "local"
     start_script: Optional[str] = None
+    request_settings: dict[str, Any] = field(default_factory=dict)
 
     @classmethod
     def from_env(cls) -> "LLMConfig":
@@ -39,4 +40,31 @@ class LLMConfig:
             base_url=os.getenv("LLM_BASE_URL", default_base_url),
             api_key=os.getenv("LLM_API_KEY", "local") or "local",
             start_script=os.getenv("LLM_START_SCRIPT"),
+            request_settings=env_request_settings(),
         )
+
+
+def env_request_settings() -> dict[str, Any]:
+    settings: dict[str, Any] = {}
+    for env_name, key in [
+        ("LLM_TEMPERATURE", "temperature"),
+        ("LLM_TOP_P", "top_p"),
+        ("LLM_MAX_TOKENS", "max_tokens"),
+        ("LLM_REASONING_EFFORT", "reasoning_effort"),
+        ("LLM_FREQUENCY_PENALTY", "frequency_penalty"),
+        ("LLM_PRESENCE_PENALTY", "presence_penalty"),
+    ]:
+        value = os.getenv(env_name)
+        if value is None or value == "":
+            continue
+        settings[key] = coerce_setting_value(value)
+    return settings
+
+
+def coerce_setting_value(value: str) -> Any:
+    try:
+        if "." in value:
+            return float(value)
+        return int(value)
+    except ValueError:
+        return value

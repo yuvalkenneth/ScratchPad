@@ -5,6 +5,7 @@ from typing import Any, Optional
 
 from app.llm.config import LLMConfig
 from app.llm.openai_compatible import complete_text
+from app.llm.catalog import config_from_model_ref
 from app.content import build_content_profile_payload
 from app.content_profile_prompt import (
     CONTENT_PROFILE_SCHEMA_TEXT,
@@ -279,7 +280,7 @@ def _analyze_chunks(
 
 
 def youtube_analyze(arguments: dict[str, Any]) -> str:
-    config = LLMConfig.from_env()
+    config = config_from_model_ref(None)
     video_id = extract_video_id(arguments["url"])
     title = fetch_youtube_title(video_id) or video_id
     task = arguments.get("task") or "detailed_summary"

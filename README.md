@@ -10,7 +10,7 @@ It combines:
 
 * a bounded tool surface for saving, updating, and querying learning content
 * deterministic evals for tool choice, retention, recommendations, workflows, and content profiling
-* local/API model profiles for comparing model behavior
+* a local/API model catalog for comparing model behavior
 * SFT data pipelines for improving small-model tool routing
 * inspectable Markdown persistence, traces, and evaluation artifacts
 
@@ -164,23 +164,25 @@ The experiment asks whether a sub-1B model can improve on Scratchpad tool routin
 after narrow SFT while preserving normal assistant behavior. It compares base vs
 SFT on tool-choice metrics, retention checks, failure-type deltas, and latency.
 
-### Model profiles
+### Model catalog
 
-Model selection is intentionally profile-based. Committed defaults live in
+Model selection is intentionally catalog-based. Committed defaults live in
 `config/models.json`; personal overrides such as local start scripts or
 machine-specific endpoints should live in ignored `config/models.local.json`.
 
-Profiles describe the model identity and connection details, while eval scripts
-still allow one-off overrides:
+The catalog groups models under custom providers, and model refs use
+`custom:<provider>:<model>`. Provider defaults such as `temperature`, `top_p`,
+`max_tokens`, or `reasoning_effort` are inherited by models and can be overridden
+per model. Eval scripts still allow one-off overrides:
 
 ```bash
 uv run python scripts/models.py list
-uv run python scripts/models.py show gemini-flash
-uv run python scripts/eval.py tool-choice --profile qwen-local
-uv run python scripts/eval.py benchmark --profile gemini-flash --label gemini-smoke
+uv run python scripts/models.py show custom:gemini:gemini-3.5-flash
+uv run python scripts/eval.py tool-choice --model-ref custom:llamacpp:qwen3.5:9b
+uv run python scripts/eval.py benchmark --model-ref custom:gemini:gemini-3.5-flash --label gemini-smoke
 ```
 
-Scratchpad does not require owning server lifecycle. By default, profiles are
+Scratchpad does not require owning server lifecycle. By default, catalog entries are
 `user_managed`: the user starts the local or remote server, and Scratchpad checks
 the endpoint. A local override can add a `start_script`, and evals can opt into
 auto-start behavior for known llama.cpp setups.
@@ -208,7 +210,7 @@ Implemented:
 
 * Markdown-backed content library with add, list, update, and status tools
 * source analysis into normalized content profiles
-* local/API model profiles and OpenAI-compatible model calls
+* local/API model catalog entries and OpenAI-compatible model calls
 * deterministic evals for tool choice, workflows, recommendations, retention, and content profiles
 * first SFT experiment scaffold for Qwen 0.8B tool routing
 * JSON, MLflow, and runtime artifacts for comparing runs
@@ -305,12 +307,12 @@ uv run python main.py
 
 ```bash
 uv run pytest
-uv run python scripts/eval.py tool-choice --profile qwen-local --report reports/tool-choice.json
+uv run python scripts/eval.py tool-choice --model-ref custom:llamacpp:qwen3.5:9b --report reports/tool-choice.json
 uv run python scripts/eval.py content-profiles
 uv run python scripts/eval.py retention
 uv run python scripts/eval.py workflows
 uv run python scripts/eval.py recommendations
-uv run python scripts/eval.py benchmark --profile qwen-local --label qwen-smoke
+uv run python scripts/eval.py benchmark --model-ref custom:llamacpp:qwen3.5:9b --label qwen-smoke
 ```
 
 Eval scripts write explicit reports with metrics, grouped failure types, latency,

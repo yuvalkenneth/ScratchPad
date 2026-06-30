@@ -5,7 +5,7 @@ from openai import AsyncOpenAI
 from pydantic import BaseModel
 
 from app.llm.config import LLMConfig
-from app.llm.openai_compatible import make_async_client
+from app.llm.openai_compatible import make_async_client, request_settings
 from app.tools.registry import get_tool_definitions, run_tool
 
 DEFAULT_MAX_TOOL_ROUNDS = 8
@@ -30,8 +30,10 @@ class LLMClient(BaseModel):
         request_kwargs: dict[str, Any] = {
             "model": self.config.model_name,
             "messages": messages,
-            "temperature": self.temperature,
-            "max_tokens": self.max_tokens,
+            **request_settings(
+                self.config,
+                defaults={"temperature": self.temperature, "max_tokens": self.max_tokens},
+            ),
         }
         if self.use_tools:
             request_kwargs["tools"] = get_tool_definitions()

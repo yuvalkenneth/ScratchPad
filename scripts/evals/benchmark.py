@@ -16,7 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from app.llm.profiles import config_from_profile, resolved_config_metadata
+from app.llm.catalog import config_from_model_ref, load_model_catalog, resolved_config_metadata
 
 DEFAULT_REPORTS_DIR = REPO_ROOT / "evals" / "runs"
 
@@ -85,17 +85,17 @@ def build_commands(args: argparse.Namespace) -> list[BenchmarkCommand]:
 
 
 def append_model_args(command: list[str], args: argparse.Namespace) -> None:
-    """Append shared model/profile CLI arguments to an eval command."""
-    if args.profile:
-        command.extend(["--profile", args.profile])
+    """Append shared model-ref CLI arguments to an eval command."""
+    if args.model_ref:
+        command.extend(["--model-ref", args.model_ref])
     if args.provider:
         command.extend(["--provider", args.provider])
     if args.model:
         command.extend(["--model", args.model])
-    if not args.profile and not args.provider:
-        command.extend(["--provider", "llama_cpp"])
-    if not args.profile and not args.model:
-        command.extend(["--model", "qwen"])
+    if not args.model_ref and not args.provider and not args.model:
+        default_ref = load_model_catalog().default
+        if default_ref:
+            command.extend(["--model-ref", default_ref])
 
 
 def run_command(command: BenchmarkCommand) -> dict[str, Any]:
@@ -125,7 +125,7 @@ def run(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--label", default=time.strftime("%Y%m%d-%H%M%S"))
     parser.add_argument("--reports-dir", type=Path, default=DEFAULT_REPORTS_DIR)
-    parser.add_argument("--profile", help="Named model profile from config/models.json or config/models.local.json.")
+    parser.add_argument("--model-ref", help="Model ref from config/models.json, e.g. custom:llamacpp:qwen3.5:9b.")
     parser.add_argument("--provider")
     parser.add_argument("--model")
     parser.add_argument("--base-url")
@@ -139,15 +139,15 @@ def run(argv: list[str] | None = None) -> int:
     args.reports_dir.mkdir(parents=True, exist_ok=True)
     commands = build_commands(args)
     manifest_path = args.reports_dir / f"{args.label}-benchmark-manifest.json"
-    resolved_config = config_from_profile(
-        args.profile,
+    resolved_config = config_from_model_ref(
+        args.model_ref,
         provider=args.provider,
         model=args.model,
         base_url=args.base_url,
         api_key=args.api_key,
         start_script=args.start_script,
     )
-    model_config = resolved_config_metadata(resolved_config, profile=args.profile)
+    model_config = resolved_config_metadata(resolved_config, model_ref=args.model_ref)
 
     if args.dry_run:
         manifest = {

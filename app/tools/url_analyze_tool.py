@@ -13,6 +13,7 @@ from app.content_profile_prompt import (
 )
 from app.llm.config import LLMConfig
 from app.llm.openai_compatible import complete_text
+from app.llm.catalog import config_from_model_ref
 from app.content import build_content_profile_payload
 
 
@@ -113,7 +114,7 @@ def url_analyze(arguments: dict[str, Any]) -> str:
             "was not present in the static HTML. Keep the profile conservative and lower confidence.\n\n"
             f"{text}"
         )
-    config = LLMConfig.from_env()
+    config = config_from_model_ref(None)
     messages = [
         {"role": "system", "content": _analysis_prompt(title, url)},
         {"role": "user", "content": user_content},

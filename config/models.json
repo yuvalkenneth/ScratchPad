@@ -1,20 +1,65 @@
 {
-  "profiles": {
-    "qwen-local": {
-      "provider": "llama_cpp",
-      "model": "qwen",
-      "base_url": "http://127.0.0.1:8080/v1",
+  "default": "custom:llamacpp:qwen3.5:9b",
+  "providers": {
+    "llamacpp": {
+      "base_url": "http://localhost:8080/v1",
       "api_key": "local",
       "server_mode": "user_managed",
-      "description": "Default local llama.cpp-compatible profile. Start the server yourself unless a local override adds a start_script."
+      "description": "Local llama.cpp-compatible endpoint. Start the server yourself unless a local override adds a start_script.",
+      "defaults": {
+        "temperature": 0.7,
+        "top_p": 0.9,
+        "max_tokens": 4096
+      },
+      "models": {
+        "qwen3.5:9b": {
+          "display_name": "Qwen 3.5 9B",
+          "settings": {
+            "temperature": 0.6,
+            "top_p": 0.9,
+            "max_tokens": 4096
+          }
+        }
+      }
     },
-    "gemini-flash": {
-      "provider": "gemini",
-      "model": "gemini-3.5-flash",
-      "base_url_env": "GEMINI_BASE_URL",
-      "api_key_env": "GEMINI_API_KEY",
+    "openai": {
+      "base_url": "https://api.openai.com/v1",
+      "key_env": "OPENAI_API_KEY",
       "server_mode": "user_managed",
-      "description": "Gemini through an OpenAI-compatible endpoint. Credentials stay in environment variables."
+      "description": "OpenAI through the standard OpenAI-compatible endpoint.",
+      "defaults": {
+        "temperature": 0.7,
+        "max_tokens": 4096,
+        "reasoning_effort": "medium"
+      },
+      "models": {
+        "gpt-5.4": {
+          "display_name": "GPT 5.4",
+          "settings": {
+            "reasoning_effort": "high",
+            "max_tokens": 8192
+          }
+        }
+      }
+    },
+    "gemini": {
+      "base_url": "https://generativelanguage.googleapis.com/v1beta/openai/",
+      "key_env": "GOOGLE_API_KEY",
+      "server_mode": "user_managed",
+      "description": "Gemini through Google's OpenAI-compatible endpoint.",
+      "defaults": {
+        "temperature": 0.7,
+        "top_p": 0.95,
+        "max_tokens": 4096
+      },
+      "models": {
+        "gemini-3.5-flash": {
+          "display_name": "Gemini 3.5 Flash",
+          "settings": {
+            "temperature": 0.4
+          }
+        }
+      }
     }
   }
 }

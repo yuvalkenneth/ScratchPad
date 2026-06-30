@@ -12,7 +12,7 @@ def test_build_commands_can_skip_model_evals(tmp_path: Path) -> None:
             reports_dir=tmp_path,
             label="test",
             skip_model_evals=True,
-            profile=None,
+            model_ref=None,
             provider="llama_cpp",
             model="qwen",
             base_url=None,
@@ -31,7 +31,7 @@ def test_build_commands_adds_model_eval_reports(tmp_path: Path) -> None:
             reports_dir=tmp_path,
             label="qwen4b",
             skip_model_evals=False,
-            profile=None,
+            model_ref=None,
             provider="llama_cpp",
             model="Qwen3.5-4B-BF16",
             base_url="http://localhost:8080/v1",
@@ -51,13 +51,13 @@ def test_build_commands_adds_model_eval_reports(tmp_path: Path) -> None:
     assert "--limit" in commands[3].command
 
 
-def test_build_commands_can_use_model_profile(tmp_path: Path) -> None:
+def test_build_commands_can_use_model_ref(tmp_path: Path) -> None:
     commands = build_commands(
         Namespace(
             reports_dir=tmp_path,
             label="profiled",
             skip_model_evals=False,
-            profile="gemini-flash",
+            model_ref="custom:gemini:gemini-3.5-flash",
             provider=None,
             model=None,
             base_url=None,
@@ -67,8 +67,8 @@ def test_build_commands_can_use_model_profile(tmp_path: Path) -> None:
         )
     )
 
-    assert "--profile" in commands[2].command
-    assert "gemini-flash" in commands[2].command
+    assert "--model-ref" in commands[2].command
+    assert "custom:gemini:gemini-3.5-flash" in commands[2].command
     assert "--provider" not in commands[2].command
 
 

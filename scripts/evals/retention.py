@@ -16,10 +16,10 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from app.llm.config import LLMConfig
-from app.llm.openai_compatible import create_completion_with_retries
+from app.llm.openai_compatible import create_completion_with_retries, request_settings
 from app.llm.prompting import build_system_prompt
-from app.llm.profiles import config_from_profile
-from app.llm.runtime import ensure_provider_ready
+from app.llm.catalog import config_from_model_ref
+from app.llm.runtime import ensure_provider_ready, is_llama_cpp_provider
 from app.tools.registry import get_tool_definitions
 from scripts.observability.experiment_tracking import mlflow_log_report
 
@@ -36,13 +36,15 @@ RETENTION_KINDS = (
 
 
 def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
-    """Resolve the retention eval model config from args, env vars, or profiles."""
-    profile_name = args.profile or os.getenv("EVAL_PROFILE")
-    if profile_name:
-        return config_from_profile(
-            profile_name,
+    """Resolve the retention eval model config from args, env vars, or model refs."""
+    model_ref = args.model_ref or os.getenv("EVAL_MODEL_REF")
+    if not model_ref and str(args.model or "").startswith("custom:"):
+        model_ref = args.model
+    if model_ref:
+        return config_from_model_ref(
+            model_ref,
             provider=args.provider or os.getenv("EVAL_PROVIDER"),
-            model=args.model or os.getenv("EVAL_MODEL"),
+            model=None if str(args.model or "").startswith("custom:") else args.model or os.getenv("EVAL_MODEL"),
             base_url=args.base_url or os.getenv("EVAL_BASE_URL"),
             api_key=args.api_key or os.getenv("EVAL_API_KEY"),
             start_script=args.start_script or os.getenv("EVAL_START_SCRIPT"),
@@ -62,7 +64,7 @@ def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
 
 def prepare_eval_provider(config: LLMConfig, *, auto_start: bool) -> LLMConfig:
     """Start a local llama.cpp provider when the eval explicitly allows it."""
-    if auto_start and config.provider.strip().lower() == "llama_cpp":
+    if auto_start and is_llama_cpp_provider(config.provider):
         return ensure_provider_ready(config)
     return config
 
@@ -193,13 +195,14 @@ def run_case(
             {"role": "system", "content": build_system_prompt()},
             {"role": "user", "content": case["user"]},
         ],
-        "temperature": temperature,
-        "max_tokens": 256,
+        **request_settings(
+            config,
+            defaults={"temperature": temperature, "max_tokens": 256},
+            overrides={"top_p": top_p} if top_p is not None else None,
+        ),
         "tools": get_tool_definitions(),
         "tool_choice": "auto",
     }
-    if top_p is not None:
-        request_kwargs["top_p"] = top_p
 
     started_at = time.perf_counter()
     response = create_completion_with_retries(config, request_kwargs)
@@ -231,7 +234,7 @@ def build_report(
     *,
     model: str,
     provider: str,
-    profile: str | None = None,
+    model_ref: str | None = None,
 ) -> dict[str, Any]:
     """Aggregate retention results by label and retention kind."""
     total = len(results)
@@ -245,7 +248,7 @@ def build_report(
     tool_false_positive_count = sum(1 for result in results if result["tool_called"])
     return {
         "type": "retention_report",
-        "profile": profile,
+        "model_ref": model_ref,
         "provider": provider,
         "model": model,
         "total_cases": total,
@@ -269,7 +272,7 @@ def run(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--cases", type=Path, default=DEFAULT_CASES_PATH)
     parser.add_argument("--case", dest="case_id")
-    parser.add_argument("--profile", help="Named model profile from config/models.json or config/models.local.json.")
+    parser.add_argument("--model-ref", help="Model ref from config/models.json, e.g. custom:llamacpp:qwen3.5:9b.")
     parser.add_argument("--provider", help="Provider for the model under test. Defaults to EVAL_PROVIDER or LLM_PROVIDER.")
     parser.add_argument("--model", help="Model id for the model under test. Defaults to EVAL_MODEL or LLM_MODEL.")
     parser.add_argument("--base-url", help="OpenAI-compatible base URL for the model under test.")
@@ -320,7 +323,7 @@ def run(argv: list[str] | None = None) -> int:
         results,
         model=config.model_name,
         provider=config.provider,
-        profile=args.profile or os.getenv("EVAL_PROFILE"),
+        model_ref=args.model_ref or os.getenv("EVAL_MODEL_REF"),
     )
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)

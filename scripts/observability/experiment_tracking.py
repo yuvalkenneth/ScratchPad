@@ -68,7 +68,7 @@ def mlflow_log_report(
     with mlflow.start_run(run_name=run_name) as run:
         logged_params = {
             "report_type": report.get("type"),
-            "profile": report.get("profile"),
+            "model_ref": report.get("model_ref"),
             "provider": report.get("provider"),
             "model": report.get("model"),
             "split": report.get("split"),

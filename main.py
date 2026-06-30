@@ -14,7 +14,8 @@ from urllib.request import urlopen
 from app.llm.config import LLMConfig
 from app.llm.client import LLMClient
 from app.llm.prompting import build_system_prompt
-from app.llm.runtime import ensure_provider_ready
+from app.llm.catalog import config_from_model_ref
+from app.llm.runtime import ensure_provider_ready, is_llama_cpp_provider
 
 
 DEFAULT_SERVER_LOG = Path(os.getenv("LLM_SERVER_LOG", "/tmp/llama-server.log"))
@@ -30,7 +31,7 @@ def rebuild_client(config: LLMConfig) -> tuple[LLMConfig, LLMClient]:
 
 
 def stop_local_server(config: LLMConfig) -> None:
-    if config.provider.strip().lower() != "llama_cpp":
+    if not is_llama_cpp_provider(config.provider):
         return
 
     script_path = os.path.join(
@@ -133,11 +134,11 @@ def get_server_status(config: LLMConfig) -> str:
 
 
 async def run() -> None:
-    config, client = rebuild_client(LLMConfig.from_env())
+    config, client = rebuild_client(config_from_model_ref(None))
     messages = build_messages()
 
     print("Chat started. Type 'exit' or 'quit' to stop.")
-    print("Commands: /reset, /reload, /model <model_name> <start_script>, /server-status")
+    print("Commands: /reset, /reload, /model custom:<provider>:<model>, /server-status")
 
     while True:
         user_input = input("You: ").strip()
@@ -155,7 +156,7 @@ async def run() -> None:
                 continue
 
             if command == "/reload":
-                config, client = rebuild_client(LLMConfig.from_env())
+                config, client = rebuild_client(config_from_model_ref(None))
                 messages = build_messages()
                 print(
                     "Assistant: Reloaded configuration and reset the conversation. "
@@ -165,30 +166,27 @@ async def run() -> None:
 
             if command == "/model":
                 if not arguments:
-                    print("Assistant: Usage: /model <model_name> <start_script>")
+                    print("Assistant: Usage: /model custom:<provider>:<model>")
                     continue
 
-                next_model = arguments[0]
+                next_ref = arguments[0]
                 next_script = arguments[1] if len(arguments) > 1 else None
-
-                if config.provider.strip().lower() == "llama_cpp" and not next_script:
-                    print(
-                        "Assistant: For llama_cpp, provide a start script so the server "
-                        "actually switches models. Usage: /model <model_name> <start_script>"
-                    )
-                    continue
-
-                next_config = LLMConfig(
-                    provider=config.provider,
-                    model_name=next_model,
-                    base_url=config.base_url,
-                    api_key=config.api_key,
-                    start_script=next_script or config.start_script,
-                )
                 try:
+                    next_config = (
+                        config_from_model_ref(next_ref, start_script=next_script)
+                        if next_ref.startswith("custom:")
+                        else LLMConfig(
+                            provider=config.provider,
+                            model_name=next_ref,
+                            base_url=config.base_url,
+                            api_key=config.api_key,
+                            start_script=next_script or config.start_script,
+                            request_settings=dict(config.request_settings),
+                        )
+                    )
                     stop_local_server(config)
                     config, client = rebuild_client(next_config)
-                except subprocess.CalledProcessError as exc:
+                except (subprocess.CalledProcessError, ValueError) as exc:
                     print(f"Assistant: Failed to switch models: {exc}")
                     continue
 
