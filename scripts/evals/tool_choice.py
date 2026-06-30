@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 import time
 from pathlib import Path
@@ -14,13 +13,17 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from app.llm.config import LLMConfig
 from app.llm.openai_compatible import create_completion_with_retries, request_settings
 from app.llm.prompting import build_system_prompt
-from app.llm.catalog import config_from_model_ref
-from app.llm.runtime import ensure_provider_ready, is_llama_cpp_provider
 from app.tools.content_library_tool import apply_content_list_defaults
 from app.tools.registry import get_tool_definitions
+from scripts.evals.utils import (
+    add_auto_start_arg,
+    add_model_config_args,
+    effective_model_ref,
+    eval_config_from_args,
+    prepare_eval_provider,
+)
 from scripts.observability.experiment_tracking import mlflow_log_report
 
 
@@ -29,40 +32,6 @@ NO_TOOL_LABEL = "no_tool"
 SPLIT_LABELS = ("train", "validation", "heldout")
 DIFFICULTY_LABELS = ("easy", "medium", "hard", "ambiguous")
 GROUP_FIELDS = ("split", "difficulty", "category", "intent", "context_kind")
-
-
-def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
-    """Resolve the model-under-test config from CLI args, env vars, or model refs."""
-    model_ref = args.model_ref or os.getenv("EVAL_MODEL_REF")
-    if not model_ref and str(args.model or "").startswith("custom:"):
-        model_ref = args.model
-    if model_ref:
-        return config_from_model_ref(
-            model_ref,
-            provider=args.provider or os.getenv("EVAL_PROVIDER"),
-            model=None if str(args.model or "").startswith("custom:") else args.model or os.getenv("EVAL_MODEL"),
-            base_url=args.base_url or os.getenv("EVAL_BASE_URL"),
-            api_key=args.api_key or os.getenv("EVAL_API_KEY"),
-            start_script=args.start_script or os.getenv("EVAL_START_SCRIPT"),
-        )
-
-    default = LLMConfig.from_env()
-    provider = args.provider or os.getenv("EVAL_PROVIDER") or default.provider
-    explicit_base_url = args.base_url or os.getenv("EVAL_BASE_URL")
-    return LLMConfig(
-        provider=provider,
-        model_name=args.model or os.getenv("EVAL_MODEL") or default.model_name,
-        base_url=explicit_base_url or (default.base_url if provider == "llama_cpp" else ""),
-        api_key=args.api_key or os.getenv("EVAL_API_KEY") or default.api_key or "local",
-        start_script=args.start_script or os.getenv("EVAL_START_SCRIPT") or default.start_script,
-    )
-
-
-def prepare_eval_provider(config: LLMConfig, *, auto_start: bool) -> LLMConfig:
-    """Start a local llama.cpp provider when the eval explicitly allows it."""
-    if auto_start and is_llama_cpp_provider(config.provider):
-        return ensure_provider_ready(config)
-    return config
 
 
 def load_cases(path: Path = DEFAULT_CASES_PATH) -> list[dict[str, Any]]:
@@ -539,12 +508,7 @@ def run(argv: list[str] | None = None) -> int:
         choices=SPLIT_LABELS,
         help="Evaluate only cases assigned to this canonical split.",
     )
-    parser.add_argument("--model-ref", help="Model ref from config/models.json, e.g. custom:llamacpp:qwen3.5:9b.")
-    parser.add_argument("--provider", help="Provider for the model under test. Defaults to EVAL_PROVIDER or LLM_PROVIDER.")
-    parser.add_argument("--model", help="Model id for the model under test. Defaults to EVAL_MODEL or LLM_MODEL.")
-    parser.add_argument("--base-url", help="OpenAI-compatible base URL for the model under test.")
-    parser.add_argument("--api-key", help="API key for the model under test. Prefer env vars for real keys.")
-    parser.add_argument("--start-script", help="llama.cpp start script for the model under test.")
+    add_model_config_args(parser)
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--top-p", type=float)
     parser.add_argument("--report", type=Path, help="Write a JSON report with aggregate metrics.")
@@ -557,11 +521,7 @@ def run(argv: list[str] | None = None) -> int:
         default=[],
         help="Additional artifact path to attach when MLflow logging is enabled.",
     )
-    parser.add_argument(
-        "--no-auto-start",
-        action="store_true",
-        help="Do not auto-start llama.cpp even when provider is llama_cpp.",
-    )
+    add_auto_start_arg(parser)
     parser.add_argument("--json", action="store_true", help="Emit JSONL instead of text.")
     args = parser.parse_args(argv)
 
@@ -603,7 +563,7 @@ def run(argv: list[str] | None = None) -> int:
         results,
         model=config.model_name,
         provider=config.provider,
-        model_ref=args.model_ref or os.getenv("EVAL_MODEL_REF"),
+        model_ref=effective_model_ref(args),
         split=args.split,
     )
     if args.report:

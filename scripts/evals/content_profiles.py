@@ -19,8 +19,14 @@ from app.fetchers.utils import estimate_time_minutes
 from app.llm.config import LLMConfig
 from app.llm.openai_compatible import complete_text
 from app.llm.catalog import config_from_model_ref
-from app.llm.runtime import ensure_provider_ready, is_llama_cpp_provider
 from app.content import build_content_profile_payload
+from scripts.evals.utils import (
+    add_auto_start_arg,
+    add_model_config_args,
+    effective_model_ref,
+    eval_config_from_args,
+    prepare_eval_provider,
+)
 import app.tools.url_analyze_tool as url_analyze_tool
 import app.tools.youtube_analyze_tool as youtube_analyze_tool
 
@@ -51,40 +57,6 @@ JUDGE_RESULT_KEYS = {
     "overall_useful",
     "notes",
 }
-
-
-def eval_config_from_args(args: argparse.Namespace) -> LLMConfig:
-    """Resolve the analyzer model config from CLI args, env vars, or model refs."""
-    model_ref = args.model_ref or os.getenv("EVAL_MODEL_REF")
-    if not model_ref and str(args.model or "").startswith("custom:"):
-        model_ref = args.model
-    if model_ref:
-        return config_from_model_ref(
-            model_ref,
-            provider=args.provider or os.getenv("EVAL_PROVIDER"),
-            model=None if str(args.model or "").startswith("custom:") else args.model or os.getenv("EVAL_MODEL"),
-            base_url=args.base_url or os.getenv("EVAL_BASE_URL"),
-            api_key=args.api_key or os.getenv("EVAL_API_KEY"),
-            start_script=args.start_script or os.getenv("EVAL_START_SCRIPT"),
-        )
-
-    default = LLMConfig.from_env()
-    provider = args.provider or os.getenv("EVAL_PROVIDER") or default.provider
-    explicit_base_url = args.base_url or os.getenv("EVAL_BASE_URL")
-    return LLMConfig(
-        provider=provider,
-        model_name=args.model or os.getenv("EVAL_MODEL") or default.model_name,
-        base_url=explicit_base_url or (default.base_url if provider == "llama_cpp" else ""),
-        api_key=args.api_key or os.getenv("EVAL_API_KEY") or default.api_key or "local",
-        start_script=args.start_script or os.getenv("EVAL_START_SCRIPT") or default.start_script,
-    )
-
-
-def prepare_eval_provider(config: LLMConfig, *, auto_start: bool) -> LLMConfig:
-    """Start a local llama.cpp provider when the eval explicitly allows it."""
-    if auto_start and is_llama_cpp_provider(config.provider):
-        return ensure_provider_ready(config)
-    return config
 
 
 @dataclass
@@ -576,17 +548,8 @@ def run(argv: list[str] | None = None) -> int:
     parser.add_argument("--fixtures", type=Path, default=DEFAULT_FIXTURE_PATH)
     parser.add_argument("--case", dest="case_id")
     parser.add_argument("--limit", type=int, help="Evaluate only the first N loaded cases.")
-    parser.add_argument("--model-ref", help="Model ref from config/models.json, e.g. custom:llamacpp:qwen3.5:9b.")
-    parser.add_argument("--provider", help="Provider for the model under test. Defaults to EVAL_PROVIDER or LLM_PROVIDER.")
-    parser.add_argument("--model", help="Model id for the model under test. Defaults to EVAL_MODEL or LLM_MODEL.")
-    parser.add_argument("--base-url", help="OpenAI-compatible base URL for the model under test.")
-    parser.add_argument("--api-key", help="API key for the model under test. Prefer env vars for real keys.")
-    parser.add_argument("--start-script", help="llama.cpp start script for the model under test.")
-    parser.add_argument(
-        "--no-auto-start",
-        action="store_true",
-        help="Do not auto-start llama.cpp even when provider is llama_cpp.",
-    )
+    add_model_config_args(parser)
+    add_auto_start_arg(parser)
     parser.add_argument("--judge", action="store_true", help="Use the configured LLM as a qualitative judge.")
     parser.add_argument("--judge-model-ref", help="Model ref for the qualitative judge.")
     parser.add_argument("--judge-provider", help="Judge provider. Defaults to EVAL_JUDGE_PROVIDER or LLM_PROVIDER.")
@@ -597,7 +560,7 @@ def run(argv: list[str] | None = None) -> int:
     parser.add_argument("--judge-top-p", type=float, help="Judge top_p. Defaults to 1.0.")
     parser.add_argument("--json", action="store_true", help="Emit JSONL results instead of text.")
     args = parser.parse_args(argv)
-    eval_model_ref = args.model_ref or os.getenv("EVAL_MODEL_REF")
+    eval_model_ref = effective_model_ref(args)
     judge_model_ref = args.judge_model_ref or os.getenv("EVAL_JUDGE_MODEL_REF")
     eval_config = prepare_eval_provider(eval_config_from_args(args), auto_start=not args.no_auto_start)
     judge_config = JudgeConfig.from_args(args, eval_config) if args.judge else None

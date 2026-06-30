@@ -29,6 +29,7 @@ move implementation helpers into a named subdirectory.
   assistant behavior after tool-routing SFT.
 * `tool_choice.py`: evaluates first-tool selection, argument grounding, JSON
   validity, grouped metrics, and failure types.
+* `utils.py`: shared model-ref/configuration helpers for model-backed eval CLIs.
 * `workflows.py`: runs deterministic multi-step product workflows such as
   save, query, and status update.
 

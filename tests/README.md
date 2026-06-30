@@ -37,6 +37,7 @@ belong in `scripts/eval.py` commands, not in normal `pytest` runs.
   grouped summaries.
 * `test_eval_tool_choice.py`: tool-choice argument checks, split filtering,
   grouped metrics, confusion-style scoring, and failure classification.
+* `test_eval_utils.py`: shared eval model-ref CLI/configuration helpers.
 * `test_eval_workflows.py`: workflow eval case loading and CLI smoke coverage.
 
 ## Training And Experiment Utilities
