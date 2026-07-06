@@ -1,0 +1,152 @@
+{
+  "defaults": {
+    "method": "sft",
+    "model": {
+      "base_model": "models/hf/unsloth--Qwen3.5-0.8B",
+      "family": "qwen",
+      "served_model_ref": "custom:llamacpp:qwen3.5:0.8b"
+    },
+    "dataset": {
+      "cases_path": "evals/tool_choice/generated_cases.json",
+      "train_path": "training/datasets/tool_choice-qwen35-text/train.jsonl",
+      "validation_path": "training/datasets/tool_choice-qwen35-text/validation.jsonl",
+      "heldout_path": "training/datasets/tool_choice-qwen35-text/heldout.jsonl"
+    },
+    "training": {
+      "seed": 13,
+      "num_train_epochs": 1,
+      "max_steps": 120,
+      "learning_rate": 0.0002,
+      "warmup_ratio": 0.03,
+      "lr_scheduler_type": "cosine",
+      "per_device_train_batch_size": 2,
+      "gradient_accumulation_steps": 8,
+      "max_seq_length": 2048,
+      "logging_steps": 5,
+      "eval_steps": 20,
+      "save_steps": 40
+    },
+    "lora": {
+      "enabled": true,
+      "rank": 8,
+      "alpha": 16,
+      "dropout": 0.0,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ],
+      "quantization": null
+    },
+    "hardware": {
+      "provider": "local-or-external-gpu",
+      "gpu": null,
+      "expected_cost_usd": null
+    }
+  },
+  "experiments": [
+    {
+      "experiment_id": "base-eval",
+      "method": "base_eval",
+      "expected_outcome": "Establish tool-choice and retention metrics before any fine-tuning.",
+      "lora": {
+        "enabled": false,
+        "rank": 0,
+        "alpha": 0,
+        "dropout": 0.0,
+        "target_modules": [],
+        "quantization": null
+      }
+    },
+    {
+      "experiment_id": "sanity-overfit",
+      "expected_outcome": "Tiny-data run should overfit quickly; failure means the training stack or template is wrong.",
+      "training": {
+        "max_steps": 60,
+        "num_train_epochs": 5
+      }
+    },
+    {
+      "experiment_id": "lora-r4-alpha8",
+      "expected_outcome": "Low-rank adapter tests the minimum useful capacity.",
+      "lora": {
+        "rank": 4,
+        "alpha": 8
+      }
+    },
+    {
+      "experiment_id": "lora-r8-alpha16",
+      "expected_outcome": "Default LoRA run for comparison against all other knobs."
+    },
+    {
+      "experiment_id": "lora-r16-alpha32",
+      "expected_outcome": "Higher-rank adapter should improve capacity at higher memory/runtime cost.",
+      "lora": {
+        "rank": 16,
+        "alpha": 32
+      }
+    },
+    {
+      "experiment_id": "lora-r8-alpha8",
+      "expected_outcome": "Lower alpha/rank ratio should be more conservative and possibly more stable.",
+      "lora": {
+        "rank": 8,
+        "alpha": 8
+      }
+    },
+    {
+      "experiment_id": "lora-r8-alpha32",
+      "expected_outcome": "Higher alpha/rank ratio tests whether stronger adapter updates destabilize validation.",
+      "lora": {
+        "rank": 8,
+        "alpha": 32
+      }
+    },
+    {
+      "experiment_id": "lora-r8-dropout005",
+      "expected_outcome": "Dropout should reduce overfitting if validation loss diverges from training loss.",
+      "lora": {
+        "rank": 8,
+        "alpha": 16,
+        "dropout": 0.05
+      }
+    },
+    {
+      "experiment_id": "lora-r8-attn-only",
+      "expected_outcome": "Attention-only targeting tests the cheapest practical adapter surface.",
+      "lora": {
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj"
+        ]
+      }
+    },
+    {
+      "experiment_id": "lora-r8-attn-mlp",
+      "expected_outcome": "Attention plus MLP targeting tests quality gains from a wider adapter surface.",
+      "lora": {
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj",
+          "gate_proj",
+          "up_proj",
+          "down_proj"
+        ]
+      }
+    },
+    {
+      "experiment_id": "qlora-r8-alpha16",
+      "expected_outcome": "QLoRA should save VRAM; compare memory, runtime, and quality against lora-r8-alpha16.",
+      "lora": {
+        "rank": 8,
+        "alpha": 16,
+        "quantization": "nf4"
+      }
+    }
+  ]
+}

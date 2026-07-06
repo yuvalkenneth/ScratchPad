@@ -3,6 +3,17 @@
 This directory is for learning practical SFT, preference tuning, and small
 RL-style optimization on bounded Scratchpad workflows.
 
+The observable LoRA/QLoRA learning track is documented in:
+
+```text
+training/FT_LABS.md
+experiments/ft_learning/
+notebooks/ft_labs/
+```
+
+Use those labs for experiment manifests, classic training plots, and
+blog-style interpretation notes before moving into preference tuning.
+
 ## Lesson 1: Baseline Tiny Models
 
 Run the existing evals against 1-5 small models before training anything.

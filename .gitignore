@@ -12,3 +12,5 @@ launch.json
 mlruns/
 /experiments/*/reports/*.json
 !/experiments/*/reports/README.md
+/experiments/ft_learning/runs/*
+!/experiments/ft_learning/runs/.gitkeep
