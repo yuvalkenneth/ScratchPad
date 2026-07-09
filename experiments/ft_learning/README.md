@@ -54,8 +54,7 @@ Execute one SFT experiment in a GPU environment with the optional training
 stack installed:
 
 ```bash
-uv run --with torch --with transformers --with datasets --with peft --with trl --with accelerate \
-  python scripts/training/run_sft_experiment.py \
+uv run --group training python scripts/training/run_sft_experiment.py \
   --execute \
   --experiment-id lora-r8-alpha16
 ```

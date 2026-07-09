@@ -32,7 +32,7 @@ reasonable quality/size tradeoff.
 
 ## llama.cpp Architecture Support Check
 
-The Hugging Face/Unsloth safetensors snapshots are for training/fine-tuning.
+The Hugging Face safetensors snapshots are for training/fine-tuning.
 The GGUF files above are for llama.cpp serving.
 
 Local config/model types and llama.cpp converter status:

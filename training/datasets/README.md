@@ -29,7 +29,7 @@ uv run python scripts/training/export_sft_tool_choice.py \
 Validate model-rendered rows before training:
 
 ```bash
-uv run --with transformers --with jinja2 python scripts/training/validate_chat_template.py \
+uv run --group training python scripts/training/validate_chat_template.py \
   --cases evals/tool_choice/generated_cases.json \
   --tokenizer models/hf/unsloth--Qwen3.5-0.8B \
   --family qwen \

@@ -8,6 +8,14 @@ import sys
 from pathlib import Path
 from typing import Any, Protocol
 
+AutoTokenizer = None
+TRANSFORMERS_IMPORT_ERROR: ImportError | None = None
+
+try:
+    from transformers import AutoTokenizer
+except ImportError as exc:
+    TRANSFORMERS_IMPORT_ERROR = exc
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
@@ -127,29 +135,15 @@ def render_messages_as_text(
 
 def load_chat_template_tokenizer(
     tokenizer_name_or_path: str,
-    *,
-    chat_template: str | None = None,
 ) -> ChatTemplateTokenizer:
-    """Load a tokenizer and optionally apply an Unsloth chat template."""
-    try:
-        from transformers import AutoTokenizer
-    except ImportError as exc:
+    """Load a tokenizer for model-native chat-template rendering."""
+    if AutoTokenizer is None:
         raise RuntimeError(
             "Text export requires transformers. Install it in the training environment "
             "or use --output-format messages."
-        ) from exc
+        ) from TRANSFORMERS_IMPORT_ERROR
 
-    tokenizer = AutoTokenizer.from_pretrained(tokenizer_name_or_path)
-    if chat_template:
-        try:
-            from unsloth.chat_templates import get_chat_template
-        except ImportError as exc:
-            raise RuntimeError(
-                "--chat-template requires unsloth in the training environment. "
-                "Omit it to use the tokenizer's built-in chat template."
-            ) from exc
-        tokenizer = get_chat_template(tokenizer, chat_template=chat_template)
-    return tokenizer
+    return AutoTokenizer.from_pretrained(tokenizer_name_or_path)
 
 
 def sft_row_from_case(
@@ -293,10 +287,6 @@ def run(argv: list[str] | None = None) -> int:
         help="HF model/tokenizer path or id used with --output-format text.",
     )
     parser.add_argument(
-        "--chat-template",
-        help="Optional Unsloth chat template name to apply before text rendering, e.g. chatml or gemma-3.",
-    )
-    parser.add_argument(
         "--split-dir",
         type=Path,
         help="Write deterministic train/validation/heldout JSONL files to this directory.",
@@ -306,7 +296,7 @@ def run(argv: list[str] | None = None) -> int:
     if args.output_format == "text":
         if not args.tokenizer:
             parser.error("--output-format text requires --tokenizer")
-        tokenizer = load_chat_template_tokenizer(args.tokenizer, chat_template=args.chat_template)
+        tokenizer = load_chat_template_tokenizer(args.tokenizer)
 
     if args.split_dir:
         counts = export_split_rows(

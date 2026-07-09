@@ -97,10 +97,6 @@ def run(argv: list[str] | None = None) -> int:
     parser.add_argument("--cases", type=Path, default=DEFAULT_CASES_PATH)
     parser.add_argument("--tokenizer", required=True, help="HF tokenizer path or id.")
     parser.add_argument(
-        "--chat-template",
-        help="Optional Unsloth chat template name to apply before rendering.",
-    )
-    parser.add_argument(
         "--family",
         choices=("auto", "generic", "qwen"),
         default="auto",
@@ -112,7 +108,7 @@ def run(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     family = infer_family(args.tokenizer) if args.family == "auto" else args.family
-    tokenizer = load_chat_template_tokenizer(args.tokenizer, chat_template=args.chat_template)
+    tokenizer = load_chat_template_tokenizer(args.tokenizer)
     rows = build_sft_rows(
         args.cases,
         output_format="text",
@@ -124,7 +120,7 @@ def run(argv: list[str] | None = None) -> int:
     result = {
         "type": "chat_template_validation",
         "tokenizer": args.tokenizer,
-        "chat_template": args.chat_template,
+        "chat_template": "tokenizer-default",
         "family": family,
         "target_format": "openai-tools",
         "validated_rows": len(validations),

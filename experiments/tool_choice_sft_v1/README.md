@@ -67,7 +67,7 @@ uv run python scripts/training/export_sft_tool_choice.py \
   --split-dir training/datasets/tool_choice-qwen35-text \
   --output-format text \
   --tokenizer models/hf/unsloth--Qwen3.5-0.8B
-uv run --with transformers --with jinja2 python scripts/training/validate_chat_template.py \
+uv run --group training python scripts/training/validate_chat_template.py \
   --cases evals/tool_choice/generated_cases.json \
   --tokenizer models/hf/unsloth--Qwen3.5-0.8B \
   --family qwen \

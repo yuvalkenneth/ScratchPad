@@ -1,27 +1,55 @@
-"""Optional TRL/Unsloth SFT execution for Scratchpad fine-tuning labs."""
+"""Optional Hugging Face TRL SFT execution for Scratchpad fine-tuning labs."""
 
 from __future__ import annotations
 
-import json
 import inspect
+import json
 import time
 from pathlib import Path
 from typing import Any
 
 from scripts.training.experiment_config import artifact_paths, build_run_manifest, repo_relative, resolve_repo_path
 
+torch = None
+Dataset = None
+LoraConfig = None
+get_peft_model = None
+prepare_model_for_kbit_training = None
+AutoModelForCausalLM = None
+AutoTokenizer = None
+BitsAndBytesConfig = None
+TrainingArguments = None
+SFTConfig = None
+SFTTrainer = None
+TRAINING_IMPORT_ERROR: ImportError | None = None
+
+try:
+    import torch
+    from datasets import Dataset
+    from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+    from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainingArguments
+    from trl import SFTTrainer
+except ImportError as exc:
+    TRAINING_IMPORT_ERROR = exc
+
+try:
+    from trl import SFTConfig
+except ImportError:
+    SFTConfig = None
+
 
 OPTIONAL_TRAINING_DEPS = (
     "torch",
     "transformers",
     "datasets",
+    "accelerate",
     "peft",
     "trl",
 )
 TRAINING_INSTALL_HINT = (
     "Install the optional training stack in the GPU environment, for example:\n"
-    "uv run --with torch --with transformers --with datasets --with peft --with trl "
-    "--with accelerate python scripts/training/run_sft_experiment.py --execute --experiment-id lora-r8-alpha16"
+    "uv run --group training python scripts/training/run_sft_experiment.py "
+    "--execute --experiment-id lora-r8-alpha16"
 )
 
 
@@ -100,23 +128,9 @@ def write_manifest(path: Path, manifest: dict[str, Any]) -> None:
 
 
 def import_training_stack() -> dict[str, Any]:
-    """Import optional training dependencies only when an experiment executes."""
-    try:
-        import torch
-        from datasets import Dataset
-        from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
-        from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainingArguments
-        from trl import SFTTrainer
-        try:
-            from trl import SFTConfig
-        except ImportError:
-            SFTConfig = None
-    except ImportError as exc:
-        raise RuntimeError(TRAINING_INSTALL_HINT) from exc
-    try:
-        from unsloth import FastLanguageModel
-    except ImportError:
-        FastLanguageModel = None
+    """Return optional training dependencies or explain how to install them."""
+    if TRAINING_IMPORT_ERROR is not None:
+        raise RuntimeError(TRAINING_INSTALL_HINT) from TRAINING_IMPORT_ERROR
     return {
         "torch": torch,
         "Dataset": Dataset,
@@ -129,7 +143,6 @@ def import_training_stack() -> dict[str, Any]:
         "TrainingArguments": TrainingArguments,
         "SFTConfig": SFTConfig,
         "SFTTrainer": SFTTrainer,
-        "FastLanguageModel": FastLanguageModel,
     }
 
 
@@ -170,24 +183,6 @@ def load_model_and_tokenizer(spec: dict[str, Any], stack: dict[str, Any]) -> tup
     training = spec["training"]
     lora = spec["lora"]
     quantization = lora.get("quantization")
-    fast_language_model = stack.get("FastLanguageModel")
-
-    if fast_language_model is not None:
-        model, tokenizer = fast_language_model.from_pretrained(
-            model_name=model_name,
-            max_seq_length=int(training["max_seq_length"]),
-            load_in_4bit=bool(quantization),
-        )
-        model = fast_language_model.get_peft_model(
-            model,
-            r=int(lora["rank"]),
-            lora_alpha=int(lora["alpha"]),
-            lora_dropout=float(lora["dropout"]),
-            target_modules=list(lora["target_modules"]),
-            random_state=int(training["seed"]),
-            use_gradient_checkpointing="unsloth",
-        )
-        return model, tokenizer
 
     tokenizer = stack["AutoTokenizer"].from_pretrained(model_name)
     if tokenizer.pad_token is None:

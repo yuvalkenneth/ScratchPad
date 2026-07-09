@@ -76,8 +76,8 @@ training, and `heldout.jsonl` only for final before/after comparison.
 The canonical dataset is model-agnostic: each case stores the user request and
 the expected Scratchpad action. The default export writes OpenAI-style
 `messages` with `tool_calls`, plus tool schemas for tokenizer rendering. This
-keeps the source data close to Unsloth/TRL workflows while letting each target
-model's tokenizer render its native chat/tool format.
+keeps the source data close to Hugging Face TRL workflows while letting each
+target model's tokenizer render its native chat/tool format.
 
 For trainers that expect a single pre-rendered `text` column, render with the
 target tokenizer instead of hand-writing ChatML:
@@ -96,16 +96,12 @@ tokenizer's real template emits Qwen markers such as `<|im_start|>` /
 contains the expected native `<tool_call>` function and parameters:
 
 ```bash
-uv run --with transformers --with jinja2 python scripts/training/validate_chat_template.py \
+uv run --group training python scripts/training/validate_chat_template.py \
   --cases evals/tool_choice/generated_cases.json \
   --tokenizer models/hf/unsloth--Qwen3.5-0.8B \
   --family qwen \
   --limit 240
 ```
-
-If the training environment has Unsloth installed and we intentionally want one
-of its named templates, add `--chat-template`, for example `--chat-template
-chatml` or `--chat-template gemma-3`.
 
 Keep two evaluation lanes separate:
 
